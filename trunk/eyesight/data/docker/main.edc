@@ -1,0 +1,8 @@
+/* Docker theme for Eye */
+
+data
+{
+	item, "author" "Sevcsik András";
+	item, "contact" "sevcsik@gmail.com";
+	item, "version" "0.1";
+}
