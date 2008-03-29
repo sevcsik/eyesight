@@ -3,7 +3,6 @@
 
 struct
 {
-	char *unknown_arg;
 	char *theme_file;
 } main_config;
 

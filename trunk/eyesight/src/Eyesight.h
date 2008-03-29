@@ -1,5 +1,5 @@
-#ifndef EYE_H_
-#define EYE_H_
+#ifndef EYESIGHT_H_
+#define EYESIGHT_H_
 
 #include "config.h"
 
@@ -19,4 +19,4 @@
 
 #define _(STRING) gettext(STRING)
 
-#endif /*EYE_H_*/
+#endif /*EYESIGHT_H_*/
