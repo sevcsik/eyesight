@@ -9,7 +9,7 @@ Data fields:
 Groups:
 	- main_window	// This group containts the main window shown at launch
 	
-=================
+================================================================================
 main_window group
 -----------------
 Swallows:
@@ -18,6 +18,6 @@ Swallows:
 	- toolbar3		// Toolbar3 buttons will be swallowed by this
 	
 
-=================	
+================================================================================
 
 	
