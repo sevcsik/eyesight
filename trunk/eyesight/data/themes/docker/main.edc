@@ -1,0 +1,36 @@
+/* Docker theme for Eyesight */
+
+data
+{
+	item: "author" "Sevcsik András";
+	item: "contact" "sevcsik@gmail.com";
+	item: "version" "0.1";
+	item: "date" "Not yet released :)";
+}
+
+
+images
+{
+	image: "img/docker.png" COMP;
+}
+
+spectra
+{
+	spectrum
+	{
+		name: "black_to_grey";
+		color: 0 0 0 255 0;
+		color: 100 100 100 255 0;
+	}
+	spectrum
+	{
+		name: "black_to_trans";
+		color: 0 0 0 255 0;
+		color: 0 0 0 30 0;
+	}
+}
+
+collections
+{
+	#include "main_window/main_window.edc"
+}
