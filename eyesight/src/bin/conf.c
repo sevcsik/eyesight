@@ -1,6 +1,8 @@
 #include "Eyesight.h"
 
+#define THEME_OPT_SHORT "-t"
 #define THEME_OPT "--theme="
+
 void
 parse_args(int argc, char **argv)
 {
@@ -10,7 +12,7 @@ parse_args(int argc, char **argv)
    int n, i;
    for (i = 0; i < argc; i++)
    {
-      if (!strcmp(argv[i], "-t"))
+      if (!strcmp(argv[i], THEME_OPT_SHORT))
       {
          if (argv[++i])
             args.theme_path = argv[i];
