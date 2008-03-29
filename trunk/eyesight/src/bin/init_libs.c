@@ -1,6 +1,7 @@
 #include "Eyesight.h"
 
-char init_libs(int argc, char **argv)
+char
+init_libs(int argc, char **argv)
 {
    // initialization
 

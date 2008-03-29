@@ -1,7 +1,7 @@
 part
 {
 	name: "toolbar3";
-	type: RECT;
+	type: SWALLOW;
 	description
 	{
 		state: "default" 0.0;

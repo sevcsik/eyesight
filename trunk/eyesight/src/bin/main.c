@@ -1,20 +1,18 @@
 #include "Eyesight.h"
 
-char * parse_args(int argc, char **argv)
+int
+main(int argc, char **argv)
 {
-	// TODO: parse_args()
-}
+   // gettext stuff
+   setlocale(LC_ALL, "");
+   bindtextdomain(PACKAGE, LOCALEDIR);
+   textdomain(PACKAGE);
 
-int main(int argc, char **argv)
-{
-    // gettext stuff
-    setlocale(LC_ALL, "");
-    bindtextdomain(PACKAGE, LOCALEDIR);
-    textdomain(PACKAGE);
-	
-	if (!init_libs(argc, argv)) exit(-1);
-	
-	if (parse_args(argc, argv));
-	
-	ecore_main_loop_begin();
+   if (!init_libs(argc, argv))
+      exit(-1);
+
+   parse_args(argc, argv);
+   create_main_window();
+
+   ecore_main_loop_begin();
 }
