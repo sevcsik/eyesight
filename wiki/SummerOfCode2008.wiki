@@ -1,5 +1,5 @@
 #summary Google Summer of Code 2008 project proposal end roadmap
-#labels summerofcode
+#labels SoC
 
 =Project proposal=
 This is an application to the SoC idea of The Enlightenment Foundation, [http://wiki.enlightenment.org/index.php/SoC_Project_Ideas#Evince-like_program_.28Challenging.29 "Evince-like program"]
