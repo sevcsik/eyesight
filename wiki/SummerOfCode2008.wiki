@@ -27,8 +27,8 @@ The default theme, called Docker, will utilize window space as good as possible.
 ==Development roadmap==
 I've already started work on the application, but the larger part of the coding will be done during the summer.
 
-* End of May: finish basic user interface and Docker theme
-* End of June: finish plugin API and maybe PDF/DVI input plugin
-* End of July: create user-friendly configuration dialogs, plugin management, fix most bugs
-* End of August: creare image viewer plugin and a Classic theme that fits into the E17 desktop
-* Localization, documentation, audio/video support will probably go beyond SoC.
+  * End of May: finish basic user interface and Docker theme
+  * End of June: finish plugin API and maybe PDF/DVI input plugin
+  * End of July: create user-friendly configuration dialogs, plugin management, fix most bugs
+  * End of August: creare image viewer plugin and a Classic theme that fits into the E17 desktop
+  * Localization, documentation, audio/video support will probably go beyond SoC.
