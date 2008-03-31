@@ -22,7 +22,7 @@ Planned plugins:
 ==User interface==
 The GUI will be edje-based, for maximal flexibility and eyecandy. Every theme must define three edje swallows for three toolbars (general, view and navigation). General toolbar will contain application-level buttons, like open, preferences, help, etc. The plugin API will provide functions wich can add widgets to these toolbars.
 
-The default theme, called Docker, will utilize window space as good as possible. The file content will take up the whole window and controls will popup on mouse move in a specified area, or keystroke (will be an option).
+The default theme, called [http://bp1.blogger.com/_EHjPYdSoHP4/R-pa17dukBI/AAAAAAAABBQ/kU8vi7Dnzjw/s1600-h/eye.png Docker], will utilize window space as good as possible. The file content will take up the whole window and controls will popup on mouse move in a specified area, or keystroke (will be an option).
 
 ==Development roadmap==
 I've already started work on the application, but the larger part of the coding will be done during the summer.
