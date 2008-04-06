@@ -12,7 +12,7 @@ main(int argc, char **argv)
       exit(-1);
 
    parse_args(argc, argv);
-   create_main_window();
+   main_window_create();
 
    ecore_main_loop_begin();
 }
