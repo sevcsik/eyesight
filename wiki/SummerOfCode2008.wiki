@@ -12,7 +12,7 @@ in C. The core application will depend on Ecore, Evas, Edje end ETK, plugin depe
 
 Eyesight will be a plugin-based file viewer application. Every file type will have an input plugin.
 
-Plugins will be shared libraries whose functions will be dlopened when necessary. A C-language API will be provided for plugin development.
+Plugins will be shared libraries whose functions will be dlopened when necessary. A C-language API will be provided for plugin development. The plugin system will use the ecore_plugin framework for platform independence.
 
 Planned plugins:
   # PDF/DVI (with epdf and edvi libraries)
