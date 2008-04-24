@@ -1,6 +1,10 @@
 #ifndef EYESIGHT_H_
 #define EYESIGHT_H_
 
+#define WM_CLASS "Eyesight"
+#define WM_NAME "eyesight"
+#define WM_TITLE "Eyesight Document Viewer v0.1"
+
 #include "config.h"
 
 #include <stdio.h>
