@@ -11,8 +11,16 @@ main_window_resize_cb(Ecore_Evas *ee)
 void
 main_window_destroy_cb(Ecore_Evas *ee)
 {
+   /* Free */
    evas_object_free(main_window.main_window);
    ecore_evas_free(main_window.ee);
+   
+   /* Shutdown */
+   edje_shutdown();
+   ecore_evas_shutdown();
+   ecore_shutdown();
+   evas_shutdown();
+   
    exit(EXIT_SUCCESS);
 }
 
@@ -43,6 +51,11 @@ main_window_create()
    evas_object_move(main_window.main_window, 0, 0);
    evas_object_resize(main_window.main_window, w, h);
    ecore_evas_resize(main_window.ee, w, h);
+   ecore_evas_size_min_set(main_window.ee, w, h);
+   
+   /* VM stuff */
+   ecore_evas_title_set(main_window.ee, WM_TITLE);
+   ecore_evas_name_class_set(main_window.ee, WM_NAME, WM_CLASS);
    
    /* Callbacks */
    ecore_evas_callback_resize_set(main_window.ee, main_window_resize_cb);
