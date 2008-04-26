@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <libintl.h>
+#include <unistd.h>
 
 #include <Evas.h>
 #include <Ecore.h>
