@@ -1,27 +1,26 @@
 #include "Eyesight.h"
 
-#define THEME_OPT_SHORT "-t"
-#define THEME_OPT "--theme="
-
 void
 parse_args(int argc, char **argv)
 {
+   int c;
+   
    // Resetting args
    args.theme_path = NULL;
-   char *tmp;
-   int n, i;
-   for (i = 0; i < argc; i++)
+   
+   // Check getopt switches
+   while (c = getopt(argc, argv, OPTS))
    {
-      if (!strcmp(argv[i], THEME_OPT_SHORT))
+      if (c == -1) break; 
+      switch (c)
       {
-         if (argv[++i])
-            args.theme_path = argv[i];
-      }
-      else if (strstr(argv[i], THEME_OPT))
-      {
-         tmp = calloc(sizeof(char), strlen(argv[i])-strlen(THEME_OPT));
-         strncpy(tmp, strstr(argv[i], "=")+1, strlen(argv[i])-strlen(THEME_OPT));
-         args.theme_path = tmp;
+         case 't':
+            args.theme_path = optarg;
+            continue;
       }
    }
+   
+   // Check addational arguments (TODO)
+   /*if (argc == optind) return;
+   while (argc */
 }
