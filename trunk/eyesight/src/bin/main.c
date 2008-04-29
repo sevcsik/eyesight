@@ -10,22 +10,11 @@ main(int argc, char **argv)
 
    // initialization
 
-   if (!ecore_init())
-   {
-      return EXIT_FAILURE;
-   }
+   if (!ecore_init()) goto shutdown;
 
-   if (!ecore_evas_init())
-   {
-      goto ecore_shutdown;
-      return EXIT_FAILURE;
-   }
+   if (!ecore_evas_init()) goto ecore_shutdown;
 
-   if (edje_init())
-   {
-      goto ecore_evas_shutdown;
-      return EXIT_FAILURE;
-   }
+   if (edje_init()) goto ecore_evas_shutdown;
 
    parse_args(argc, argv);
    main_window_create();
@@ -33,9 +22,14 @@ main(int argc, char **argv)
    ecore_main_loop_begin();
    
    // shutdown
-   edje_shutdown: edje_shutdown();
-   ecore_evas_shutdown: ecore_evas_shutdown();
-   ecore_shutdown: ecore_shutdown();
+   edje_shutdown();
+   ecore_evas_shutdown();
+   ecore_shutdown();
    
    return EXIT_SUCCESS;
+   
+   edje_shutdown:       edje_shutdown();
+   ecore_evas_shutdown: ecore_evas_shutdown();
+   ecore_shutdown:      ecore_shutdown();
+   shutdown:            return EXIT_FAILURE;
 }
