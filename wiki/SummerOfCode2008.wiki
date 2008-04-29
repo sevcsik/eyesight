@@ -6,7 +6,7 @@ This is an application to the SoC idea of The Enlightenment Foundation, [http://
 
 ==Codebase==
 All code will be 
-in C. The core application will depend on Ecore, Evas, Edje end ETK, plugin dependencies will be described later. All code will be written with localization support (using the gnu gettext library).
+in C. The core application will depend on Ecore, Evas, and Edje, plugin dependencies will be described later. All code will be written with localization support (using the gnu gettext library).
 
 ==Plugins==
 
