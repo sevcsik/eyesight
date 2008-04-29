@@ -6,7 +6,7 @@ INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/src -I$(top_srcdir)/src/bin @EYESIGHT
 
 bin_PROGRAMS = eyesight
 
-eyesight_SOURCES = main.c init_libs.c conf.c main_window.c error.c
+eyesight_SOURCES = main.c conf.c main_window.c error.c
 eyesight_LDADD = @EYESIGHT_LIBS@ -ldl
 
 
