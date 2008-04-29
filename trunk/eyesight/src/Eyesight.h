@@ -19,7 +19,6 @@
 #include <Edje.h>
 
 #include "main.h"
-#include "init_libs.h"
 #include "conf.h"
 #include "main_window.h"
 #include "error.h"

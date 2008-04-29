@@ -14,14 +14,7 @@ main_window_destroy_cb(Ecore_Evas *ee)
    /* Free */
    evas_object_free(main_window.main_window);
    ecore_evas_free(main_window.ee);
-   
-   /* Shutdown */
-   edje_shutdown();
-   ecore_evas_shutdown();
-   ecore_shutdown();
-   evas_shutdown();
-   
-   exit(EXIT_SUCCESS);
+   ecore_main_loop_quit();
 }
 
 void
