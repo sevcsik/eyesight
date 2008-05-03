@@ -1,7 +1,11 @@
 #ifndef MAIN_WINDOW_H_
 #define MAIN_WINDOW_H_
 
-struct
+#define WM_CLASS "Eyesight"
+#define WM_NAME "eyesight"
+#define WM_TITLE "Eyesight Document Viewer v0.1"
+
+struct _main_window
 {
    Ecore_Evas *ee;
    Evas *evas;

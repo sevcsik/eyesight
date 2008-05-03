@@ -1,4 +1,8 @@
-#include "Eyesight.h"
+#include <stdio.h>
+#include <unistd.h>
+#include <Evas.h>
+
+#include "conf.h"
 
 void
 parse_args(int argc, char **argv)
@@ -20,7 +24,14 @@ parse_args(int argc, char **argv)
       }
    }
    
-   // Check addational arguments (TODO)
-   /*if (argc == optind) return;
-   while (argc */
-}
+   // Check addational arguments (filenames)
+   
+   for (c = 0; c < argc; c++)
+   {
+      if (argv[c][0] != '-') // Skip options
+      {
+         printf("Appended: %d: %s\n", c, argv[c]);
+         args.files = evas_list_append(args.files, argv[c]);  
+      }   
+   }
+} 
