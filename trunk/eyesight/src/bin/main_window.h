@@ -5,12 +5,12 @@
 #define WM_NAME "eyesight"
 #define WM_TITLE "Eyesight Document Viewer v0.1"
 
-struct _main_window
+typedef struct _main_window
 {
-   Ecore_Evas *ee;
+   //Ecore_Evas *ee;
    Evas *evas;
    Evas_Object *main_window;
-} main_window;
+} Main_Window;
 
 void main_window_create();
 void main_window_resize_cb(Ecore_Evas *ee);
