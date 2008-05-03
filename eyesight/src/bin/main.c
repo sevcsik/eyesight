@@ -2,7 +2,6 @@
 #include <stdlib.h>
 
 #include <Ecore.h>
-#include <Evas.h>
 #include <Ecore_Evas.h>
 #include <Edje.h>
 

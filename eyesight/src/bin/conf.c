@@ -26,7 +26,7 @@ parse_args(int argc, char **argv)
    
    // Check addational arguments (filenames)
    
-   for (c = 0; c < argc; c++)
+   for (c = 1; c < argc; c++)
    {
       if (argv[c][0] != '-') // Skip options
       {
