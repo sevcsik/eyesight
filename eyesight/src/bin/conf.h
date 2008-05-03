@@ -3,7 +3,7 @@
 
 #define OPTS "t:"
 
-struct
+struct _args
 {
 	char *theme_path;
    Evas_List *files;

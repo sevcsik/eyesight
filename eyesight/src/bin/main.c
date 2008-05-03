@@ -1,4 +1,13 @@
-#include "Eyesight.h"
+#include <libintl.h>
+#include <stdlib.h>
+
+#include <Ecore.h>
+#include <Evas.h>
+#include <Ecore_Evas.h>
+#include <Edje.h>
+
+#include "conf.h"
+#include "config.h"
 
 int
 main(int argc, char **argv)
@@ -17,6 +26,7 @@ main(int argc, char **argv)
    if (!edje_init()) goto _ecore_evas_shutdown;
 
    parse_args(argc, argv);
+
    main_window_create();
 
    ecore_main_loop_begin();

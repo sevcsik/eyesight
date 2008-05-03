@@ -1,4 +1,17 @@
-#include "Eyesight.h"
+#include <stdio.h>
+#include <libintl.h>
+
+#include <Ecore.h>
+#include <Ecore_Evas.h>
+#include <Evas.h>
+#include <Edje.h>
+
+#include "config.h"
+#include "eyesight_private.h"
+
+#include "main_window.h"
+#include "conf.h"
+#include "error.h"
 
 void
 main_window_resize_cb(Ecore_Evas *ee)
@@ -29,7 +42,7 @@ main_window_create()
    if (args.theme_path)
    {
       if (!edje_object_file_set(main_window.main_window, args.theme_path,
-                         "main_window"))
+                                "main_window"))
       {
          printf(ERROR_THEME, args.theme_path);                     
       }
