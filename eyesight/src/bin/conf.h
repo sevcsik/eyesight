@@ -3,12 +3,13 @@
 
 #define OPTS "t:"
 
-struct _args
+typedef struct _Args
 {
-	char *theme_path;
+   char *theme_path;
    Evas_List *files;
-} args;
+}
+Args;
 
-void parse_args(int argc, char **argv);
+Args *parse_args(int argc, char **argv);
 
 #endif /*CONF_H_*/

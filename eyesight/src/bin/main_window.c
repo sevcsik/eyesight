@@ -9,9 +9,9 @@
 #include "config.h"
 #include "eyesight_private.h"
 
-#include "main_window.h"
 #include "conf.h"
 #include "error.h"
+#include "main_window.h"
 
 void
 main_window_resize_cb(Ecore_Evas *ee)
@@ -34,27 +34,29 @@ main_window_destroy_cb(Ecore_Evas *ee)
 }
 
 void
-main_window_create()
+main_window_create(Args *args)
 {
    Main_Window *main_window = malloc(sizeof(Main_Window));
    Ecore_Evas *ee;
-   
+
    ee = ecore_evas_software_x11_new(0, 0, 0, 0, 0, 0);
    main_window->evas = ecore_evas_get(ee);
    main_window->main_window = edje_object_add(main_window->evas);
-   
+
    ecore_evas_data_set(ee, "main_window", (void *)main_window);
-   
+   ecore_evas_data_set(ee, "args", (void *)args);
+
    // Try to open theme supplied in arguments
    char theme_loaded = 0;
-   if (args.theme_path)
+   if (args->theme_path)
    {
-      if (!edje_object_file_set(main_window->main_window, args.theme_path,
+      if (!edje_object_file_set(main_window->main_window, args->theme_path,
                                 "main_window"))
       {
-         printf(ERROR_THEME, args.theme_path);                     
+         printf(ERROR_THEME, args->theme_path);
       }
-      else theme_loaded = 1;
+      else
+         theme_loaded = 1;
    }
    if (!theme_loaded)
       edje_object_file_set(main_window->main_window,
@@ -66,15 +68,15 @@ main_window_create()
    evas_object_resize(main_window->main_window, w, h);
    ecore_evas_resize(ee, w, h);
    ecore_evas_size_min_set(ee, w, h);
-   
+
    /* VM stuff */
    ecore_evas_title_set(ee, WM_TITLE);
    ecore_evas_name_class_set(ee, WM_NAME, WM_CLASS);
-   
+
    /* Callbacks */
    ecore_evas_callback_resize_set(ee, main_window_resize_cb);
    ecore_evas_callback_destroy_set(ee, main_window_destroy_cb);
-   
+
    evas_object_show(main_window->main_window);
    ecore_evas_show(ee);
 }

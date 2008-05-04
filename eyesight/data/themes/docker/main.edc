@@ -12,6 +12,7 @@ data
 images
 {
 	image: "img/docker.png" COMP;
+	image: "img/border_trans.png" COMP;
 }
 
 spectra
@@ -33,4 +34,5 @@ spectra
 collections
 {
 	#include "main_window/main_window.edc"
+	#include "border_trans.edc"
 }
