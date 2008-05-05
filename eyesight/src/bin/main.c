@@ -12,6 +12,7 @@ int
 main(int argc, char **argv)
 {
    Args *args;
+   Evas_List *startup_errors = NULL;
 
    // gettext stuff
    setlocale(LC_ALL, "");
@@ -29,7 +30,7 @@ main(int argc, char **argv)
    if (!edje_init())
       goto _ecore_evas_shutdown;
 
-   args = parse_args(argc, argv);
+   args = parse_args(argc, argv, startup_errors);
 
    main_window_create(args);
 
