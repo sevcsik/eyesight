@@ -10,6 +10,6 @@ typedef struct _Args
 }
 Args;
 
-Args *parse_args(int argc, char **argv, Evas_List *startup_errors);
+Args *parse_args(int argc, char **argv, Evas_List **startup_errors);
 
 #endif /*CONF_H_*/

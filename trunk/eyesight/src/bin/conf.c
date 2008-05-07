@@ -8,7 +8,7 @@
 #include "conf.h"
 
 Args *
-parse_args(int argc, char **argv, Evas_List *startup_errors)
+parse_args(int argc, char **argv, Evas_List **startup_errors)
 {
    int c;
    Args *args = malloc(sizeof(Args));
@@ -30,7 +30,7 @@ parse_args(int argc, char **argv, Evas_List *startup_errors)
       case '?':
          errstr = malloc(strlen(ERROR_ARG_UNKNOWN)); // Don't need +1 because of %;
          snprintf(errstr, strlen(ERROR_ARG_UNKNOWN), ERROR_ARG_UNKNOWN, (char *)&optopt);
-         startup_errors = evas_list_append(startup_errors, errstr);
+         startup_errors = evas_list_append(*startup_errors, errstr);
          break;
       /*case ':': // TODO: 
          errstr = malloc(strlen(ERROR_ARG_NOARG)); // Don't need +1 because of %;

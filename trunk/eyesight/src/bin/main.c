@@ -30,7 +30,7 @@ main(int argc, char **argv)
    if (!edje_init())
       goto _ecore_evas_shutdown;
 
-   args = parse_args(argc, argv, startup_errors);
+   args = parse_args(argc, argv, &startup_errors);
 
    main_window_create(args);
 
