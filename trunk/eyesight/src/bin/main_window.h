@@ -13,7 +13,7 @@ typedef struct _Main_Window
 }
 Main_Window;
 
-void main_window_create(Args *args);
+void main_window_create(Args *args, Evas_List **startup_errors);
 void main_window_resize_cb(Ecore_Evas *ee);
 
 #endif /*MAIN_WINDOW_H_*/

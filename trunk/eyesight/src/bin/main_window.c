@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <libintl.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <Ecore_Evas.h>
 #include <Evas.h>
@@ -34,10 +35,11 @@ main_window_destroy_cb(Ecore_Evas *ee)
 }
 
 void
-main_window_create(Args *args)
+main_window_create(Args *args, Evas_List **startup_errors)
 {
    Main_Window *main_window = malloc(sizeof(Main_Window));
    Ecore_Evas *ee;
+   char *errstr;
 
    ee = ecore_evas_software_x11_new(0, 0, 0, 0, 0, 0);
    main_window->evas = ecore_evas_get(ee);
@@ -53,7 +55,10 @@ main_window_create(Args *args)
       if (!edje_object_file_set(main_window->main_window, args->theme_path,
                                 "main_window"))
       {
-         printf(ERROR_THEME, args->theme_path);
+         errstr = malloc(strlen(ERROR_THEME) - 1 + strlen(args->theme_path);
+         snprintf(errstr, strlen(ERROR_THEME) - 1 + strlen(args->theme_path),
+                  ERROR_THEME, args->theme_path);
+         *startup_errors = evas_list_append(*startup_errors, errstr);
       }
       else
          theme_loaded = 1;
