@@ -1,5 +1,6 @@
 #include <libintl.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include <Ecore.h>
 #include <Ecore_Evas.h>
@@ -8,10 +9,13 @@
 #include "conf.h"
 #include "config.h"
 
+#define _(STRING) gettext(STRING)
+
 int
 main(int argc, char **argv)
 {
    Args *args;
+   char *errstr;
    Evas_List *startup_errors = NULL;
 
    // gettext stuff
@@ -32,7 +36,20 @@ main(int argc, char **argv)
 
    args = parse_args(argc, argv, &startup_errors);
 
-   main_window_create(args);
+   main_window_create(args, &startup_errors);
+   
+   int i;
+   
+   if (startup_errors)
+   {
+      fprintf(stderr, _("During startup, the following errors occured:\n"));
+      for (i = 0;; i++)
+      {
+         errstr = evas_list_nth(startup_errors, i);
+         if (!errstr) break;
+         else fprintf(stderr, "  %s\n", errstr);
+      }
+   }
 
    ecore_main_loop_begin();
 

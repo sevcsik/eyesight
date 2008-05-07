@@ -14,6 +14,9 @@ parse_args(int argc, char **argv, Evas_List **startup_errors)
    Args *args = malloc(sizeof(Args));
    char *errstr;
 
+   // Shut up getopt
+   opterr = 0;
+
    // Resetting args
    args->theme_path = NULL;
 
@@ -28,15 +31,16 @@ parse_args(int argc, char **argv, Evas_List **startup_errors)
          args->theme_path = optarg;
          break;
       case '?':
-         errstr = malloc(strlen(ERROR_ARG_UNKNOWN)); // Don't need +1 because of %;
-         snprintf(errstr, strlen(ERROR_ARG_UNKNOWN), ERROR_ARG_UNKNOWN, (char *)&optopt);
-         startup_errors = evas_list_append(*startup_errors, errstr);
+         errstr = malloc(strlen(ERROR_ARG_UNKNOWN) + strlen(args->theme_path));
+         snprintf(errstr, strlen(ERROR_ARG_UNKNOWN) + strlen(args->theme_path),
+                  ERROR_ARG_UNKNOWN, (char *)&optopt);
+         *startup_errors = evas_list_append(*startup_errors, errstr);
          break;
-      /*case ':': // TODO: 
-         errstr = malloc(strlen(ERROR_ARG_NOARG)); // Don't need +1 because of %;
-         snprintf(errstr, strlen(ERROR_ARG_NOARG), ERROR_ARG_NOARG, (char *)&optopt);
-         startup_errors = evas_list_append(startup_errors, errstr);
-         break;*/
+         /*case ':': // TODO:
+            errstr = malloc(strlen(ERROR_ARG_NOARG)); // Don't need +1 because of %;
+            snprintf(errstr, strlen(ERROR_ARG_NOARG), ERROR_ARG_NOARG, (char *)&optopt);
+            startup_errors = evas_list_append(startup_errors, errstr);
+            break;*/
       }
    }
 
@@ -46,10 +50,9 @@ parse_args(int argc, char **argv, Evas_List **startup_errors)
    {
       if (argv[c][0] != '-') // Skip options
       {
-         printf("Appended: %d: %s\n", c, argv[c]);
          args->files = evas_list_append(args->files, argv[c]);
       }
    }
-   
+
    return args;
 }
