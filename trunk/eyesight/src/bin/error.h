@@ -8,4 +8,7 @@
 #define ERROR_ARG_UNKNOWN _("-%s is an unknown option, or it needs an argument. See README for details.")
 #define ERROR_THEME _("Couldn't open %s as theme file. Check that the file exists and it's compatible with this Eyesight version!")
 
+void append_startup_error(Evas_List **startup_errors, char *error_string,
+                          char *argument);
+
 #endif /*ERROR_H_*/

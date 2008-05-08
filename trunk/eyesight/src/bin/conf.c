@@ -27,20 +27,12 @@ parse_args(int argc, char **argv, Evas_List **startup_errors)
          break;
       switch (c)
       {
-      case 't':
-         args->theme_path = optarg;
-         break;
-      case '?':
-         errstr = malloc(strlen(ERROR_ARG_UNKNOWN) + strlen(args->theme_path));
-         snprintf(errstr, strlen(ERROR_ARG_UNKNOWN) + strlen(args->theme_path),
-                  ERROR_ARG_UNKNOWN, (char *)&optopt);
-         *startup_errors = evas_list_append(*startup_errors, errstr);
-         break;
-         /*case ':': // TODO:
-            errstr = malloc(strlen(ERROR_ARG_NOARG)); // Don't need +1 because of %;
-            snprintf(errstr, strlen(ERROR_ARG_NOARG), ERROR_ARG_NOARG, (char *)&optopt);
-            startup_errors = evas_list_append(startup_errors, errstr);
-            break;*/
+         case 't':
+            args->theme_path = optarg;
+            break;
+         case '?':
+            break;
+            append_startup_error(startup_errors, ERROR_ARG_UNKNOWN, (char *)&optopt);
       }
    }
 
