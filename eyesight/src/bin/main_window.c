@@ -14,6 +14,14 @@
 #include "error.h"
 #include "main_window.h"
 
+typedef struct _Main_Window
+{
+   //Ecore_Evas *ee;
+   Evas *evas;
+   Evas_Object *main_window;
+}
+Main_Window;
+
 void
 main_window_resize_cb(Ecore_Evas *ee)
 {
@@ -55,10 +63,7 @@ main_window_create(Args *args, Evas_List **startup_errors)
       if (!edje_object_file_set(main_window->main_window, args->theme_path,
                                 "main_window"))
       {
-         errstr = malloc(strlen(ERROR_THEME) - 1 + strlen(args->theme_path);
-         snprintf(errstr, strlen(ERROR_THEME) - 1 + strlen(args->theme_path),
-                  ERROR_THEME, args->theme_path);
-         *startup_errors = evas_list_append(*startup_errors, errstr);
+         append_startup_error(startup_errors, ERROR_THEME, args->theme_path);
       }
       else
          theme_loaded = 1;
