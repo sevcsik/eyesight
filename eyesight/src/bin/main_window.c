@@ -92,7 +92,6 @@ void
 main_window_load_cb(void *data, Evas_Object *o, const char *emission, 
                     const char *source)
 {
-   printf("foo");
-     if (!data) return; // don't do anything if there's no errors
+     if (!evas_list_data(data)) return; // don't do anything if there's no errors
      edje_object_signal_emit(o, "error_show", "eyesight");
 }
