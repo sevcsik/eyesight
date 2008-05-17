@@ -10,5 +10,10 @@ group
 		#include "top_bar.edc"
 		#include "toolbar2.edc"
 		#include "toolbar3.edc"
+		#include "error_dialog.edc"
+	}
+	programs
+	{
+		#include "error_dialog_programs.edc"
 	}
 }

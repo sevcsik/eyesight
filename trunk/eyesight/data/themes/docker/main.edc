@@ -13,6 +13,8 @@ images
 {
 	image: "img/docker.png" COMP;
 	image: "img/border_trans.png" COMP;
+	image: "img/error.png" COMP;
+	image: "img/dialog_bg.png" COMP;
 }
 
 spectra
@@ -28,6 +30,17 @@ spectra
 		name: "black_to_trans";
 		color: 0 0 0 255 0;
 		color: 0 0 0 30 0;
+	}
+}
+
+styles
+{
+	style
+	{
+		name: "error";
+		base: "font=VeraBd font_size=10 color=#FFFFFFFF wrap=word valign=middle";
+		tag: "br" "+ \n";
+		tag: "i" "+ \t";
 	}
 }
 

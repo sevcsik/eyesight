@@ -31,8 +31,8 @@ parse_args(int argc, char **argv, Evas_List **startup_errors)
             args->theme_path = optarg;
             break;
          case '?':
-            break;
             append_startup_error(startup_errors, ERROR_ARG_UNKNOWN, (char *)&optopt);
+            break;
       }
    }
 
