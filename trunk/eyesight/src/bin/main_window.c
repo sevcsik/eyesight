@@ -79,7 +79,7 @@ main_window_create(Args *args, Evas_List **startup_errors)
    /* Callbacks */
    ecore_evas_callback_resize_set(ee, main_window_resize_cb);
    ecore_evas_callback_destroy_set(ee, main_window_destroy_cb);
-   edje_object_signal_callback_add(main_window->main_window, "load", "",
+   edje_object_signal_callback_add(main_window->main_window, "load", "*",
                                    main_window_load_cb, startup_errors);
    
    evas_object_show(main_window->main_window);
@@ -92,8 +92,7 @@ void
 main_window_load_cb(void *data, Evas_Object *o, const char *emission, 
                     const char *source)
 {
-     //printf(" |%s, %s| ", emission, source);
-     if (!data) return;
-     //printf("Hola");
-     edje_object_signal_emit(o, "error_show", "");
+   printf("foo");
+     if (!data) return; // don't do anything if there's no errors
+     edje_object_signal_emit(o, "error_show", "eyesight");
 }
