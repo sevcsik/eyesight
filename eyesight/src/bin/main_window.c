@@ -14,14 +14,6 @@
 #include "error.h"
 #include "main_window.h"
 
-typedef struct _Main_Window
-{
-   //Ecore_Evas *ee;
-   Evas *evas;
-   Evas_Object *main_window;
-}
-Main_Window;
-
 void
 main_window_resize_cb(Ecore_Evas *ee)
 {
@@ -73,6 +65,7 @@ main_window_create(Args *args, Evas_List **startup_errors)
                            PACKAGE_DATA_DIR"/themes/docker/docker.edj",
                            "main_window");
    int w, h;
+   evas_object_name_set(main_window->main_window, "main_window");
    edje_object_size_min_get(main_window->main_window, &w, &h);
    evas_object_move(main_window->main_window, 0, 0);
    evas_object_resize(main_window->main_window, w, h);
@@ -86,7 +79,21 @@ main_window_create(Args *args, Evas_List **startup_errors)
    /* Callbacks */
    ecore_evas_callback_resize_set(ee, main_window_resize_cb);
    ecore_evas_callback_destroy_set(ee, main_window_destroy_cb);
-
+   edje_object_signal_callback_add(main_window->main_window, "*", "*",
+                                   main_window_load_cb, startup_errors);
+   
    evas_object_show(main_window->main_window);
    ecore_evas_show(ee);
+   
+   display_startup_error_dialog(ee, *startup_errors);
+}
+
+void
+main_window_load_cb(void *data, Evas_Object *o, const char *emission, 
+                    const char *source)
+{
+     printf(" |%s, %s| ", emission, source);
+     if (!data) return;
+     //printf("Hola");
+     edje_object_signal_emit(o, "error_show", "");
 }
