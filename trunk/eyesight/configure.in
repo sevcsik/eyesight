@@ -77,6 +77,17 @@ else
   AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${libdir}", [Install Location for Libraries])
 fi
 
+dnl Set PACKAGE_PLUGIN_DIR in config.h.
+if test "x${plugindir}" = 'xNONE'; then
+  if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED(PACKAGE_PLUGIN_DIR, "${ac_default_prefix}/lib/eyesight/plugins", [Install Location for Plugins])
+  else
+    AC_DEFINE_UNQUOTED(PACKAGE_PLUGIN_DIR, "${prefix}/lib/eyesight/plugins", [Install Location for Plugins])
+  fi
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_PLUGIN_DIR, "${libdir}/eyesight/plugins", [Install Location for Plugins])
+fi
+
 dnl Set LOCALEDIR in config.h.
 #if test "x${localedir}" = 'xNONE'; then
   if test "x${prefix}" = "xNONE"; then
