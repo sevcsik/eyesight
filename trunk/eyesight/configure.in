@@ -114,6 +114,8 @@ AC_OUTPUT([
 Makefile
 src/Makefile
 src/bin/Makefile
+src/plugins/Makefile
+src/plugins/pdf/Makefile
 data/Makefile
 data/themes/Makefile
 data/themes/docker/Makefile

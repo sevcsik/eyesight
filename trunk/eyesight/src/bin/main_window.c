@@ -24,13 +24,17 @@ main_window_resize_cb(Ecore_Evas *ee)
 }
 
 void
-main_window_destroy_cb(Ecore_Evas *ee)
+main_window_delete_request_cb(Ecore_Evas *ee)
 {
    /* Free */
-   Main_Window *main_window = (Main_Window*)ecore_evas_data_get(ee, "main_window");
+   Main_Window *main_window = (Main_Window *)ecore_evas_data_get(ee, "main_window");
+   Args *args = (Args *)ecore_evas_data_get(ee, "args");
+   free(args->theme_path);
+   evas_list_free(args->files);
    evas_object_free(main_window->main_window);
-   ecore_evas_free(ee);
+   evas_free(main_window->evas);
    free(main_window);
+   ecore_evas_free(ee);
    ecore_main_loop_quit();
 }
 
@@ -39,7 +43,6 @@ main_window_create(Args *args, Evas_List **startup_errors)
 {
    Main_Window *main_window = malloc(sizeof(Main_Window));
    Ecore_Evas *ee;
-   char *errstr;
 
    ee = ecore_evas_software_x11_new(0, 0, 0, 0, 0, 0);
    main_window->evas = ecore_evas_get(ee);
@@ -78,7 +81,7 @@ main_window_create(Args *args, Evas_List **startup_errors)
 
    /* Callbacks */
    ecore_evas_callback_resize_set(ee, main_window_resize_cb);
-   ecore_evas_callback_destroy_set(ee, main_window_destroy_cb);
+   ecore_evas_callback_delete_request_set(ee, main_window_delete_request_cb);
    edje_object_signal_callback_add(main_window->main_window, "load", "*",
                                    main_window_load_cb, startup_errors);
    
