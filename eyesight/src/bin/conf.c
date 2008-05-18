@@ -12,7 +12,6 @@ parse_args(int argc, char **argv, Evas_List **startup_errors)
 {
    int c;
    Args *args = malloc(sizeof(Args));
-   char *errstr;
 
    // Shut up getopt
    opterr = 0;
@@ -36,7 +35,7 @@ parse_args(int argc, char **argv, Evas_List **startup_errors)
       }
    }
 
-   // Check addational arguments (filenames) TODO: do this in one loop
+   // TODO: conf.c: Optimize to use one loop during argument parsing
 
    for (c = 1; c < argc; c++)
    {

@@ -7,6 +7,7 @@
 #include <Edje.h>
 
 #include "conf.h"
+#include "plugin.h"
 #include "config.h"
 
 #define _(STRING) gettext(STRING)
@@ -14,9 +15,10 @@
 int
 main(int argc, char **argv)
 {
-   Args *args;
-   char *errstr;
+   Args *args = NULL;
+   char *errstr = NULL;
    Evas_List *startup_errors = NULL;
+   Ecore_List *plugins = NULL;
 
    // gettext stuff
    setlocale(LC_ALL, "");
@@ -38,6 +40,8 @@ main(int argc, char **argv)
 
    main_window_create(args, &startup_errors);
    
+   plugin_list_get();
+   
    int i;
    
    if (startup_errors)
@@ -50,6 +54,7 @@ main(int argc, char **argv)
          else fprintf(stderr, "  %s\n", errstr);
       }
    }
+   evas_list_free(startup_errors);
 
    ecore_main_loop_begin();
 
