@@ -1,1 +1,2 @@
-3rd May:		Added support for getopt with multiple filenames
+3rd  May:		Added support for getopt with multiple filenames
+18th May:		Starutp errors displayed in a graphichal dialog (animations, etc)
