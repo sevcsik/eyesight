@@ -1,0 +1,93 @@
+Cache:
+
+  Everything is ok
+
+Canvas:
+
+  evas_async_events.c:
+  #include "config.h" needs HAVE_CONFIG_H
+
+Data:
+
+  Everything is ok
+
+Engines:
+
+  I'm scary a bit to include these sources for now, I guess I should add them directly to libevas project as well as other lib\* ?
+
+File:
+
+  evas_module.c:
+  
++#ifdef HAVE_CONFIG_H
+#include <config.h>
++#endif
+
+#ifndef _GNU_SOURCE
+# define _GNU_SOURCE
+#endif
+
++#ifndef _MSC_VER
+#include <dirent.h>	/* DIR, dirent */
++#else
++#define _POSIX_
++#include <limits.h>
++#undef _POSIX_
++#endif
+#include <dlfcn.h>	/* dlopen,dlclose,etc */
+
++#ifdef HAVE_EVIL
++#include <stdio.h>
++#include <io.h>
++#include <Evil.h>
++#endif
+
+#include <evas_common.h>
+#include <evas_private.h>
+
++#undef open
++#undef close  
+
+  Firstly config.h, it's evifent.
+  Then dirent.h, we need directory functionality, I have declared them (just copied from MinGW's) in Evil.h.
+  limits.h with _POSIX_ is necessary for PATH_MAX
+  undef _POSIX_ is necessary for io.h
+  undef of open and close is necessary because they are declared somewhere as _open, _close
+
+  Also there are warnings:
+Warning	209	warning C4047: 'function' : 'const char *' differs in levels of indirection from 'char *[512]'	f:\enlightenment\e17\e17\libs\evas\src\lib\file\evas_module.c	109
+Warning	210	warning C4024: 'strrchr' : different types for formal and actual parameter 1	f:\enlightenment\e17\e17\libs\evas\src\lib\file\evas_module.c	109
+Warning	211	warning C4047: 'function' : 'const char *' differs in levels of indirection from 'char *[512]'	f:\enlightenment\e17\e17\libs\evas\src\lib\file\evas_module.c	111
+Warning	212	warning C4024: 'strrchr' : different types for formal and actual parameter 1	f:\enlightenment\e17\e17\libs\evas\src\lib\file\evas_module.c	111
+
+  And this is really strange, and actually I dont like that C doesnt produce an error here. 
+  strrchr(evas_dl.dli_fname, '/')
+
+  struct Dl_info
+  {
+     char       *dli_fname[PATH_MAX];  <---- An array of pointers to strings?
+     ...
+
+
+  evas_path.c:
+
++#ifndef _MSC_VER
+#include <fnmatch.h>
+#include <dirent.h>
++#endif
+
++#ifdef HAVE_EVIL
++# include <Evil.h>
++#endif
+
+  Here fnmatch and dirent are replaced by evil.
+
+
+
+  include\evas_mmx.h:68
+
++#ifdef _MSC_VER
++#include <ansidecl.h>
++#endif
+
+  Necessary for __attribute__
