@@ -15,6 +15,7 @@ images
 	image: "img/border_trans.png" COMP;
 	image: "img/error.png" COMP;
 	image: "img/dialog_bg.png" COMP;
+	image: "img/border_opaque.png" COMP;
 }
 
 spectra
@@ -48,4 +49,5 @@ collections
 {
 	#include "main_window/main_window.edc"
 	#include "border_trans.edc"
+	#include "border_opaque.edc"
 }
