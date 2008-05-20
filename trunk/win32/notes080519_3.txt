@@ -4,8 +4,7 @@ Cache:
 
 Canvas:
 
-  evas_async_events.c:
-  #include "config.h" needs HAVE_CONFIG_H
+  Should be ok (to be checked)
 
 Data:
 
@@ -18,10 +17,6 @@ Engines:
 File:
 
   evas_module.c:
-  
-+#ifdef HAVE_CONFIG_H
-#include <config.h>
-+#endif
 
 #ifndef _GNU_SOURCE
 # define _GNU_SOURCE
@@ -41,6 +36,9 @@ File:
 +#include <io.h>
 +#include <Evil.h>
 +#endif
+
+Evil should no be included. We need to fix that dirent stuff correctly
+to go ahead.
 
 #include <evas_common.h>
 #include <evas_private.h>
@@ -62,11 +60,6 @@ Warning	212	warning C4024: 'strrchr' : different types for formal and actual par
 
   And this is really strange, and actually I dont like that C doesnt produce an error here. 
   strrchr(evas_dl.dli_fname, '/')
-
-  struct Dl_info
-  {
-     char       *dli_fname[PATH_MAX];  <---- An array of pointers to strings?
-     ...
 
 
   evas_path.c:
@@ -91,3 +84,8 @@ Warning	212	warning C4024: 'strrchr' : different types for formal and actual par
 +#endif
 
   Necessary for __attribute__
+
+That file is intended to be used with gcc (see the comments at the
+top). I don't know what's the best thing to do. Maybe adding a
+preprocessor var to define __attribute__. Btw, __attribute__ is a gcc
+declaration, not sure that vc++ supports it.
