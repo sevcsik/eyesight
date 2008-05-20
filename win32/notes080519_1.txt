@@ -92,7 +92,11 @@ where, though.
 > "# define LK(x)    /##/"
 > I've already noted this, but again
 
-yes. I need to talk to raster about that/
+yes. I need to talk to raster about that
+
+Update : even after talking, we have not found any satisfying
+solution. One would be to guard the member around a #ifdef but raster
+is not fond of that. I think it's the best thing to do, though.
 
 > line 51 "#include <unistd.h>" move to 55 after "#include <sys/types.h>".
 
@@ -130,15 +134,6 @@ that's for src/modules/engines. See below.
 
 hmm, engines in src/lib ?? if so, no vcproj. The .c files must be in the
 vcproj of libevas.
-
-> File:
-> Evas_module.c:1
-> Should be
-> "#ifdef HAVE_CONFIG_H
-> #include <config.h>
-> #endif"
-
-ok
 
 > Evas_path.c:18
 > "#ifndef _MSC_VER
