@@ -18,7 +18,6 @@ main(int argc, char **argv)
    Args *args = NULL;
    char *errstr = NULL;
    Evas_List *startup_errors = NULL;
-   Ecore_List *plugins = NULL;
 
    // gettext stuff
    setlocale(LC_ALL, "");
@@ -38,9 +37,9 @@ main(int argc, char **argv)
 
    args = parse_args(argc, argv, &startup_errors);
 
+   plugin_init(&startup_errors);
+
    main_window_create(args, &startup_errors);
-   
-   plugin_list_get();
    
    int i;
    
