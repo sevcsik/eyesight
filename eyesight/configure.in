@@ -14,6 +14,9 @@ AM_PROG_CC_STDC
 AC_HEADER_STDC
 AC_C_CONST
 AM_ENABLE_SHARED
+AC_PROG_LIBTOOL
+define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
+define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
 AM_PROG_LIBTOOL
 
 AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl)
@@ -33,3 +36,19 @@ data/Makefile
 data/themes/Makefile
 data/themes/docker/Makefile
 ])
+
+echo
+echo
+echo
+echo "------------------------------------------------------------------------"
+echo "$PACKAGE $VERSION"
+echo "------------------------------------------------------------------------"
+echo
+echo "Configuration Options Summary:"
+echo
+echo "  Compilation..........: make"
+echo
+echo "  Installation.........: make install"
+echo
+echo "    prefix.............: $prefix"
+echo
