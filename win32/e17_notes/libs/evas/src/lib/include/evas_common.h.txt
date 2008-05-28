@@ -1,0 +1,37 @@
+line 17
+
++ #ifdef _MSC_VER
++ #define delete _delete
++ #endif
+
+Structure member "delete"!
+
+line 39
+
+- # define LK(x)
++ # define LK(x)    int x
+
+Solution for now. 
+
+line 51
+
+- #include <unistd.h>
+
+line 55
+
++ #include <unistd.h>
+
+After <sys/types.h> should be.
+
+line 77
+
++ #define _USE_MATH_DEFINES
+
+Use defines from math.h, but probably we can declare it in project settings?
+
+line 1137
+
+- RGBA_Gradient_Type *evas_common_gradient_geometer_get    (const char *name);
++ EAPI RGBA_Gradient_Type *evas_common_gradient_geometer_get    (const char *name);
+
+Link error

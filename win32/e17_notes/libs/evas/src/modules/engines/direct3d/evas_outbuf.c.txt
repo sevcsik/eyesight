@@ -1,0 +1,21 @@
+line 123
+
+-         im->image->w = width;
+-         im->image->h = height;
+-         im->image->data = NULL;
+-         im->image->no_free = 1;
+
++         im->cache_entry.w = width;
++         im->cache_entry.h = height;
++         im->image.data = NULL;
++         im->image.no_free = 1;
+
+line 132
+
+-         im->image->data = (DATA32 *)evas_direct3d_output_buffer_data(d3dob, &bpl);
++         im->image.data = (DATA32 *)evas_direct3d_output_buffer_data(d3dob, &bpl);
+
+line 256
+
+-    src_data = update->image->data;
++    src_data = update->image.data;

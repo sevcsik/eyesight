@@ -1,0 +1,15 @@
+line 6
+
+- #include <unistd.h>
+
+line 7
+
++ #include <unistd.h>
+
+line 10
+
++ #include <ansidecl.h>
+
+<unistd.h> should always follow <sys/types.h>, because off_t is defined 
+in the second header, and is used in the first. Also <ansidecl.h> for
+__attribute__ macro.

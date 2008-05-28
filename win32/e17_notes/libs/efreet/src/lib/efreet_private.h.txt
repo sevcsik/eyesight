@@ -1,0 +1,16 @@
+line 13
+
++ #ifdef HAVE_CONFIG_H
+
+line 14
+
++ #endif
+
+line 32
+
+- #include <Ecore.h>
+- #include <Ecore_File.h>
+- #include <Ecore_Str.h>
+
+To solve problems with EAPI redefinition
+

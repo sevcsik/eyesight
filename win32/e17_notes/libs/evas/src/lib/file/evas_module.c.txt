@@ -1,0 +1,9 @@
+line 7
+
++ #ifdef _MSC_VER
++ #define _POSIX_
++ #include <limits.h>
++ #undef _POSIX_
++ #endif
+
+PATH_MAX for dlfcn.h... but maybe we should declare PATH_MAX there somehow?

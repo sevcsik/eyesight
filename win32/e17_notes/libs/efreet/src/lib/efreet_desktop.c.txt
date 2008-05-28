@@ -1,0 +1,25 @@
+line 1
+
++ #include <Ecore.h>
++ #include <Ecore_File.h>
++ #include <Ecore_Str.h>
+
+To solve problem with EAPI redefinition
+
+line 4
+
++ #ifdef _MSC_VER
++ #include <winsock2.h>
++ #endif
+
+timeval predefinition
+
+line 526
+
++ #ifndef _WIN32
+
+line 527
+
++ #endif
+
+Not supported ecore_exe_run 
