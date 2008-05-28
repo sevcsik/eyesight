@@ -20,6 +20,18 @@ append_startup_error(Evas_List **startup_errors, char *error_string,
 }
 
 void
+append_startup_error2(Evas_List **startup_errors, char *error_string,
+                     char *argument1, char *argument2)
+{
+   char *errstr;
+   errstr = malloc(strlen(error_string) + strlen(argument1) + strlen(argument2)
+                   - 2);
+   snprintf(errstr, (strlen(error_string) + strlen(argument1) + 
+            strlen(argument2) - 2), error_string, argument1, argument2);
+   *startup_errors = evas_list_append(*startup_errors, errstr);         
+}
+
+void
 display_startup_error_dialog(Ecore_Evas *ee, Evas_List *startup_errors)
 {
    char *str;
