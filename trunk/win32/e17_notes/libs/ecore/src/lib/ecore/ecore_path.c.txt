@@ -1,0 +1,15 @@
+line 4
+
++ #ifdef HAVE_CONFIG_H
+
+line 5
+
++ #endif
+
+line 10
+
++ #ifdef HAVE_EVIL
++ #include <Evil.h>
++ #endif
+
+For _S_ISREG, _S_ISDIR.

@@ -1,0 +1,5 @@
+line 260
+
+-    src_data = update->image->data;
++    src_data = update->image.data;
+

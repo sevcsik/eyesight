@@ -1,0 +1,7 @@
+line 20
+
++ #ifdef HAVE_EVIL
++ # include <Evil.h>
++ #endif
+
+For _S_ISREG, _S_ISDIR.

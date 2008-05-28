@@ -1,0 +1,17 @@
+line 88
+
++ #ifndef _MSC_VER
+
+line 93
+
++ #else
++ 
++ /** Float to Embryo_Cell */
++ #define EMBRYO_FLOAT_TO_CELL(f) (*(Embryo_Cell *)&(f))
++ /** Embryo_Cell to float */
++ #define EMBRYO_CELL_TO_FLOAT(c) (*(float *)&(c))
++ 
++ #endif
+
+Current approach of converting bits doesnt compile in MSVC, probably
+we can use this in general.

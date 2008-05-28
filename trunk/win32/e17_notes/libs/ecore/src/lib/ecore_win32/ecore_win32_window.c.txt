@@ -1,0 +1,9 @@
+line 83
+
++ #ifdef HAVE_DIRECTDRAW
+
+line 84
+
++ #endif
+
+Guards forgotten

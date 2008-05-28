@@ -1,0 +1,23 @@
+line 9
+
+- #ifdef HAVE_DLFCN_H
+- # include <dlfcn.h>
+- #endif
+
+line 16
+
+- #ifdef HAVE_EVIL_H
+- # include <evil.h>
+- #endif
+
+line 22
+
++ #ifdef HAVE_DLFCN_H
++ # include <dlfcn.h>
++ #endif
++ 
++ #ifdef HAVE_EVIL
++ # include <evil.h>
++ #endif
+
+Conflicts.

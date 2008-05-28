@@ -1,0 +1,11 @@
+line 8
+
++ #include "Ecore.h"
++ #include "ecore_private.h"
+
+line 13
+
+- #include "Ecore.h"
+- #include "ecore_private.h"
+
+Conflicts.

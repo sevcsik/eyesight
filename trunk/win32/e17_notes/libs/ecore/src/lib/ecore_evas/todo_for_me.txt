@@ -1,0 +1,4 @@
+ecore_evas_win32.c
+ecore_evas_private.h
+
+pathes;)

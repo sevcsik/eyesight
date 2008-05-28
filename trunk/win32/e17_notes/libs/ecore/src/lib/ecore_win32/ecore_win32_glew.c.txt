@@ -1,0 +1,6 @@
+line 128
+
+- #ifdef HAVE_DIRECT3D
++ #ifdef HAVE_OPENGL_GLEW
+
+Bug.

@@ -1,0 +1,19 @@
+line 4
+
++ #ifdef HAVE_CONFIG_H
+
+line 5
+
++ #endif
+
+
+line 28
+
++ // Temporary
++ inline int finite(double val)
++ {
++    return 1;
++ }
+
+Well, this is a plug. Ecore_main thinks that the function should be
+declared in math.h. Probably it can be implemented and moved to evil.h.

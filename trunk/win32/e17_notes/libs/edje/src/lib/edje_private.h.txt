@@ -1,0 +1,23 @@
+line 44
+
+- #ifdef _MSC_VER
+- # ifdef BUILDING_DLL
+- #  define EAPI __declspec(dllexport)
+- # else
+- #  define EAPI __declspec(dllimport)
+- # endif
+- #else
+
++ #ifdef _WIN32
++ # ifdef EFL_EDJE_BUILD
++ #  ifdef DLL_EXPORT
++ #   define EAPI __declspec(dllexport)
++ #  else
++ #   define EAPI
++ #  endif /* ! DLL_EXPORT */
++ # else
++ #  define EAPI __declspec(dllimport)
++ # endif /* ! EFL_EDJE_BUILD */
++ #else
+
+Normalized

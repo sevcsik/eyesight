@@ -1,0 +1,41 @@
+line 20
+
++ #ifdef HAVE_EVIL
++ #include <Evil.h>
++ #endif
+
+line 54
+
++ /* Get epr(Edje_Program*) from obj(Evas_Object*) and prog(char*)*/
++ #define GET_EPR_OR_RETURN_GET(RET, GET) \
++    { \
++    Edje_Program *_epr; \
++    _epr = _edje_program_get_byname(obj, prog); \
++    GET = _epr; \
++    if (!_epr) return RET; \
++    }
+
+Auxiliary version of corresponding macro
+
+line 247 moveto 229
+
+   /* Write the loaded image to the edje file */
+   void *im_data;
+   int  im_w, im_h;
+   int  im_alpha;
+   int bytes;
+   char buf[256];
+
+line 355 moveto 348
+
+	Edje_Part_Description *d;
+
+line 447 moveto 438
+
+	Evas_List *ll;
+	Edje_Part_Description *d;
+
+And so on... (about 30 items)
+
+Many changes dedicated to correcting one mistake:
+Programming language C requires variable definitions in the beginning of a block.

@@ -1,0 +1,11 @@
+line 8
+
++ #ifdef HAVE_CURL
+
+line 9
+
++ #else
++ typedef int Ecore_Con_Url;
++ #endif
+
+If we dont have CURL, then the structure is undefined.
