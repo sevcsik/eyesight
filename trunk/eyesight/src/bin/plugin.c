@@ -9,21 +9,21 @@
 #include "error.h"
 #include "config.h"
 
-#define PLUGIN_ERROR 0
-#define PLUGIN_OK 1
+#define PLUGIN_ERROR    0
+#define PLUGIN_OK       1
 
-#define PLUGIN_FILE 0
-#define PLUGIN_NAME 1
-#define PLUGIN_VERSION 2
-#define PLUGIN_EMAIL 3
+#define PLUGIN_FILE     0
+#define PLUGIN_NAME     1
+#define PLUGIN_VERSION  2
+#define PLUGIN_EMAIL    3
 
 typedef void (*Plugin_Identify_Func) (char **name, char **version, char **email);
+typedef int (*Plugin_Init_Func) (Plugin *plugin_data);
 
-void
+Plist_Data *
 plugin_init(Evas_List **startup_errors)
 {
    /* Find plugins */
-   
    char *tmp;
    
    Ecore_Path_Group *pg = ecore_path_group_new();
@@ -33,8 +33,9 @@ plugin_init(Evas_List **startup_errors)
    ecore_path_group_add(pg, PACKAGE_PLUGIN_DIR);
    
    // TODO: plugin.c: getenv("HOME"): Windows compatibility?
-   tmp = calloc(sizeof(char), strlen(getenv("HOME")) + strlen("/.eyesight/plugins" + 1));
-   sprintf(tmp, "%s/.eyesight/plugins", getenv("HOME"));
+   tmp = calloc(sizeof(char), strlen(getenv("HOME")) + strlen("/.eyesight/plugins") + 1);
+   snprintf(tmp, strlen(getenv("HOME")) + strlen("/.eyesight/plugins") +1, 
+            "%s/.eyesight/plugins", getenv("HOME"));
    ecore_path_group_add(pg, tmp);
    
    plugins = ecore_plugin_available_get(pg);
@@ -43,48 +44,66 @@ plugin_init(Evas_List **startup_errors)
    
    /* Identify plugins */
    
-   typedef struct _Plist_Data
-   {
-        Evas_List *plugin_list;
-        Ecore_Path_Group *pg;
-   } Plist_Data;
-   
    Plist_Data *plist_data;
    plist_data = malloc(sizeof(Plist_Data));
    plist_data->pg = pg;
+   plist_data->plugin_list = ecore_list_new();
    
-   void plugin_for_each(void *val, void *data)
+   void plugin_id_for_each(void *val, void *_data)
    {
       printf("Identifying plugin: %s\n", val);
-      char *name = NULL;
-      char *version = NULL;
-      char *email = NULL;
-      char state = PLUGIN_ERROR;
-      Plugin_Identify_Func identify;
-      Ecore_Plugin *plugin;
-      Plist_Data *plist_data = (Plist_Data *)data;
-      char *pdata[5];
       
-      plugin = ecore_plugin_load(plist_data->pg, val, NULL);
-      identify = ecore_plugin_symbol_get(plugin, "identify");
+      Plist_Data *data = _data;
+      Plugin *plugin = malloc(sizeof(Plugin));
+      plugin->name = NULL;
+      plugin->version = NULL;
+      plugin->email = NULL;
+      plugin->file = NULL;
+      plugin->state = 0;
+      Plugin_Identify_Func identify;
+      
+      plugin->plugin = ecore_plugin_load(data->pg, val, NULL);
+      identify = ecore_plugin_symbol_get(plugin->plugin, "identify");
       if (identify)
       {
-         if (name && version && email)
+         identify(&plugin->name, &plugin->version, &plugin->email);
+         if (plugin->name && plugin->version && plugin->email)
          {
-            identify(&name, &version, &email);
-            pdata[PLUGIN_FILE] = val;
-            pdata[PLUGIN_NAME] = name;
-            pdata[PLUGIN_VERSION] = version;
-            pdata[PLUGIN_EMAIL] = email;
-            plist_data->plugin_list = evas_list_append(plist_data->plugin_list,
-                                                       pdata);
-         }
+            plugin->state = PLUGIN_OK;
+            plugin->name = val;
+            ecore_list_append(data->plugin_list, plugin);
+         }            
          else
-         {
-            append_startup_error(startup_errors, ERROR_PLUGIN_NO_ID, val);     
-         }
-      }      
+            append_startup_error(startup_errors, ERROR_PLUGIN_NO_ID, val);
+      }
    }
    
-   ecore_list_for_each(plugins, plugin_for_each, plist_data);  
+   ecore_list_for_each(plugins, plugin_id_for_each, plist_data);
+   ecore_list_destroy(plugins);
+   
+   /* Init plugins */
+   
+   void plugin_init_for_each(void *_val, void *data)
+   {      
+      Plugin *val = _val;
+      printf("Initializing plugin: %s\n", val->name);
+      Plugin_Init_Func init = NULL;
+      init = ecore_plugin_symbol_get(val->plugin, "init");
+      switch (init(val->plugin_data))
+      {
+      case PLUGIN_INIT_API_MISMATCH:
+         append_startup_error2(startup_errors, ERROR_PLUGIN_INIT_API_MISMATCH,
+                              val->name, val->email);
+         break;
+      case PLUGIN_INIT_FAIL:
+         append_startup_error(startup_errors, ERROR_PLUGIN_INIT_FAIL,
+                              val->name);
+      }
+   }
+   
+   ecore_list_for_each(plist_data->plugin_list, plugin_init_for_each, NULL);
+   
+   return plist_data; // for later use
+   
+   // TODO: plugin.c: CHECK FOR MEMLEAKS!
 }

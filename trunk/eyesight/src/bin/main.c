@@ -18,13 +18,14 @@ main(int argc, char **argv)
    Args *args = NULL;
    char *errstr = NULL;
    Evas_List *startup_errors = NULL;
+   Plist_Data *plist_data; // Will contain plugin list and plugin path group
 
-   // gettext stuff
+   // Gettext stuff
    setlocale(LC_ALL, "");
    bindtextdomain(PACKAGE, LOCALEDIR);
    textdomain(PACKAGE);
-
-   // initialization
+	
+   // Initialization
 
    if (!ecore_init())
       goto _shutdown;
@@ -37,7 +38,7 @@ main(int argc, char **argv)
 
    args = parse_args(argc, argv, &startup_errors);
 
-   plugin_init(&startup_errors);
+   plist_data = plugin_init(&startup_errors);
 
    main_window_create(args, &startup_errors);
    
@@ -53,6 +54,7 @@ main(int argc, char **argv)
          else fprintf(stderr, "  %s\n", errstr);
       }
    }
+   
    evas_list_free(startup_errors);
 
    ecore_main_loop_begin();
