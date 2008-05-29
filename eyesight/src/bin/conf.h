@@ -1,12 +1,14 @@
 #ifndef CONF_H_
 #define CONF_H_
 
+#include <Ecore_Data.h>
+
 #define OPTS "t:"
 
 typedef struct _Args
 {
    char *theme_path;
-   Evas_List *files;
+   Ecore_List *files;
 }
 Args;
 

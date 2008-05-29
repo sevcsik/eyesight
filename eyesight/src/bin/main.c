@@ -36,11 +36,16 @@ main(int argc, char **argv)
    if (!edje_init())
       goto _ecore_evas_shutdown;
 
+   // Parse arguments and put in args structure
    args = parse_args(argc, argv, &startup_errors);
 
+   // Identify and init plugins
    plist_data = plugin_init(&startup_errors);
 
+   // Set up GUI
    main_window_create(args, &startup_errors);
+   
+   //if (args->files)
    
    int i;
    
