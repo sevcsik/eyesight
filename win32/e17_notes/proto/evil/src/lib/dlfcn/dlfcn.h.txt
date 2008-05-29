@@ -1,0 +1,9 @@
+line 8
+
++ #ifdef _MSC_VER
++ #define _POSIX_
++ #include <limits.h>
++ #undef _POSIX_
++ #endif
+
+PATH_MAX declaration

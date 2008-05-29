@@ -1,5 +1,15 @@
 -- add new records to the top --
 
+'08.05.30 Dzmitry Mazouka
+
+  added:
+
+  \proto\evil\src\lib\dlfcn\dlfcn.h.txt
+
+  updated:
+
+  \libs\evas\src\lib\file\evas_module.c.txt
+                     include\evas_common.h.txt
 
 
 '08.05.29 Dzmitry Mazouka

@@ -6,18 +6,15 @@ line 17
 
 Structure member "delete"!
 
-line 39
+line 546
 
-- # define LK(x)
-+ # define LK(x)    int x
++ #ifdef BUILD_PTHREAD
 
-Solution for now.
+line 547
 
-line 77
++ #endif
 
-+ #define _USE_MATH_DEFINES
-
-Use defines from math.h, but probably we can declare it in project settings?
+Seems better solution than redefining LK
 
 line 1137
 
