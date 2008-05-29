@@ -30,7 +30,7 @@ main_window_delete_request_cb(Ecore_Evas *ee)
    Main_Window *main_window = (Main_Window *)ecore_evas_data_get(ee, "main_window");
    Args *args = (Args *)ecore_evas_data_get(ee, "args");
    free(args->theme_path);
-   evas_list_free(args->files);
+   if (args->files) ecore_list_destroy(args->files);
    evas_object_free(main_window->main_window);
    evas_free(main_window->evas);
    free(main_window);

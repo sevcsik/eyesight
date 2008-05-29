@@ -18,6 +18,7 @@ parse_args(int argc, char **argv, Evas_List **startup_errors)
 
    // Resetting args
    args->theme_path = NULL;
+   args->files = NULL;
 
    // Check getopt switches
    while (c = getopt(argc, argv, OPTS))
@@ -36,12 +37,12 @@ parse_args(int argc, char **argv, Evas_List **startup_errors)
    }
 
    // TODO: conf.c: Optimize to use one loop during argument parsing
-
    for (c = 1; c < argc; c++)
    {
       if (argv[c][0] != '-') // Skip options
       {
-         args->files = evas_list_append(args->files, argv[c]);
+         if (c == 1) args->files = ecore_list_new();
+         ecore_list_append(args->files, argv[c]);
       }
    }
 

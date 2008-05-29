@@ -17,8 +17,7 @@
 #define PLUGIN_VERSION  2
 #define PLUGIN_EMAIL    3
 
-typedef void (*Plugin_Identify_Func) (char **name, char **version, char **email);
-typedef int (*Plugin_Init_Func) (Plugin *plugin_data);
+
 
 Plist_Data *
 plugin_init(Evas_List **startup_errors)
@@ -70,15 +69,27 @@ plugin_init(Evas_List **startup_errors)
          if (plugin->name && plugin->version && plugin->email)
          {
             plugin->state = PLUGIN_OK;
-            plugin->name = val;
+            plugin->file = val;
             ecore_list_append(data->plugin_list, plugin);
          }            
          else
+         {
             append_startup_error(startup_errors, ERROR_PLUGIN_NO_ID, val);
+            free(val);
+            free(plugin);
+         }
+      }
+      else
+      {
+         append_startup_error2(startup_errors, ERROR_PLUGIN_NO_SYMBOL,
+                               "identify", val);
+         free(val);
+         free(plugin);
       }
    }
    
    ecore_list_for_each(plugins, plugin_id_for_each, plist_data);
+   ecore_list_free_cb_set(plugins, NULL);
    ecore_list_destroy(plugins);
    
    /* Init plugins */
@@ -86,24 +97,29 @@ plugin_init(Evas_List **startup_errors)
    void plugin_init_for_each(void *_val, void *data)
    {      
       Plugin *val = _val;
-      printf("Initializing plugin: %s\n", val->name);
+      printf("Initializing plugin: %s %s\n", val->file, val->email);
       Plugin_Init_Func init = NULL;
       init = ecore_plugin_symbol_get(val->plugin, "init");
-      switch (init(val->plugin_data))
+      if (init)
       {
-      case PLUGIN_INIT_API_MISMATCH:
-         append_startup_error2(startup_errors, ERROR_PLUGIN_INIT_API_MISMATCH,
-                              val->name, val->email);
-         break;
-      case PLUGIN_INIT_FAIL:
-         append_startup_error(startup_errors, ERROR_PLUGIN_INIT_FAIL,
-                              val->name);
+         switch (init(val->plugin_data))
+         {
+         case PLUGIN_INIT_API_MISMATCH:
+            append_startup_error2(startup_errors, ERROR_PLUGIN_INIT_API_MISMATCH,
+                                  val->name, val->email);
+            break;
+         case PLUGIN_INIT_FAIL:
+            append_startup_error(startup_errors, ERROR_PLUGIN_INIT_FAIL,
+                                 val->name);
+            break;
+         }
       }
+      else
+         append_startup_error2(startup_errors, ERROR_PLUGIN_NO_SYMBOL,
+                               "init", val->name);
    }
    
    ecore_list_for_each(plist_data->plugin_list, plugin_init_for_each, NULL);
    
    return plist_data; // for later use
-   
-   // TODO: plugin.c: CHECK FOR MEMLEAKS!
 }
