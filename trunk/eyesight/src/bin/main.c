@@ -8,6 +8,7 @@
 
 #include "conf.h"
 #include "plugin.h"
+#include "plugin_private.h"
 #include "config.h"
 
 #define _(STRING) gettext(STRING)

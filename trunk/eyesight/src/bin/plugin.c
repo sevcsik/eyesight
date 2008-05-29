@@ -6,6 +6,7 @@
 #include <Evas.h>
 
 #include "plugin.h"
+#include "plugin_private.h"
 #include "error.h"
 #include "config.h"
 

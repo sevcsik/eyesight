@@ -54,20 +54,4 @@ typedef void (*Plugin_Identify_Func) (char **name, char **version, char **email)
  */
 typedef int (*Plugin_Init_Func) (Plugin *plugin_data);
 
-/*
- * = INTERNAL STUFF =
- */
-
-/* 
- * _Plist_Data struct:
- * used internally to store plugin list and path groups for later use
- */
-typedef struct _Plist_Data
-{
-   Ecore_List *plugin_list;
-   Ecore_Path_Group *pg;
-} Plist_Data;
-
-Plist_Data *plugin_init(Evas_List **startup_errors);
-
 #endif /*PLUGIN_H_*/
