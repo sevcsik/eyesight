@@ -11,17 +11,7 @@ line 39
 - # define LK(x)
 + # define LK(x)    int x
 
-Solution for now. 
-
-line 51
-
-- #include <unistd.h>
-
-line 55
-
-+ #include <unistd.h>
-
-After <sys/types.h> should be.
+Solution for now.
 
 line 77
 
