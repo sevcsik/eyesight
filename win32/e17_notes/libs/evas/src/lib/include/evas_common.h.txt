@@ -15,10 +15,3 @@ line 547
 + #endif
 
 Seems better solution than redefining LK
-
-line 1137
-
-- RGBA_Gradient_Type *evas_common_gradient_geometer_get    (const char *name);
-+ EAPI RGBA_Gradient_Type *evas_common_gradient_geometer_get    (const char *name);
-
-Link error
