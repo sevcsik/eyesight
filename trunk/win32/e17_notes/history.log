@@ -5,6 +5,7 @@
   updated:
 
   \libs\evas\src\lib\include\evas_common.h.txt
+  \libs\edje\src\lib\edje_edit.c.txt
 
 '08.05.30 Dzmitry Mazouka
 
