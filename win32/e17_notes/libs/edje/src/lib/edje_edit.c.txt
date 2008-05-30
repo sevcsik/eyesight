@@ -16,26 +16,3 @@ line 54
 +    }
 
 Auxiliary version of corresponding macro
-
-line 247 moveto 229
-
-   /* Write the loaded image to the edje file */
-   void *im_data;
-   int  im_w, im_h;
-   int  im_alpha;
-   int bytes;
-   char buf[256];
-
-line 355 moveto 348
-
-	Edje_Part_Description *d;
-
-line 447 moveto 438
-
-	Evas_List *ll;
-	Edje_Part_Description *d;
-
-And so on... (about 30 items)
-
-Many changes dedicated to correcting one mistake:
-Programming language C requires variable definitions in the beginning of a block.
