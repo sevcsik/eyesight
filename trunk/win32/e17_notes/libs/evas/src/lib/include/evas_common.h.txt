@@ -1,11 +1,3 @@
-line 17
-
-+ #ifdef _MSC_VER
-+ #define delete _delete
-+ #endif
-
-Structure member "delete"!
-
 line 546
 
 + #ifdef BUILD_PTHREAD

@@ -16,3 +16,5 @@ line 54
 +    }
 
 Auxiliary version of corresponding macro
+
+Also: A lot of fixes of variable declarations - C rule.
