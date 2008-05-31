@@ -11,6 +11,7 @@
   updated:
 
   \libs\evas\src\lib\include\evas_common.h.txt
+  \libs\embryo\src\lib\embryo_private.c.txt
   \libs\edje\src\lib\edje_edit.c.txt
 
 '08.05.30 Dzmitry Mazouka
