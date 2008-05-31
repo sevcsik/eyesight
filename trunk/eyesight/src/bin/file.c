@@ -18,9 +18,9 @@ file_open(Evas *evas, Evas_Object *main_window, Ecore_List *plugins, char *file)
       if (!plugin) break; // No more plugins! 
       
       // Try to open
-      open_file = ecore_plugin_symbol_get(plugin->plugin, "open");
+      open_file = ecore_plugin_symbol_get(plugin->plugin, "open_file");
       if (!open_file) break;
-      if (open_file(plugin->plugin_data, file, main_window, evas)) return 1;
+      if (open_file(&(plugin->plugin_data), file, main_window, evas)) return 1;
    }
    
    if (plugin && !open_file) printf("No \'open\' symbol found in plugin %s",

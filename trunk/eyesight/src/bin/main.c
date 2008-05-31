@@ -9,7 +9,9 @@
 #include "conf.h"
 #include "plugin.h"
 #include "plugin_private.h"
+#include "main_window.h"
 #include "config.h"
+#include "file.h"
 
 #define _(STRING) gettext(STRING)
 
@@ -20,6 +22,7 @@ main(int argc, char **argv)
    char *errstr = NULL;
    Evas_List *startup_errors = NULL;
    Plist_Data *plist_data; // Will contain plugin list and plugin path group
+   Main_Window *main_window;
 
    // Gettext stuff
    setlocale(LC_ALL, "");
@@ -44,9 +47,14 @@ main(int argc, char **argv)
    plist_data = plugin_init(&startup_errors);
 
    // Set up GUI
-   main_window_create(args, &startup_errors);
+   main_window = main_window_create(args, &startup_errors);
    
-   //if (args->files)
+   if (args->files)
+   {
+   // TODO: main.c: Cache next file in list
+      if (!file_open(main_window->evas, main_window->main_window, 
+                plist_data->plugin_list, ecore_list_index_goto(args->files, 0)));
+   }
    
    int i;
    

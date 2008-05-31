@@ -25,6 +25,7 @@ PKG_CHECK_MODULES(EYESIGHT,
 		  evas
 		  ecore
 		  edje)
+PKG_CHECK_MODULES(EPDF, epdf)
 
 AC_OUTPUT([
 Makefile

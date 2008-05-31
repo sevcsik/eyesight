@@ -13,7 +13,7 @@ AM_CPPFLAGS =\
 
 bin_PROGRAMS = eyesight
 
-eyesight_SOURCES = main.c conf.c main_window.c error.c plugin.c
+eyesight_SOURCES = main.c conf.c main_window.c error.c plugin.c file.c
 eyesight_LDADD = @EYESIGHT_LIBS@ -ldl
 
 

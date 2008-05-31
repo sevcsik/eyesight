@@ -11,7 +11,9 @@ plugin_LTLIBRARIES = pdf.la
 
 pdf_la_SOURCES = pdf.c
 
+pdf_la_CFLAGS = -Wall
 pdf_la_LDFLAGS = -module -avoid-version
 pdf_la_LIBTOOLFLAGS = --tag=disable-static
+pdf_la_LIBADD = @EYESIGHT_LIBS@ @EPDF_LIBS@
 
 
