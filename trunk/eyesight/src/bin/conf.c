@@ -12,13 +12,11 @@ parse_args(int argc, char **argv, Evas_List **startup_errors)
 {
    int c;
    Args *args = malloc(sizeof(Args));
-
-   // Shut up getopt
-   opterr = 0;
-
-   // Resetting args
    args->theme_path = NULL;
    args->files = NULL;
+   
+   // Shut up getopt
+   opterr = 0;
 
    // Check getopt switches
    while (c = getopt(argc, argv, OPTS))
