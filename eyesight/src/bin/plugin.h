@@ -43,15 +43,25 @@ typedef struct _Plugin
 
 /*
  * Plugin identify() function:
- * this function should set the supplied pointers to the according strings. If
+ * This function should set the supplied pointers to the according strings. If
  * any of these strings are NULL (which is default) plugin won't be loaded.
  */
 typedef void (*Plugin_Identify_Func) (char **name, char **version, char **email);
 
 /*
  * Plugin init() function:
- * this function should check the api version and init the libs used
+ * This function should check the api version and init the libs used
+ * Return 0 on fail.
  */
-typedef int (*Plugin_Init_Func) (Plugin *plugin_data);
+typedef int (*Plugin_Init_Func) (void *plugin_data);
+
+/*
+ * Plugin open_file() function:
+ * Open a file, load it and get it ready to show. If the file cannot be opened,
+ * 0 must be returned as soon as possible, because every plugin is tested for
+ * every file.
+ */
+typedef int(*Plugin_Open_File_Func) (void *plugin_data, char *filename,
+                                     Evas_Object *main_window, Evas *evas);
 
 #endif /*PLUGIN_H_*/
