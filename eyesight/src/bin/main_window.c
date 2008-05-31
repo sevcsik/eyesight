@@ -38,7 +38,7 @@ main_window_delete_request_cb(Ecore_Evas *ee)
    ecore_main_loop_quit();
 }
 
-void
+Main_Window *
 main_window_create(Args *args, Evas_List **startup_errors)
 {
    Main_Window *main_window = malloc(sizeof(Main_Window));
@@ -89,6 +89,7 @@ main_window_create(Args *args, Evas_List **startup_errors)
    ecore_evas_show(ee);
    
    display_startup_error_dialog(ee, *startup_errors);
+   return main_window;
 }
 
 void

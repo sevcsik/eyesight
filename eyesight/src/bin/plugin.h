@@ -53,7 +53,7 @@ typedef void (*Plugin_Identify_Func) (char **name, char **version, char **email)
  * This function should check the api version and init the libs used
  * Return 0 on fail.
  */
-typedef int (*Plugin_Init_Func) (void *plugin_data);
+typedef char (*Plugin_Init_Func) (void **plugin_data);
 
 /*
  * Plugin open_file() function:
@@ -61,7 +61,7 @@ typedef int (*Plugin_Init_Func) (void *plugin_data);
  * 0 must be returned as soon as possible, because every plugin is tested for
  * every file.
  */
-typedef int(*Plugin_Open_File_Func) (void *plugin_data, char *filename,
-                                     Evas_Object *main_window, Evas *evas);
+typedef char (*Plugin_Open_File_Func) (void **plugin_data, char *filename,
+                                       Evas_Object *main_window, Evas *evas);
 
 #endif /*PLUGIN_H_*/

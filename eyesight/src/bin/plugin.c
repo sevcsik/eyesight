@@ -67,7 +67,7 @@ plugin_init_for_each(void *_val, void *_data)
    init = ecore_plugin_symbol_get(val->plugin, "init");
    if (init)
    {
-      switch (init(val->plugin_data))
+      switch (init(&(val->plugin_data)))
       {
       case PLUGIN_INIT_API_MISMATCH:
          append_startup_error2(data->startup_errors, ERROR_PLUGIN_INIT_API_MISMATCH,
@@ -87,12 +87,12 @@ plugin_init_for_each(void *_val, void *_data)
 Plist_Data *
 plugin_init(Evas_List **startup_errors)
 {
-   /* Find plugins */
    char *tmp;
    Ecore_Path_Group *pg;
    Ecore_List *plugins;
    Plist_Data *plist_data;
-   
+ 
+   /* Find plugins */  
    pg = ecore_path_group_new();
    
    // TODO: plugin.c: get path group from config file  
