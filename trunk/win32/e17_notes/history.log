@@ -2,6 +2,12 @@
 
 '08.05.30 Vincent Torri
 
+  deleted:
+
+  \libs\edje\src\lib\edje.h.txt
+  \libs\edje\src\lib\edje_edit.h.txt
+  \libs\edje\src\lib\edje_private.h.txt
+
   updated:
 
   \libs\evas\src\lib\include\evas_common.h.txt
