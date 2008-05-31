@@ -1,5 +1,17 @@
 -- add new records to the top --
 
+'08.05.31 Dzmitry Mazouka
+
+  deleted:
+
+  \libs\evas\src\lib\file\evas_module.c.txt
+
+  updated:
+
+  \libs\edje\src\lib\edje_edit.c.txt
+  \libs\evas\src\lib\include\evas_common.h.txt
+
+
 '08.05.30 Vincent Torri
 
   deleted:
