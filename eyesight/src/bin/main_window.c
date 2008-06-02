@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include <Ecore_Evas.h>
+#include <Ecore.h>
 #include <Evas.h>
 #include <Edje.h>
 
@@ -13,6 +14,7 @@
 #include "conf.h"
 #include "error.h"
 #include "main_window.h"
+#include "plugin.h"
 
 void
 main_window_resize_cb(Ecore_Evas *ee)
@@ -85,6 +87,7 @@ main_window_create(Args *args, Evas_List **startup_errors)
    edje_object_signal_callback_add(main_window->main_window, "load", "*",
                                    main_window_load_cb, startup_errors);
    
+   ecore_animator_frametime_set(FRAMETIME);
    evas_object_show(main_window->main_window);
    ecore_evas_show(ee);
    
