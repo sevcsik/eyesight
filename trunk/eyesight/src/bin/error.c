@@ -43,7 +43,6 @@ display_startup_error_dialog(Ecore_Evas *ee, Evas_List *startup_errors)
    
    if (!startup_errors) return;
    
-   
    // Calculating string size
    len = strlen(ERROR_STARTUP_BEGIN) + strlen("<br>");
    do

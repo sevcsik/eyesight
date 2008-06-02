@@ -1,5 +1,5 @@
    // TODO: conf.c: Optimize to use one loop during argument parsing
    // TODO: error.c: Resize dialog to fit text
-   // TODO: plugin.c: plugin path group will be needed when loading plugins!
+   // TODO: main.c: Cache next file in list
    // TODO: plugin.c: get path group from config file  
    // TODO: plugin.c: getenv("HOME"): Windows compatibility?

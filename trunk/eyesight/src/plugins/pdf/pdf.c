@@ -1,5 +1,7 @@
 #include "plugin.h"
+#include "animations.h"
 #include <esmart_pdf.h>
+#include <Ecore.h>
 #include <Ecore_Data.h>
 #include <Edje.h>
 #include <stdlib.h>
@@ -12,10 +14,16 @@ typedef struct _Pdf_Plugin_Data
    Ecore_Hash *files;
 } Pdf_Plugin_Data;
 
+typedef struct _Pdf_File_Data
+{
+   Evas_Object *border;
+   Evas_Object *page;
+} Pdf_File_Data;
+
 void 
 identify(char **name, char **version, char **email)
 {
-   // TODO: pdf.c: i18n
+   // TODO: pdf/pdf.c: i18n
    *name = "PDF viewer (using epdf)";
    *version = "0.1";
    *email = "sevcsik@gmail.com";
@@ -39,6 +47,7 @@ open_file(void **_plugin_data, char *filename, Evas_Object *main_window,
           Evas *evas)
 {
    Pdf_Plugin_Data *plugin_data = *_plugin_data;
+   Pdf_File_Data *file_data = NULL;
    Evas_Object *page;
    Evas_Object *border;
    char *themefile;
@@ -54,8 +63,6 @@ open_file(void **_plugin_data, char *filename, Evas_Object *main_window,
    // Check that it's a valid file
    if (!esmart_pdf_pdf_document_get(page)) return 0;
    
-   ecore_hash_set(plugin_data->files, filename, page);
-   
    // Set up border
    edje_object_file_get(main_window, (const char **)&themefile, NULL);
    border = edje_object_add(evas);
@@ -67,8 +74,8 @@ open_file(void **_plugin_data, char *filename, Evas_Object *main_window,
    esmart_pdf_size_get(page, &nw, &nh);
    
    // Scale to fit window
-   // TODO: pdf.c: Add more scaling options
-   // TODO: pdf.c: Get margins from theme (not hardcoded 15 :))
+   // TODO: pdf/pdf.c: Add more scaling options
+   // TODO: pdf/pdf.c: Get margins from theme (not hardcoded 15 :))
    
    if (((double) ew - 15.0) / ((double) nw) < ((double) eh - 15.0) / ((double) nh))
       scale = ((double) ew - 15.0) / ((double) nw);
@@ -79,15 +86,43 @@ open_file(void **_plugin_data, char *filename, Evas_Object *main_window,
    esmart_pdf_page_set(page, 1);
    evas_object_resize(border, nw * scale, nh * scale);
    
-   // Move to center
-   evas_object_move(border, ew / 2 - nw * scale / 2 , eh / 2 - nh * scale / 2);
+   // Move to left
+   evas_object_move(border, ew + 50, eh / 2 - nh * scale / 2);
    
    // Render
-   esmart_pdf_render(page); 
+   esmart_pdf_render(page);
    
-   // TEMPORARY CODE
-   evas_object_show(border);
-   evas_object_show(page);
+   // Save work
+   file_data = malloc(sizeof(Pdf_File_Data));
+   file_data->page = page;
+   file_data->border = border;
+   ecore_hash_set(plugin_data->files, filename, file_data);
   
    return 1;
+}
+
+void
+show(void **_plugin_data, char *filename, Evas_Object *main_window, Evas *evas)
+{
+   Pdf_Plugin_Data *plugin_data = *_plugin_data;
+   Pdf_File_Data *file_data = NULL;
+   Ecore_Hash *hash = NULL;
+   Evas_Object *border = NULL;
+   Evas_Object *page = NULL;
+   Pdf_Show_Anim_Data *show_anim_data = NULL;
+   
+   hash = plugin_data->files;
+   file_data = ecore_hash_get(hash, filename);
+   border = file_data->border;
+   page = file_data->page;
+   show_anim_data = malloc(sizeof(Pdf_Show_Anim_Data));
+   show_anim_data->evas = evas;
+   show_anim_data->object = border;
+   
+   evas_object_geometry_get(border, &(show_anim_data->start_x), NULL, NULL, NULL);
+   evas_object_geometry_get(main_window, NULL, NULL, &(show_anim_data->ew), NULL);
+   
+   evas_object_show(border);
+   evas_object_show(page);
+   ecore_animator_add(show_anim, show_anim_data);
 }

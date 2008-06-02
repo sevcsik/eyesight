@@ -4,6 +4,8 @@
 #include <Ecore_Data.h>
 #include <Evas.h>
 
+#define FRAMETIME (1.0/30.0)
+
 /*
  * = STUFF FOR PLUGINS =
  */
@@ -63,5 +65,29 @@ typedef char (*Plugin_Init_Func) (void **plugin_data);
  */
 typedef char (*Plugin_Open_File_Func) (void **plugin_data, char *filename,
                                        Evas_Object *main_window, Evas *evas);
+
+/* 
+ * Plugin close_file() function:
+ * Close the file and free all resources allocated for it.
+ */
+typedef void (*Plugin_Close_File_Func) (void **plugin_data, char *filename,
+                                        Evas_Object *main_window, Evas *evas);
+
+/* 
+ * Plugin show() function:
+ * Show file's evas_object outside the window, then move to the center
+ * with decelerating speed animation in 500 ms.
+ */
+typedef void (*Plugin_Show_Func) (void **plugin_data, char *filename,
+                                  Evas_Object *main_window, Evas *evas);
+
+/*
+ * Plugin hide() function:
+ * Move the file's evas_object out of the window with accelerating
+ * speed animation in 500 ms, then hide it.
+ */
+typedef void (*Plugin_Hide_Func) (void **plugin_data, char *filename,
+                                  Evas_Object *main_window, Evas *evas);
+
 
 #endif /*PLUGIN_H_*/
