@@ -1,0 +1,50 @@
+group
+{
+   name: "toolbar2";
+   parts
+   {
+      part
+      {
+         name: "top_bar";
+         type: GRADIENT;
+         description
+         {
+            state: "default" 0.0;
+            rel1
+            {
+               relative: 0.0 0.0;
+            }
+            rel2
+            {
+               relative: 1.0 1.0;
+               offset: 0 0;
+            }
+            gradient
+            {
+               spectrum: "black_to_trans";
+            }
+         }
+      }
+      part
+      {
+         name: "toolbar2";
+         type: RECT;
+         description
+         {
+            state: "default" 0.0;
+            rel1
+            {
+               relative, 0.0 0.0;
+               to: "top_bar";
+               offset: 10 10;
+            }
+            rel2
+            {
+               relative, 1.0 1.0;
+               to: "top_bar";
+               offset: -10 -10;
+            }
+         }
+      }
+   }
+}

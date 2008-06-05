@@ -1,0 +1,152 @@
+group
+{
+	name: "toolbar1_icon";
+	min: 48 48;
+	max: 48 48;
+	parts
+	{
+		part
+		{
+			name: "icon";
+			type: IMAGE;
+			mouse_events: 1;
+			description
+			{
+				state: "default" 0.0;
+				rel1
+				{
+					relative: 0.0 0.0;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+				}
+				image
+				{
+					normal: "img/open.png";
+				}
+			}
+			description
+			{
+				state: "mouseover" 0.0;
+				inherit: "default" 0.0;
+				rel1
+				{
+					relative: 0.0 0.0;
+					offset: -20 -20;	
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: 20 20;
+				}
+			}
+		}
+		part
+		{
+			name: "tooltip";
+			type: TEXT;
+			effect: SOFT_SHADOW;
+			description
+			{
+				state: "default" 0.0;
+				color: 255 255 255 0;
+				color3: 0 0 0 0;
+				rel1
+				{
+					relative: 0.0 1.0;
+					offset: -50 20;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: 150 40;
+				}
+				text
+				{
+					font: "VeraBd";
+					size: 15;
+					text: "Tooltip sample";
+					align: 0.0 0.5;
+				}
+			}
+			description
+			{
+				state: "mouseover" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 255;
+				color3: 0 0 0 255;
+				rel1
+				{
+					relative: 0.0 1.0;
+					offset: 0 20;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: 200 40;
+				}
+			}
+			description
+			{
+				state: "hidden_right" 0.0;
+				inherit: "default" 0.0;
+				rel1
+				{
+					relative: 0.0 1.0;
+					offset: 50 20;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: 250 40;
+				}
+			}
+		}
+	}
+	programs
+	{
+		program
+		{
+			name: "icon_mousein";
+			signal: "mouse,in";
+			source: "icon";
+			action: STATE_SET "mouseover" 0.0;
+			target: "icon";
+			transition: DECELERATE 0.2;
+		}
+		program
+		{
+			name: "icon_mouseout";
+			signal: "mouse,out";
+			source: "icon";
+			action: STATE_SET "default" 0.0;
+			target: "icon";
+			transition: ACCELERATE 0.2;
+		}
+		program
+		{
+			name: "tooltip_reset";
+			action: STATE_SET "default" 0.0;
+			target: "tooltip";
+			after: "tooltip_show";
+			signal: "mouse,in";
+			source: "icon";
+		}
+		program
+		{
+			name: "tooltip_show";
+			action: STATE_SET "mouseover" 0.0;
+			target: "tooltip";
+			transition: DECELERATE 1.0;
+			after: "tooltip_hide";
+		}
+		program
+		{
+			name: "tooltip_hide";
+			action: STATE_SET "hidden_right" 0.0;
+			target: "tooltip";
+			transition: ACCELERATE 1.0;
+		}
+	}
+}

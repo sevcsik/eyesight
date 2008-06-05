@@ -1,0 +1,59 @@
+/* Docker theme for Eyesight */
+
+data
+{
+	item: "author" "Sevcsik András";
+	item: "contact" "sevcsik@gmail.com";
+	item: "version" "0.1";
+	item: "date" "Not yet released :)";
+}
+
+
+images
+{
+	image: "img/docker.png" COMP;
+	image: "img/border_trans.png" COMP;
+	image: "img/error.png" COMP;
+	image: "img/dialog_bg.png" COMP;
+	image: "img/border_opaque.png" COMP;
+	image: "img/open.png" COMP;
+	image: "img/saveas.png" COMP;
+	image: "img/config.png" COMP;
+}
+
+spectra
+{
+	spectrum
+	{
+		name: "black_to_grey";
+		color: 0 0 0 255 0;
+		color: 100 100 100 255 0;
+	}
+	spectrum
+	{
+		name: "black_to_trans";
+      color: 0 0 0 30 0;
+		color: 0 0 0 255 0;
+	}
+}
+
+styles
+{
+	style
+	{
+		name: "error";
+		base: "font=VeraBd font_size=10 color=#FFFFFFFF wrap=word valign=middle";
+		tag: "br" "+ \n";
+		tag: "i" "+ \t";
+	}
+}
+
+collections
+{
+	#include "main_window/main_window.edc"
+	#include "border_trans.edc"
+	#include "border_opaque.edc"
+	#include "toolbar1_icon.edc"
+   #include "toolbar1.edc"
+   #include "toolbar2.edc"
+}
