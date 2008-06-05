@@ -1,0 +1,54 @@
+group
+{
+   name: "toolbar1";
+   min: 0 51;
+   max: 10000 51;
+   parts
+   {
+      part
+      {
+         name: "docker";
+         type: IMAGE;
+         mouse_events: 0;
+         description
+         {
+            state: "default" 0.0;
+            rel1
+            {
+               relative, 0.0 0.0;
+               offset: 0 0;
+            }
+            rel2
+            {
+               relative, 1.0 1.0;
+               offset: 0 0;
+            }
+            image
+            {
+               normal: "img/docker.png";
+               border: 50 50 0 0;
+            }
+         }
+      }
+      part
+      {
+         name: "toolbar1_swallow";
+         type: SWALLOW;
+         mouse_events: 1;
+         description
+         {
+            state: "default" 0.0;
+            rel1
+            {
+               relative: 0.0 0.0;
+               offset: 50 0;
+            }
+            rel2
+            {
+               relative: 1.0 1.0;
+               offset: -50 -10;
+            }
+         }
+      }
+   }
+}
