@@ -13,3 +13,5 @@ line 10
 + #endif
 
 For _S_ISREG, _S_ISDIR.
+
+Also: EAPI conflicts.

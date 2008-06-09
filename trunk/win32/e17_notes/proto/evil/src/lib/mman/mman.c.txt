@@ -1,0 +1,17 @@
+line 59
+
++ #ifdef VER_PLATFORM_WIN32_CE
+
+line 87
+
++ #endif
+
+line 203
+
++ #ifdef VER_PLATFORM_WIN32_CE
+
+line 212
+
++ #endif
+
+VER_PLATFORM_WIN32_CE is undeclared.
