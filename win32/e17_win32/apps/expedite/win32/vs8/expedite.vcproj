@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(INCLUDE)"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;HAVE_EVIL;__CRT_INLINE=__inline;snprintf=_snprintf_c;PACKAGE_DATA_DIR=;HAVE_EVAS_DIRECT3D;HAVE_EVAS_SOFTWARE_DDRAW"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;HAVE_EVIL;__CRT_INLINE=__inline;snprintf=_snprintf_c;PACKAGE_DATA_DIR=;HAVE_EVAS_DIRECT3D;HAVE_EVAS_SOFTWARE_DDRAW;HAVE_EVAS_OPENGL_GLEW"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libevas.lib d3d9.lib d3dx9.lib ddraw.lib"
+				AdditionalDependencies="libevas.lib d3d9.lib d3dx9.lib ddraw.lib opengl32.lib glew32.lib"
 				OutputFile="$(OutDir)\expedite.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(LIB); $(DebugLibraryDirectory)"
@@ -120,7 +120,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="$(INCLUDE)"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;HAVE_EVIL;__CRT_INLINE=__inline;snprintf=_snprintf_c;PACKAGE_DATA_DIR=;HAVE_EVAS_DIRECT3D;HAVE_EVAS_SOFTWARE_DDRAW"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;HAVE_EVIL;__CRT_INLINE=__inline;snprintf=_snprintf_c;PACKAGE_DATA_DIR=;HAVE_EVAS_DIRECT3D;HAVE_EVAS_SOFTWARE_DDRAW;HAVE_EVAS_OPENGL_GLEW"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -138,7 +138,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libevas.lib d3d9.lib d3dx9.lib ddraw.lib"
+				AdditionalDependencies="libevas.lib d3d9.lib d3dx9.lib ddraw.lib opengl32.lib glew32.lib"
 				OutputFile="$(OutDir)\expedite.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(LIB); $(ReleaseLibraryDirectory)"
@@ -235,7 +235,6 @@
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
-					ExcludedFromBuild="true"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -243,7 +242,6 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
-					ExcludedFromBuild="true"
 					>
 					<Tool
 						Name="VCCLCompilerTool"

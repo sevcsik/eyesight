@@ -324,6 +324,3 @@
 
 /* Define to empty if `const' does not conform to ANSI C. */
 /* #undef const */
-
-#define _USE_MATH_DEFINES
-

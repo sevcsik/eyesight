@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="engine_gl_glew"
 	ProjectGUID="{38C9AD78-8461-4A33-A31B-7DA62AB3BBE9}"
 	RootNamespace="engine_gl_glew"
@@ -65,7 +65,7 @@
 				IgnoreImportLibrary="false"
 				LinkLibraryDependencies="true"
 				UseLibraryDependencyInputs="false"
-				AdditionalDependencies="libevas.lib glew32.lib"
+				AdditionalDependencies="libevas.lib glew32.lib opengl32.lib"
 				OutputFile="$(OutDir)\engines\gl_glew\module.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(LIB); $(DebugLibraryDirectory)"
@@ -147,7 +147,7 @@
 				IgnoreImportLibrary="false"
 				LinkLibraryDependencies="true"
 				UseLibraryDependencyInputs="false"
-				AdditionalDependencies="libevas.lib glew32.lib"
+				AdditionalDependencies="libevas.lib glew32.lib opengl32.lib"
 				OutputFile="$(OutDir)\engines\gl_glew\module.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(LIB); $(ReleaseLibraryDirectory)"
