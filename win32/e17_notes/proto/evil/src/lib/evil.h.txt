@@ -1,4 +1,10 @@
-line 122
+line 81
+
++ #include <sys/stat.h>
+
+Defines like _S_IREAD and so on.
+
+line 133
 
 + #ifndef pid_t
 + typedef int pid_t;
@@ -22,29 +28,14 @@ line 122
 Types are necessary everywhere, but not declared in MSVC CRT.
 Defines are declared in MinGW's io.h, but not in MSVC.
 
-line 303
+line 356
 
-+ /*
-+  * Constants for the stat st_mode member.
-+  */
-+ #define	_S_IFIFO	0x1000	/* FIFO */
-+ #define	_S_IFCHR	0x2000	/* Character */
-+ #define	_S_IFBLK	0x3000	/* Block: Is this ever set under w32? */
-+ #define	_S_IFDIR	0x4000	/* Directory */
-+ #define	_S_IFREG	0x8000	/* Regular */
-+ 
-+ #define	_S_IFMT		0xF000	/* File type mask */
-+ 
-+ #define	_S_IEXEC	0x0040
-+ #define	_S_IWRITE	0x0080
-+ #define	_S_IREAD	0x0100
-+ 
 + #define	_S_IRWXU	(_S_IREAD | _S_IWRITE | _S_IEXEC)
 + #define	_S_IXUSR	_S_IEXEC
 + #define	_S_IWUSR	_S_IWRITE
 + #define	_S_IRUSR	_S_IREAD
 
-line 327
+line 382
 
 + #  define strdup(s) _strdup(s)
 

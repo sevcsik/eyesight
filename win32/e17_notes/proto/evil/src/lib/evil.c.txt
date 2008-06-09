@@ -1,7 +1,3 @@
-line 4
-
-+ #define _POSIX_
-
 line 38
 
 + #undef MB_CUR_MAX
