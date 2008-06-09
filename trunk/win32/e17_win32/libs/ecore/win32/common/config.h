@@ -197,7 +197,7 @@
 /* #undef HAVE_NETINET_IN_H */
 
 /* Build Ecore_Win32 with OpenGL Glew Code */
-/* #define HAVE_OPENGL_GLEW 1 */
+#define HAVE_OPENGL_GLEW 1
 
 /* File monitoring with polling */
 #define HAVE_POLL 1

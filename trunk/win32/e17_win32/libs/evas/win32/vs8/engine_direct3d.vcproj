@@ -65,7 +65,7 @@
 				IgnoreImportLibrary="false"
 				LinkLibraryDependencies="true"
 				UseLibraryDependencyInputs="false"
-				AdditionalDependencies="libevas.lib"
+				AdditionalDependencies="libevas.lib d3d9.lib d3dx9.lib"
 				OutputFile="$(OutDir)\engines\direct3d\module.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(LIB); $(DebugLibraryDirectory)"
@@ -147,7 +147,7 @@
 				IgnoreImportLibrary="false"
 				LinkLibraryDependencies="true"
 				UseLibraryDependencyInputs="false"
-				AdditionalDependencies="libevas.lib"
+				AdditionalDependencies="libevas.lib d3d9.lib d3dx9.lib"
 				OutputFile="$(OutDir)\engines\direct3d\module.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(LIB); $(ReleaseLibraryDirectory)"
@@ -213,19 +213,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\src\modules\engines\direct3d\evas_direct3d_buffer.c"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\modules\engines\direct3d\evas_direct3d_main.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\modules\engines\direct3d\evas_engine.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\modules\engines\direct3d\evas_outbuf.c"
 				>
 			</File>
 		</Filter>

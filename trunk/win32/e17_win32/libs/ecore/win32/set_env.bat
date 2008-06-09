@@ -47,7 +47,7 @@ set EcoreOut=%cd%\..\..\ecore\win32\%PROJECT_TYPE%\out
 
 
 set INCLUDE=%EvilCommon%;%cd%\common;%EetInclude%;%EvilInclude%;%EvilInclude%\dlfcn;%EvilInclude%\mman;%INCLUDE%
-set INCLUDE=%EcoreInclude%;%EvasInclude%;%INCLUDE%
+set INCLUDE=%EcoreInclude%\..\ecore_win32;%EcoreInclude%\..\ecore_evas;%EcoreInclude%;%EvasInclude%;%INCLUDE%
 set LIB=%EcoreOut%;%EvasOut%;%EetOut%;%EvilOut%;%LIB%
 
 
