@@ -1,6 +1,0 @@
-line 10
-
-- # ifdef EFL_EVIL_BUILD
-+ # ifdef EFL_EVIL_MMAN_BUILD
-
-Conflict with Evil.h.

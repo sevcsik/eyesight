@@ -28,14 +28,11 @@ line 133
 Types are necessary everywhere, but not declared in MSVC CRT.
 Defines are declared in MinGW's io.h, but not in MSVC.
 
-line 356
+line 332
 
 + #define	_S_IRWXU	(_S_IREAD | _S_IWRITE | _S_IEXEC)
 + #define	_S_IXUSR	_S_IEXEC
 + #define	_S_IWUSR	_S_IWRITE
 + #define	_S_IRUSR	_S_IREAD
 
-line 382
-
-+ #  define strdup(s) _strdup(s)
-
+Ecore_file cannot be compiled without it.
