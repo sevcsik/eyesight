@@ -7,3 +7,33 @@ line 84
 + #endif
 
 Guards forgotten
+
+line 457
+
+-   printf ("ecore_win32_window_size_min_get : %p  %d %d\n", window, w->min_width, w->min_height);
+-   w = (struct _Ecore_Win32_Window *)window;
++   w = (struct _Ecore_Win32_Window *)window;
++   printf ("ecore_win32_window_size_min_get : %p  %d %d\n", window, w->min_width, w->min_height);
+
+line 487
+
+-   printf ("ecore_win32_window_size_max_get : %p  %d %d\n", window, w->max_width, w->max_height);
+-   w = (struct _Ecore_Win32_Window *)window;
++   w = (struct _Ecore_Win32_Window *)window;
++   printf ("ecore_win32_window_size_max_get : %p  %d %d\n", window, w->max_width, w->max_height);
+
+line 517
+
+-   printf ("ecore_win32_window_size_base_get : %p  %d %d\n", window, w->base_width, w->base_height);
+-   w = (struct _Ecore_Win32_Window *)window;
++   w = (struct _Ecore_Win32_Window *)window;
++   printf ("ecore_win32_window_size_base_get : %p  %d %d\n", window, w->base_width, w->base_height);
+
+line 547
+
+-   printf ("ecore_win32_window_size_step_get : %p  %d %d\n", window, w->step_width, w->step_height);
+-   w = (struct _Ecore_Win32_Window *)window;
++   w = (struct _Ecore_Win32_Window *)window;
++   printf ("ecore_win32_window_size_step_get : %p  %d %d\n", window, w->step_width, w->step_height);
+
+Usage of unitialized value
