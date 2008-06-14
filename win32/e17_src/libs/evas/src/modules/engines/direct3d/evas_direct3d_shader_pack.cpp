@@ -1,6 +1,6 @@
 
 #include "evas_direct3d_shader_pack.h"
-
+#include "evas_direct3d_device.h"
 #include <assert.h>
 
 Ref<D3DShaderPack> D3DShaderPack::_this;
@@ -22,7 +22,7 @@ D3DShaderPack *D3DShaderPack::This()
 }
 
 
-bool D3DShaderPack::Initialize(Direct3D_DeviceContext *d3d)
+bool D3DShaderPack::Initialize(D3DDevice *d3d)
 {
    bool res = true;
    if (!(res = InitVertexDeclarations(d3d) && res))
@@ -64,7 +64,7 @@ void D3DShaderPack::Uninitialize()
    }
 }
 
-bool D3DShaderPack::InitVertexDeclarations(Direct3D_DeviceContext *d3d)
+bool D3DShaderPack::InitVertexDeclarations(D3DDevice *d3d)
 {
    _vdecl.Allocate(VDECL_NUM);
    _vdecl.Set(NULL);
@@ -76,7 +76,7 @@ bool D3DShaderPack::InitVertexDeclarations(Direct3D_DeviceContext *d3d)
          {0, 8, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0},
          D3DDECL_END()
          };
-      if (FAILED(d3d->device->CreateVertexDeclaration(elements, &vdecl)))
+      if (FAILED(d3d->GetDevice()->CreateVertexDeclaration(elements, &vdecl)))
          return false;
       if (vdecl == NULL)
          return false;
@@ -86,7 +86,7 @@ bool D3DShaderPack::InitVertexDeclarations(Direct3D_DeviceContext *d3d)
    return true;
 }
 
-bool D3DShaderPack::InitVertexShaders(Direct3D_DeviceContext *d3d)
+bool D3DShaderPack::InitVertexShaders(D3DDevice *d3d)
 {
    _vs.Allocate(VS_NUM);
    _vs.Set(NULL);
@@ -110,7 +110,7 @@ bool D3DShaderPack::InitVertexShaders(Direct3D_DeviceContext *d3d)
    return true;
 }
 
-bool D3DShaderPack::InitPixelShaders(Direct3D_DeviceContext *d3d)
+bool D3DShaderPack::InitPixelShaders(D3DDevice *d3d)
 {
    _ps.Allocate(PS_NUM);
    _ps.Set(NULL);
@@ -130,7 +130,7 @@ bool D3DShaderPack::InitPixelShaders(Direct3D_DeviceContext *d3d)
    return true;
 }
 
-void *D3DShaderPack::CompileShader(Direct3D_DeviceContext *d3d, bool make_vs, 
+void *D3DShaderPack::CompileShader(D3DDevice *d3d, bool make_vs, 
    const char *name, const char *buf, int size)
 {
    LPD3DXBUFFER compiled_res = NULL;
@@ -158,13 +158,13 @@ void *D3DShaderPack::CompileShader(Direct3D_DeviceContext *d3d, bool make_vs,
    if (make_vs)
    {
       LPDIRECT3DVERTEXSHADER9 vs;
-      res = d3d->device->CreateVertexShader((DWORD *)compiled_res->GetBufferPointer(), &vs);
+      res = d3d->GetDevice()->CreateVertexShader((DWORD *)compiled_res->GetBufferPointer(), &vs);
       res_ptr = (void *)vs;
    }
    else
    {
       LPDIRECT3DPIXELSHADER9 ps;
-      res = d3d->device->CreatePixelShader((DWORD *)compiled_res->GetBufferPointer(), &ps);
+      res = d3d->GetDevice()->CreatePixelShader((DWORD *)compiled_res->GetBufferPointer(), &ps);
       res_ptr = (void *)ps;
    }
 
@@ -178,29 +178,29 @@ void *D3DShaderPack::CompileShader(Direct3D_DeviceContext *d3d, bool make_vs,
    return res_ptr;
 }
 
-bool D3DShaderPack::SetVDecl(Direct3D_DeviceContext *d3d, int id)
+bool D3DShaderPack::SetVDecl(D3DDevice *d3d, int id)
 {
    if (id < 0 || id >= _vdecl.Length() || _vdecl[id] == NULL)
       return false;
    assert(d3d != NULL);
-   d3d->device->SetVertexDeclaration(_vdecl[id]);
+   d3d->GetDevice()->SetVertexDeclaration(_vdecl[id]);
    return true;
 }
 
-bool D3DShaderPack::SetVS(Direct3D_DeviceContext *d3d, int id)
+bool D3DShaderPack::SetVS(D3DDevice *d3d, int id)
 {
    if (id < 0 || id >= _vs.Length() || _vs[id] == NULL)
       return false;
    assert(d3d != NULL);
-   d3d->device->SetVertexShader(_vs[id]);
+   d3d->GetDevice()->SetVertexShader(_vs[id]);
    return true;
 }
 
-bool D3DShaderPack::SetPS(Direct3D_DeviceContext *d3d, int id)
+bool D3DShaderPack::SetPS(D3DDevice *d3d, int id)
 {
    if (id < 0 || id >= _ps.Length() || _ps[id] == NULL)
       return false;
    assert(d3d != NULL);
-   d3d->device->SetPixelShader(_ps[id]);
+   d3d->GetDevice()->SetPixelShader(_ps[id]);
    return true;
 }

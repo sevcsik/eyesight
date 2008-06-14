@@ -11,7 +11,7 @@ void D3DScene::FreeObjects()
       _objects[i]->SetFree(true);
 }
 
-void D3DScene::DrawAll(Direct3D_DeviceContext *d3d)
+void D3DScene::DrawAll(D3DDevice *d3d)
 {
    for (int i = 0; i < _objects.Length(); i++)
       _objects[i]->Draw(d3d);

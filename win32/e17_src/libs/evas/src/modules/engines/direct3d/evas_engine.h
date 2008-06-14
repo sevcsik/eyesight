@@ -10,37 +10,22 @@
 
 #define Log(str, ...) printf("D3D "str"\n", __VA_ARGS__)
 
-typedef struct _Direct3D_DeviceContext Direct3D_DeviceContext;
-struct _Direct3D_DeviceContext
-{
-   HWND                window;
-   LPDIRECT3D9         object;
-   LPDIRECT3DDEVICE9   device;
-   int                 width;
-   int                 height;
-   int                 rot;
-   int                 depth;
-   BOOL                device_lost;
-   BOOL                scene_rendering;
-   D3DPRESENT_PARAMETERS d3dpp;
-   D3DSURFACE_DESC     backbuffer_desc;
-};
-
+typedef void * Direct3DDeviceHandler;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
-int          evas_direct3d_init(HWND window, int depth, Direct3D_DeviceContext *d3d);
-void         evas_direct3d_free(Direct3D_DeviceContext *d3d);
+Direct3DDeviceHandler evas_direct3d_init(HWND window, int depth);
+void         evas_direct3d_free(Direct3DDeviceHandler d3d);
 
-void         evas_direct3d_render_all(Direct3D_DeviceContext *d3d);
+void         evas_direct3d_context_color_set(int r, int g, int b, int a);
 
-HRESULT      evas_direct3d_restore(Direct3D_DeviceContext *d3d);
-HRESULT      evas_direct3d_reset(Direct3D_DeviceContext *d3d);
+void         evas_direct3d_render_all(Direct3DDeviceHandler d3d);
 
-void         evas_direct3d_line_draw(Direct3D_DeviceContext *d3d, int x1, int y1, int x2, int y2);
+void         evas_direct3d_line_draw(Direct3DDeviceHandler d3d, int x1, int y1, int x2, int y2);
+void         evas_direct3d_rectangle_draw(Direct3DDeviceHandler d3d, int x, int y, int w, int h);
 
 #ifdef __cplusplus
 }

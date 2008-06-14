@@ -11,6 +11,7 @@
 
 #include "evas_direct3d_object.h"
 
+class D3DDevice;
 
 class D3DScene : virtual public Referenc
 {
@@ -22,7 +23,7 @@ public:
    inline void AddObject(D3DObject *object);
    inline int GetObjectCount();
 
-   void DrawAll(Direct3D_DeviceContext *d3d);
+   void DrawAll(D3DDevice *d3d);
 
    template <class T> T *GetFreeObject()
    {

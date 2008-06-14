@@ -7,7 +7,7 @@
 typedef struct _Render_Engine Render_Engine;
 struct _Render_Engine
 {
-   Direct3D_DeviceContext d3d;
+   Direct3DDeviceHandler d3d;
    int end : 1;
    int in_redraw : 1;
 };
@@ -53,7 +53,7 @@ _output_setup(int width, int height, int rotation, HWND window, int depth)
    evas_common_draw_init();
    evas_common_tilebuf_init();
 
-   if (evas_direct3d_init(window, depth, &re->d3d) == 0)
+   if ((re->d3d = evas_direct3d_init(window, depth)) == 0)
      {
      free(re);
      return NULL;
@@ -107,7 +107,7 @@ eng_output_free(void *data)
 {
    Render_Engine *re = (Render_Engine *)data;
 
-   evas_direct3d_free(&re->d3d);
+   evas_direct3d_free(re->d3d);
 
    free(re);
 
@@ -115,9 +115,23 @@ eng_output_free(void *data)
    evas_common_image_shutdown();
 }
 
+//////////////////////////////////////////////////////////////////////////////
+// Context
+//
+
+static void
+eng_context_color_set(void *data, void *context, int r, int g, int b, int a)
+{
+   Render_Engine *re = (Render_Engine *)data;
+   evas_direct3d_context_color_set(r, g, b, a);
+
+   evas_common_draw_context_set_color(context, r, g, b, a);
+}
+
 
 //////////////////////////////////////////////////////////////////////////////
-// 
+// Output manipulating
+//
 
 static void
 eng_output_resize(void *data, int width, int height)
@@ -159,12 +173,12 @@ eng_output_redraws_next_update_get(void *data, int *x, int *y, int *w, int *h,
 
    if (x) *x = 0;
    if (y) *y = 0;
-   if (w) *w = re->d3d.width;
-   if (h) *h = re->d3d.height;
+   if (w) *w = 800;  //re->d3d.width;
+   if (h) *h = 600;  //re->d3d.height;
    if (cx) *cx = 0;
    if (cy) *cy = 0;
-   if (cw) *cw = re->d3d.width;
-   if (ch) *ch = re->d3d.height;
+   if (cw) *cw = 800;  //re->d3d.width;
+   if (ch) *ch = 600;  //re->d3d.height;
 
    re->in_redraw = 1;
 
@@ -183,7 +197,7 @@ static void
 eng_output_flush(void *data)
 {
    Render_Engine *re = (Render_Engine *)data;
-   evas_direct3d_render_all(&re->d3d);
+   evas_direct3d_render_all(re->d3d);
 }
 
 static void
@@ -192,14 +206,29 @@ eng_output_idle_flush(void *data)
    Render_Engine *re = (Render_Engine *)data;
 }
 
+
+//////////////////////////////////////////////////////////////////////////////
+// Draw objects
+//
+
 static void
 eng_line_draw(void *data, void *context, void *surface, int x1, int y1, int x2, int y2)
 {
    Render_Engine *re = (Render_Engine *)data;
    if (re->in_redraw == 0)
       return;
-   evas_direct3d_line_draw(&re->d3d, x1, y1, x2, y2);
+   evas_direct3d_line_draw(re->d3d, x1, y1, x2, y2);
 }
+
+static void
+eng_rectangle_draw(void *data, void *context, void *surface, int x, int y, int w, int h)
+{
+   Render_Engine *re = (Render_Engine *)data;
+   if (re->in_redraw == 0)
+      return;
+   evas_direct3d_rectangle_draw(re->d3d, x, y, w, h);
+}
+
 
 /* module advertising code */
 EAPI int
@@ -215,6 +244,7 @@ module_open(Evas_Module *em)
    ORD(info);
    ORD(info_free);
    ORD(setup);
+   ORD(context_color_set);
    ORD(output_free);
    ORD(output_resize);
    ORD(output_redraws_rect_add);
@@ -225,6 +255,7 @@ module_open(Evas_Module *em)
    ORD(output_flush);
    ORD(output_idle_flush);
    ORD(line_draw);
+   ORD(rectangle_draw);
    /* now advertise out own api */
    em->functions = (void *)(&func);
    return 1;

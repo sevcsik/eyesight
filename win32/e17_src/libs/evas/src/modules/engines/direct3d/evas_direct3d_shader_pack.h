@@ -6,6 +6,8 @@
 #include "ref.h"
 #include "array.h"
 
+class D3DDevice;
+
 class D3DShaderPack : virtual public Referenc
 {
 public:
@@ -13,12 +15,12 @@ public:
 
    static D3DShaderPack *This();
 
-   bool Initialize(Direct3D_DeviceContext *d3d);
+   bool Initialize(D3DDevice *d3d);
    void Uninitialize();
 
-   bool SetVDecl(Direct3D_DeviceContext *d3d, int id);
-   bool SetVS(Direct3D_DeviceContext *d3d, int id);
-   bool SetPS(Direct3D_DeviceContext *d3d, int id);
+   bool SetVDecl(D3DDevice *d3d, int id);
+   bool SetVS(D3DDevice *d3d, int id);
+   bool SetPS(D3DDevice *d3d, int id);
 
 public:
    enum VDECL
@@ -45,11 +47,11 @@ public:
 private:
    D3DShaderPack();
 
-   bool InitVertexDeclarations(Direct3D_DeviceContext *d3d);
-   bool InitVertexShaders(Direct3D_DeviceContext *d3d);
-   bool InitPixelShaders(Direct3D_DeviceContext *d3d);
+   bool InitVertexDeclarations(D3DDevice *d3d);
+   bool InitVertexShaders(D3DDevice *d3d);
+   bool InitPixelShaders(D3DDevice *d3d);
 
-   void *CompileShader(Direct3D_DeviceContext *d3d, bool make_vs, const char *name, 
+   void *CompileShader(D3DDevice *d3d, bool make_vs, const char *name, 
       const char *buf, int size);
 
 private:
