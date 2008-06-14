@@ -5,12 +5,14 @@
 
 #include "ref.h"
 
+class D3DDevice;
+
 class D3DObject : virtual public Referenc
 {
 public:
    D3DObject();
 
-   virtual void Draw(Direct3D_DeviceContext *d3d);
+   virtual void Draw(D3DDevice *d3d);
 
    inline bool IsFree();
    inline void SetFree(bool state);

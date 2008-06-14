@@ -1,5 +1,5 @@
-#ifndef __EVAS_DIRECT3D_OBJECT_LINE_H__
-#define __EVAS_DIRECT3D_OBJECT_LINE_H__
+#ifndef __EVAS_DIRECT3D_OBJECT_RECT_H__
+#define __EVAS_DIRECT3D_OBJECT_RECT_H__
 
 #include "evas_engine.h"
 
@@ -8,19 +8,19 @@
 
 #include "evas_direct3d_object.h"
 
-class D3DObjectLine : public D3DObject
+class D3DObjectRect : public D3DObject
 {
 public:
-   D3DObjectLine();
+   D3DObjectRect();
 
    static void BeginCache();
    virtual void Draw(D3DDevice *d3d);
    static void EndCache(D3DDevice *d3d);
 
-   void Setup(FLOAT x1, FLOAT y1, FLOAT x2, FLOAT y2, DWORD color);
+   void Setup(FLOAT x, FLOAT y, FLOAT w, FLOAT h, DWORD color);
 
 private:
-   FLOAT _x1, _y1, _x2, _y2;
+   FLOAT _x, _y, _w, _h;
    DWORD _color;
 
 private:
@@ -34,4 +34,4 @@ private:
    static bool _cache_enabled;
 };
 
-#endif  // __EVAS_DIRECT3D_OBJECT_LINE_H__
+#endif  // __EVAS_DIRECT3D_OBJECT_RECT_H__
