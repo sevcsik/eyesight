@@ -82,6 +82,19 @@ bool D3DShaderPack::InitVertexDeclarations(D3DDevice *d3d)
          return false;
    }
    _vdecl[VDECL_XYC] = vdecl;
+   vdecl = NULL;
+   {
+      D3DVERTEXELEMENT9 elements[] = {
+         {0, 0, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0},
+         {0, 8, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0},
+         D3DDECL_END()
+         };
+      if (FAILED(d3d->GetDevice()->CreateVertexDeclaration(elements, &vdecl)))
+         return false;
+      if (vdecl == NULL)
+         return false;
+   }
+   _vdecl[VDECL_XYUV] = vdecl;
 
    return true;
 }
@@ -107,6 +120,22 @@ bool D3DShaderPack::InitVertexShaders(D3DDevice *d3d)
          return false;
    }
 
+   {
+      char buf[] = 
+         "struct VsInput {	float2 pos : POSITION; float2 tex : TEXCOORD0; };\n"
+         "struct VsOutput { float4 pos : POSITION; float2 tex : TEXCOORD0; };\n"
+         "VsOutput main(VsInput vs_in) {\n"
+         "VsOutput vs_out;\n"
+	      "vs_out.pos = float4(vs_in.pos, 0, 1);\n"
+         "vs_out.tex = vs_in.tex;\n"
+	      "return vs_out;}";
+
+      _vs[VS_COPY_UV] = (LPDIRECT3DVERTEXSHADER9)
+         CompileShader(d3d, true, "CopyUV", buf, sizeof(buf) - 1);
+      if (_vs[VS_COPY_UV] == NULL)
+         return false;
+   }
+
    return true;
 }
 
@@ -124,6 +153,19 @@ bool D3DShaderPack::InitPixelShaders(D3DDevice *d3d)
       _ps[PS_COLOR] = (LPDIRECT3DPIXELSHADER9)
          CompileShader(d3d, false, "Color", buf, sizeof(buf) - 1);
       if (_ps[PS_COLOR] == NULL)
+         return false;
+   }
+
+   {
+      char buf[] = 
+         "sampler Texture : register(s0);\n"
+         "struct VsOutput { float4 pos : POSITION; float2 tex : TEXCOORD0; };\n"
+         "float4 main(VsOutput ps_in) : COLOR0 {\n"
+         "return tex2D(Texture, ps_in.tex);}";
+
+      _ps[PS_TEX] = (LPDIRECT3DPIXELSHADER9)
+         CompileShader(d3d, false, "Tex", buf, sizeof(buf) - 1);
+      if (_ps[PS_TEX] == NULL)
          return false;
    }
 

@@ -229,6 +229,33 @@ eng_rectangle_draw(void *data, void *context, void *surface, int x, int y, int w
    evas_direct3d_rectangle_draw(re->d3d, x, y, w, h);
 }
 
+static void *
+eng_image_load(void *data, const char *file, const char *key, int *error, Evas_Image_Load_Opts *lo)
+{
+   Render_Engine *re = (Render_Engine *)data;
+   *error = 0;
+   return evas_direct3d_image_load(re->d3d, file, key, NULL, lo);
+}
+
+static void
+eng_image_free(void *data, void *image)
+{
+   Render_Engine *re = (Render_Engine *)data;
+   evas_direct3d_image_free(re->d3d, image);
+}
+
+
+static void
+eng_image_draw(void *data, void *context, void *surface, void *image, 
+   int src_x, int src_y, int src_w, int src_h, 
+   int dst_x, int dst_y, int dst_w, int dst_h, int smooth)
+{
+   Render_Engine *re = (Render_Engine *)data;
+   evas_direct3d_image_draw(re->d3d, image,
+      src_x, src_y, src_w, src_h, 
+      dst_x, dst_y, dst_w, dst_h, smooth);
+}
+
 
 /* module advertising code */
 EAPI int
@@ -256,6 +283,9 @@ module_open(Evas_Module *em)
    ORD(output_idle_flush);
    ORD(line_draw);
    ORD(rectangle_draw);
+   ORD(image_load);
+   ORD(image_free);
+   ORD(image_draw);
    /* now advertise out own api */
    em->functions = (void *)(&func);
    return 1;
