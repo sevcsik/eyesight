@@ -22,6 +22,7 @@ public:
 
    inline void AddObject(D3DObject *object);
    inline int GetObjectCount();
+   void DeleteObject(D3DObject *object);
 
    void DrawAll(D3DDevice *d3d);
 
@@ -33,6 +34,15 @@ public:
             return (T *)_objects[i].Addr();
       }
       return NULL;
+   }
+
+   template <class T> void GetObjectsOfType(TArray<T *> &res)
+   {
+      for (int i = 0; i < _objects.Length(); i++)
+      {
+         if (typeid(T) == typeid(*_objects[i].Addr()))
+            res.Add((T *)_objects[i].Addr());
+      }
    }
 
 private:

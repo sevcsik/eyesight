@@ -26,6 +26,7 @@ public:
    enum VDECL
    {
       VDECL_XYC = 0,
+      VDECL_XYUV,
 
       VDECL_NUM
    };
@@ -33,6 +34,7 @@ public:
    enum VS
    {
       VS_COPY_COLOR = 0,
+      VS_COPY_UV,
 
       VS_NUM
    };
@@ -40,6 +42,7 @@ public:
    enum PS
    {
       PS_COLOR = 0,
+      PS_TEX,
 
       PS_NUM
    };
