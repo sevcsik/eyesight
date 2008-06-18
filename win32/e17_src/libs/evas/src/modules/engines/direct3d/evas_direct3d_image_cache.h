@@ -22,12 +22,14 @@ public:
 public:
    ~D3DImageCache();
 
-   static D3DImageCache *This();
+   static D3DImageCache *Current();
+   static void SetCurrent(D3DImageCache *obj);
 
    inline void SetMaxSize(int w, int h);
 
    bool InsertImage(D3DDevice *d3d, DWORD *data, int w, int h, CacheEntryInfo &info);
    bool SelectImageToDevice(D3DDevice *d3d, int id);
+   void RemoveImageUser(int id);
    void Uninitialize();
 
 private:
@@ -39,6 +41,7 @@ private:
       int cur_x;
       int cur_y;
       int cur_h;
+      int users;
    };
 
 private:

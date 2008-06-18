@@ -26,6 +26,8 @@ public:
 
    inline bool IsValid();
    inline const char *GetSource();
+   inline int GetWidth();
+   inline int GetHeight();
 
 private:
    struct Vertex
@@ -61,6 +63,16 @@ bool D3DObjectImage::IsValid()
 const char *D3DObjectImage::GetSource()
 {
    return _source;
+}
+
+int D3DObjectImage::GetWidth()
+{
+   return _width;
+}
+
+int D3DObjectImage::GetHeight()
+{
+   return _height;
 }
 
 #endif  // __EVAS_DIRECT3D_OBJECT_IMAGE_H__

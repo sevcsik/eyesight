@@ -13,7 +13,8 @@ class D3DShaderPack : virtual public Referenc
 public:
    ~D3DShaderPack();
 
-   static D3DShaderPack *This();
+   static D3DShaderPack *Current();
+   static void SetCurrent(D3DShaderPack *obj);
 
    bool Initialize(D3DDevice *d3d);
    void Uninitialize();

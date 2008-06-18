@@ -11,9 +11,6 @@
 #include "evas_direct3d_object_rect.h"
 #include "evas_direct3d_object_image.h"
 
-static Ref<D3DScene> scene;
-static Ref<D3DContext> context;
-
 // Internal structure that joins two types of objects
 struct ImagePtr
 {
@@ -21,17 +18,36 @@ struct ImagePtr
    RGBA_Image *img;
 };
 
+struct DevicePtr
+{
+   Ref<D3DDevice> device;
+   Ref<D3DScene> scene;
+   Ref<D3DContext> context;
+   Ref<D3DImageCache> image_cache;
+   Ref<D3DShaderPack> shader_pack;
+};
+
+DevicePtr *SelectDevice(Direct3DDeviceHandler d3d)
+{
+   DevicePtr *dev_ptr = (DevicePtr *)d3d;
+   D3DImageCache::SetCurrent(dev_ptr->image_cache);
+   D3DShaderPack::SetCurrent(dev_ptr->shader_pack);
+   return dev_ptr;
+}
+
+
 extern "C" {
 
 Direct3DDeviceHandler evas_direct3d_init(HWND window, int depth)
 {
-   D3DDevice *device = new D3DDevice();
+   Ref<D3DDevice> device = new D3DDevice();
    if (!device->Init(window, depth))
       return NULL;
-   scene = new D3DScene();
-   context = new D3DContext();
 
-   if (!D3DShaderPack::This()->Initialize(device))
+   D3DImageCache::SetCurrent(NULL);
+   D3DShaderPack::SetCurrent(NULL);
+
+   if (!D3DShaderPack::Current()->Initialize(device))
    {
       Log("Failed to build shader pack");
       device->Destroy();
@@ -39,27 +55,40 @@ Direct3DDeviceHandler evas_direct3d_init(HWND window, int depth)
       return NULL;
    }
 
-   return (Direct3DDeviceHandler)device;
+   DevicePtr *dev_ptr = new DevicePtr;
+   dev_ptr->device = device;
+   dev_ptr->scene = new D3DScene();
+   dev_ptr->context = new D3DContext();
+   dev_ptr->image_cache = D3DImageCache::Current();
+   dev_ptr->shader_pack = D3DShaderPack::Current();
+
+   return (Direct3DDeviceHandler)dev_ptr;
 }
 
 void
 evas_direct3d_free(Direct3DDeviceHandler d3d)
 {
-   context = NULL;
-   scene = NULL;
-   D3DShaderPack::This()->Uninitialize();
-   D3DImageCache::This()->Uninitialize();
+   DevicePtr *dev_ptr = SelectDevice(d3d);
+   dev_ptr->context = NULL;
+   dev_ptr->scene = NULL;
+   dev_ptr->image_cache = NULL;
+   dev_ptr->shader_pack = NULL;
+   D3DShaderPack::Current()->Uninitialize();
+   D3DImageCache::Current()->Uninitialize();
+   D3DShaderPack::SetCurrent(NULL);
+   D3DImageCache::SetCurrent(NULL);
 
-   D3DDevice *device = (D3DDevice *)d3d;
-   delete device;
+   dev_ptr->device = NULL;
+   delete dev_ptr;
 
    Log("uninitialized");
 }
 
 void         
-evas_direct3d_context_color_set(int r, int g, int b, int a)
+evas_direct3d_context_color_set(Direct3DDeviceHandler d3d, int r, int g, int b, int a)
 {
-   context->color = ((a & 0xff) << 24) | ((r & 0xff) << 16) |
+   DevicePtr *dev_ptr = SelectDevice(d3d);
+   dev_ptr->context->color = ((a & 0xff) << 24) | ((r & 0xff) << 16) |
       ((g & 0xff) << 8) | (b & 0xff);
 }
 
@@ -68,7 +97,9 @@ evas_direct3d_render_all(Direct3DDeviceHandler d3d)
 {
    Log("render");
    assert(d3d != NULL);
-   D3DDevice *device = (D3DDevice *)d3d;
+   DevicePtr *dev_ptr = SelectDevice(d3d);
+   D3DDevice *device = dev_ptr->device;
+   D3DScene *scene = dev_ptr->scene;
 
    if (!device->Begin())
       return;
@@ -92,7 +123,10 @@ evas_direct3d_render_all(Direct3DDeviceHandler d3d)
 
 void evas_direct3d_line_draw(Direct3DDeviceHandler d3d, int x1, int y1, int x2, int y2)
 {
-   D3DDevice *device = (D3DDevice *)d3d;
+   DevicePtr *dev_ptr = SelectDevice(d3d);
+   D3DDevice *device = dev_ptr->device;
+   D3DScene *scene = dev_ptr->scene;
+   D3DContext *context = dev_ptr->context;
 
    Ref<D3DObjectLine> line = scene->GetFreeObject<D3DObjectLine>();
    if (line == NULL)
@@ -117,7 +151,10 @@ void evas_direct3d_line_draw(Direct3DDeviceHandler d3d, int x1, int y1, int x2, 
 
 void evas_direct3d_rectangle_draw(Direct3DDeviceHandler d3d, int x, int y, int w, int h)
 {
-   D3DDevice *device = (D3DDevice *)d3d;
+   DevicePtr *dev_ptr = SelectDevice(d3d);
+   D3DDevice *device = dev_ptr->device;
+   D3DScene *scene = dev_ptr->scene;
+   D3DContext *context = dev_ptr->context;
 
    Ref<D3DObjectRect> rect = scene->GetFreeObject<D3DObjectRect>();
    if (rect == NULL)
@@ -143,7 +180,10 @@ void evas_direct3d_rectangle_draw(Direct3DDeviceHandler d3d, int x, int y, int w
 Direct3DImageHandler evas_direct3d_image_load(Direct3DDeviceHandler d3d, 
    const char *file, const char *key, int *error, Evas_Image_Load_Opts *lo)
 {
-   D3DDevice *device = (D3DDevice *)d3d;
+   DevicePtr *dev_ptr = SelectDevice(d3d);
+   D3DDevice *device = dev_ptr->device;
+   D3DScene *scene = dev_ptr->scene;
+
    RGBA_Image *evas_image = evas_common_load_image_from_file(file, key, lo);
    if (evas_image == NULL)
    {
@@ -157,11 +197,11 @@ Direct3DImageHandler evas_direct3d_image_load(Direct3DDeviceHandler d3d,
    D3DImageCache::CacheEntryInfo info;
    ZeroMemory(&info, sizeof(info));
    info.id = -1;
-   
+#if 0   
    // Just in case if loading function will load data indeed one day
    if (evas_image->image.data != NULL)
    {
-      if (!D3DImageCache::This()->InsertImage(device, (DWORD *)evas_image->image.data,
+      if (!D3DImageCache::Current()->InsertImage(device, (DWORD *)evas_image->image.data,
          image_width, image_height, info))
       {
          Log("Couldnt add image to the cache");
@@ -170,6 +210,7 @@ Direct3DImageHandler evas_direct3d_image_load(Direct3DDeviceHandler d3d,
    }
    else
       Log("Image data was not loaded yet");
+#endif
 
    Ref<D3DObjectImage> image = new D3DObjectImage();
    image->Init(info.u, info.v, info.du, info.dv, info.id, 
@@ -188,6 +229,10 @@ Direct3DImageHandler evas_direct3d_image_load(Direct3DDeviceHandler d3d,
 
 void evas_direct3d_image_free(Direct3DDeviceHandler d3d, Direct3DImageHandler image)
 {
+   DevicePtr *dev_ptr = SelectDevice(d3d);
+   D3DDevice *device = dev_ptr->device;
+   D3DScene *scene = dev_ptr->scene;
+
    ImagePtr *ptr = (ImagePtr *)image;
 
    Ref<D3DObjectImage> image_ref = ptr->ref;
@@ -206,8 +251,12 @@ void evas_direct3d_image_draw(Direct3DDeviceHandler d3d, Direct3DImageHandler im
    ImagePtr *ptr = (ImagePtr *)image;
    Ref<D3DObjectImage> image_ref = ptr->ref;
    RGBA_Image *evas_image = ptr->img;
-   D3DDevice *device = (D3DDevice *)d3d;
+   DevicePtr *dev_ptr = SelectDevice(d3d);
+   D3DDevice *device = dev_ptr->device;
+   D3DScene *scene = dev_ptr->scene;
    assert(!image_ref.IsNull());
+   if (image_ref.IsNull())
+      return;
 
    if (!image_ref->IsValid())
    {
@@ -234,7 +283,7 @@ void evas_direct3d_image_draw(Direct3DDeviceHandler d3d, Direct3DImageHandler im
    {
       D3DImageCache::CacheEntryInfo info;
       ZeroMemory(&info, sizeof(info));
-      if (!D3DImageCache::This()->InsertImage(device, (DWORD *)evas_image->image.data,
+      if (!D3DImageCache::Current()->InsertImage(device, (DWORD *)evas_image->image.data,
          evas_image->cache_entry.w, evas_image->cache_entry.h, info))
       {
          Log("Couldnt add image to the cache");
@@ -259,6 +308,18 @@ void evas_direct3d_image_draw(Direct3DDeviceHandler d3d, Direct3DImageHandler im
       0, 0, -1, -1);
 //      src_x, src_y, src_w, src_h);
    image_ref->SetFree(false);
+}
+
+void evas_direct3d_image_size_get(Direct3DImageHandler image, int *w, int *h)
+{
+   ImagePtr *ptr = (ImagePtr *)image;
+   Ref<D3DObjectImage> image_ref = ptr->ref;
+   if (image_ref.IsNull())
+      return;
+   if (w != NULL) 
+      *w = image_ref->GetWidth();
+   if (h != NULL)
+      *h = image_ref->GetHeight();
 }
 
 

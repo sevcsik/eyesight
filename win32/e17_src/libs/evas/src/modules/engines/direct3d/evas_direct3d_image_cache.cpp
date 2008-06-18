@@ -18,11 +18,16 @@ D3DImageCache::~D3DImageCache()
    Uninitialize();
 }
 
-D3DImageCache *D3DImageCache::This()
+D3DImageCache *D3DImageCache::Current()
 {
    if (_this.IsNull())
       _this = new D3DImageCache();
    return _this;
+}
+
+void D3DImageCache::SetCurrent(D3DImageCache *obj)
+{
+   _this = obj;
 }
 
 void D3DImageCache::Uninitialize()
@@ -43,6 +48,19 @@ bool D3DImageCache::SelectImageToDevice(D3DDevice *d3d, int id)
    return SUCCEEDED(d3d->GetDevice()->SetTexture(0, _cache[id].texture));
 }
 
+void D3DImageCache::RemoveImageUser(int id)
+{
+   if (id < 0 || id >= _cache.Length())
+      return;
+   assert(_cache[id].texture != NULL);
+   _cache[id].users--;
+   if (_cache[id].users == 0)
+   {
+      _cache[id].texture->Release();
+      ZeroMemory(&_cache[id], sizeof(_cache[id]));
+   }
+}
+
 bool D3DImageCache::InsertImage(D3DDevice *d3d, DWORD *data, int w, int h, CacheEntryInfo &info)
 {
    CacheEntry *ce = NULL;
@@ -61,9 +79,23 @@ bool D3DImageCache::InsertImage(D3DDevice *d3d, DWORD *data, int w, int h, Cache
       CacheEntry new_entry;
       if (!CreateEntry(d3d, new_entry, w, h))
          return false;
-      _cache.Add(new_entry);
-      ce = _cache.Last();
-      id = _cache.Length() - 1;
+      for (id = 0; id < _cache.Length(); id++)
+      {
+         if (_cache[id].texture == NULL)
+            break;
+      }
+
+      if (id < _cache.Length())
+      {
+         _cache[id] = new_entry;
+         ce = &_cache[id];
+      }
+      else
+      {
+         _cache.Add(new_entry);
+         ce = _cache.Last();
+         id = _cache.Length() - 1;
+      }
    }
 
    assert(ce != NULL && ce->texture != NULL);
@@ -118,6 +150,7 @@ bool D3DImageCache::CreateEntry(D3DDevice *d3d, CacheEntry &entry, int w, int h)
    entry.cur_x = entry.cur_y = entry.cur_h = 0;
    entry.width = width;
    entry.height = height;
+   entry.users = 0;
    return true;
 }
 
@@ -149,4 +182,5 @@ void D3DImageCache::UpdateInsert(CacheEntry &entry, int w, int h)
 {
    entry.cur_h = max(entry.cur_h, entry.cur_y + h);
    entry.cur_x += w;
+   entry.users++;
 }

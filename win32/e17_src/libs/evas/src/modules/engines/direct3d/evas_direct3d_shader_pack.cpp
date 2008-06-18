@@ -14,11 +14,16 @@ D3DShaderPack::~D3DShaderPack()
    Uninitialize();
 }
 
-D3DShaderPack *D3DShaderPack::This()
+D3DShaderPack *D3DShaderPack::Current()
 {
    if (_this.IsNull())
       _this = new D3DShaderPack();
    return _this;
+}
+
+void D3DShaderPack::SetCurrent(D3DShaderPack *obj)
+{
+   _this = obj;
 }
 
 
