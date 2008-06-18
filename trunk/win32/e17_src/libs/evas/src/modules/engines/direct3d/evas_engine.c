@@ -123,7 +123,7 @@ static void
 eng_context_color_set(void *data, void *context, int r, int g, int b, int a)
 {
    Render_Engine *re = (Render_Engine *)data;
-   evas_direct3d_context_color_set(r, g, b, a);
+   evas_direct3d_context_color_set(re->d3d, r, g, b, a);
 
    evas_common_draw_context_set_color(context, r, g, b, a);
 }
@@ -256,6 +256,28 @@ eng_image_draw(void *data, void *context, void *surface, void *image,
       dst_x, dst_y, dst_w, dst_h, smooth);
 }
 
+static void
+eng_image_size_get(void *data, void *image, int *w, int *h)
+{
+   evas_direct3d_image_size_get(image, w, h);
+}
+
+static int
+eng_image_alpha_get(void *data, void *image)
+{
+   // Hm:)
+   if (!image) 
+      return 1;
+   return 0;
+}
+
+static int
+eng_image_colorspace_get(void *data, void *image)
+{
+   // Well, change that when you think about other colorspace
+   return EVAS_COLORSPACE_ARGB8888;
+}
+
 
 /* module advertising code */
 EAPI int
@@ -286,6 +308,9 @@ module_open(Evas_Module *em)
    ORD(image_load);
    ORD(image_free);
    ORD(image_draw);
+   ORD(image_size_get);
+   ORD(image_alpha_get);
+   ORD(image_colorspace_get);
    /* now advertise out own api */
    em->functions = (void *)(&func);
    return 1;

@@ -9,7 +9,7 @@
 #include "evas_common.h"
 #include "evas_private.h"
 
-#if 1
+#if 0
 #define Log(str, ...) printf("D3D "str"\n", __VA_ARGS__)
 #else
 #define Log(str, ...)
@@ -26,7 +26,7 @@ extern "C" {
 Direct3DDeviceHandler evas_direct3d_init(HWND window, int depth);
 void         evas_direct3d_free(Direct3DDeviceHandler d3d);
 
-void         evas_direct3d_context_color_set(int r, int g, int b, int a);
+void         evas_direct3d_context_color_set(Direct3DDeviceHandler d3d, int r, int g, int b, int a);
 
 void         evas_direct3d_render_all(Direct3DDeviceHandler d3d);
 
@@ -39,6 +39,8 @@ void evas_direct3d_image_free(Direct3DDeviceHandler d3d, Direct3DImageHandler im
 void evas_direct3d_image_draw(Direct3DDeviceHandler d3d, Direct3DImageHandler image,
    int src_x, int src_y, int src_w, int src_h, 
    int dst_x, int dst_y, int dst_w, int dst_h, int smooth);
+void evas_direct3d_image_size_get(Direct3DImageHandler image, int *w, int *h);
+
 
 #ifdef __cplusplus
 }

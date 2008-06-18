@@ -22,9 +22,9 @@ void D3DObjectRect::EndCache(D3DDevice *d3d)
 {
    if (!_cache_enabled)
       return;
-   D3DShaderPack::This()->SetVDecl(d3d, D3DShaderPack::VDECL_XYC);
-   D3DShaderPack::This()->SetVS(d3d, D3DShaderPack::VS_COPY_COLOR);
-   D3DShaderPack::This()->SetPS(d3d, D3DShaderPack::PS_COLOR);
+   D3DShaderPack::Current()->SetVDecl(d3d, D3DShaderPack::VDECL_XYC);
+   D3DShaderPack::Current()->SetVS(d3d, D3DShaderPack::VS_COPY_COLOR);
+   D3DShaderPack::Current()->SetPS(d3d, D3DShaderPack::PS_COLOR);
    d3d->GetDevice()->DrawPrimitiveUP(D3DPT_TRIANGLELIST, _cache.Length() / 3, 
       _cache.Data(), sizeof(Vertex));
 
@@ -39,9 +39,9 @@ void D3DObjectRect::Draw(D3DDevice *d3d)
 
    if (!_cache_enabled)
    {
-      D3DShaderPack::This()->SetVDecl(d3d, D3DShaderPack::VDECL_XYC);
-      D3DShaderPack::This()->SetVS(d3d, D3DShaderPack::VS_COPY_COLOR);
-      D3DShaderPack::This()->SetPS(d3d, D3DShaderPack::PS_COLOR);
+      D3DShaderPack::Current()->SetVDecl(d3d, D3DShaderPack::VDECL_XYC);
+      D3DShaderPack::Current()->SetVS(d3d, D3DShaderPack::VS_COPY_COLOR);
+      D3DShaderPack::Current()->SetPS(d3d, D3DShaderPack::PS_COLOR);
       d3d->GetDevice()->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 2, data, sizeof(Vertex));
    }
    else

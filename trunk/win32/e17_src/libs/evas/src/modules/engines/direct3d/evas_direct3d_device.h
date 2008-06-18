@@ -26,6 +26,7 @@ public:
 private:
    HRESULT RestoreDevice();
    HRESULT ResetDevice();
+   void Reset();
 
 private:
    HWND _window;

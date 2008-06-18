@@ -48,9 +48,9 @@ void D3DObjectImage::EndCache(D3DDevice *d3d)
 {
    if (!_cache_enabled)
       return;
-   D3DShaderPack::This()->SetVDecl(d3d, D3DShaderPack::VDECL_XYUV);
-   D3DShaderPack::This()->SetVS(d3d, D3DShaderPack::VS_COPY_UV);
-   D3DShaderPack::This()->SetPS(d3d, D3DShaderPack::PS_TEX);
+   D3DShaderPack::Current()->SetVDecl(d3d, D3DShaderPack::VDECL_XYUV);
+   D3DShaderPack::Current()->SetVS(d3d, D3DShaderPack::VS_COPY_UV);
+   D3DShaderPack::Current()->SetPS(d3d, D3DShaderPack::PS_TEX);
 
    struct GroupDesc
    {
@@ -103,7 +103,7 @@ void D3DObjectImage::EndCache(D3DDevice *d3d)
 
    for (int i = 0, cur = 0; i < groups.Length(); i++)
    {
-      D3DImageCache::This()->SelectImageToDevice(d3d, groups[i].id);
+      D3DImageCache::Current()->SelectImageToDevice(d3d, groups[i].id);
       d3d->GetDevice()->DrawPrimitiveUP(D3DPT_TRIANGLELIST, groups[i].num * 2, 
          &sorted[cur], sizeof(Vertex));
       cur += groups[i].num * 6;
@@ -120,9 +120,9 @@ void D3DObjectImage::Draw(D3DDevice *d3d)
       return;
    }
 
-   D3DShaderPack::This()->SetVDecl(d3d, D3DShaderPack::VDECL_XYUV);
-   D3DShaderPack::This()->SetVS(d3d, D3DShaderPack::VS_COPY_UV);
-   D3DShaderPack::This()->SetPS(d3d, D3DShaderPack::PS_TEX);
+   D3DShaderPack::Current()->SetVDecl(d3d, D3DShaderPack::VDECL_XYUV);
+   D3DShaderPack::Current()->SetVS(d3d, D3DShaderPack::VS_COPY_UV);
+   D3DShaderPack::Current()->SetPS(d3d, D3DShaderPack::PS_TEX);
 
    d3d->GetDevice()->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 2, MakeData(), sizeof(Vertex));
 }

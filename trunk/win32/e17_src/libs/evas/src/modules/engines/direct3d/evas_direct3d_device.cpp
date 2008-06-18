@@ -3,7 +3,7 @@
 
 D3DDevice::D3DDevice()
 {
-   ZeroMemory(this, sizeof(*this));
+   Reset();
 }
 
 bool D3DDevice::Init(HWND window, int depth)
@@ -112,9 +112,24 @@ void D3DDevice::Destroy()
       _device->Release();
    if (_object != NULL)
       _object->Release();
-   ZeroMemory(this, sizeof(*this));
+   Reset();
 
    Log("uninitialized");
+}
+
+void D3DDevice::Reset()
+{
+   _window = NULL;
+   _object = NULL;
+   _device = NULL;
+   _width = 0;
+   _height = 0;
+   _rot = 0;
+   _depth = 0;
+   _device_lost = false;
+   _scene_rendering = false;
+   ZeroMemory(&_d3dpp, sizeof(_d3dpp));
+   ZeroMemory(&_backbuffer_desc, sizeof(_backbuffer_desc));
 }
 
 HRESULT D3DDevice::RestoreDevice()
