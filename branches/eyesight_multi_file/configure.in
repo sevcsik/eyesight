@@ -1,0 +1,56 @@
+dnl Process this file with autoconf to produce a configure script.
+
+# get rid of that stupid cache mechanism
+rm -f config.cache
+
+AC_INIT(configure.in)
+AM_INIT_AUTOMAKE(eyesight, 0.0.1.001)
+AM_CONFIG_HEADER(config.h)
+
+AC_C_BIGENDIAN
+AC_ISC_POSIX
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_HEADER_STDC
+AC_C_CONST
+
+define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
+define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
+AM_PROG_LIBTOOL
+
+AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl)
+
+PKG_CHECK_MODULES(EYESIGHT,
+		  evas
+		  ecore
+        ecore-evas
+		  edje)
+PKG_CHECK_MODULES(EPDF, epdf)
+
+AC_OUTPUT([
+Makefile
+src/Makefile
+src/bin/Makefile
+src/plugins/Makefile
+src/plugins/pdf/Makefile
+data/Makefile
+data/themes/Makefile
+data/themes/docker/Makefile
+data/other/Makefile
+])
+
+echo
+echo
+echo
+echo "------------------------------------------------------------------------"
+echo "$PACKAGE $VERSION"
+echo "------------------------------------------------------------------------"
+echo
+echo "Configuration Options Summary:"
+echo
+echo "  Compilation..........: make"
+echo
+echo "  Installation.........: make install"
+echo
+echo "    prefix.............: $prefix"
+echo

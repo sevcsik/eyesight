@@ -1,0 +1,22 @@
+group
+{
+   name: "eyesight/main_window/foreground";
+   min: 640 480;
+   parts
+   {
+   #include "foreground/error_dialog.edc"
+   #include "foreground/error_dialog_programs.edc"
+   #include "foreground/top_bar.edc"
+   #include "foreground/docker.edc"
+   #include "foreground/toolbar1_sw.edc"
+   #include "foreground/toolbar2_sw.edc"
+   #include "foreground/toolbar3_sw.edc"
+   
+   // Built-in buttons
+   #include "foreground/nav.edc"
+   }
+   programs
+   {
+   #include "foreground/nav_programs.edc"
+   }
+}
