@@ -1,9 +1,0 @@
-line 546
-
-+ #ifdef BUILD_PTHREAD
-
-line 547
-
-+ #endif
-
-Seems better solution than redefining LK

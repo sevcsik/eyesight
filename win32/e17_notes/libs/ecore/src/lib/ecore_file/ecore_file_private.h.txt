@@ -1,9 +1,0 @@
-line 65
-
-- int ecore_file_download_init(void);
-- int ecore_file_download_shutdown(void);
-
-+ EAPI int ecore_file_download_init(void);
-+ EAPI int ecore_file_download_shutdown(void);
-
-Link error.

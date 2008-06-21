@@ -1,3 +1,0 @@
-line 4
-
-+ #define _WIN32_WINNT 0x0400  // For GET_WHEEL_DELTA_WPARAM

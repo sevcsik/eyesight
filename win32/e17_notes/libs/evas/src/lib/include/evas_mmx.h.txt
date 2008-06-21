@@ -1,7 +1,0 @@
-line 68
-
-+ #ifdef _MSC_VER
-+ #include <ansidecl.h>
-+ #endif
-
-__attribute__ macro

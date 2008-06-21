@@ -1,7 +1,0 @@
-line 1
-
-+ #include <Ecore.h>
-+ #include <Ecore_File.h>
-+ #include <Ecore_Str.h>
-
-To solve problems with EAPI redefinition

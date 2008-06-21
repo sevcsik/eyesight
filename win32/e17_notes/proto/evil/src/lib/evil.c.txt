@@ -1,6 +1,0 @@
-line 38
-
-+ #undef MB_CUR_MAX
-+ #define MB_CUR_MAX PATH_MAX
-
-MB_CUR_MAX is undefined to use in Evil.c.

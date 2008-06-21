@@ -1,1 +1,0 @@
-((cat src/bin/*.c |grep TODO) && cat src/bin/*.c |grep FIXME ) > TODO

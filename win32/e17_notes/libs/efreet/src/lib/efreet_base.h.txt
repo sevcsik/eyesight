@@ -1,6 +1,0 @@
-line 15
-
-- #include <Ecore.h>
-- #include <Ecore_Data.h>
-
-To solve problem with EAPI redefinition

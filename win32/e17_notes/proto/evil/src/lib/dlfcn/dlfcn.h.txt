@@ -1,7 +1,0 @@
-line 7
-
-+ #define _POSIX_
-  #include <limits.h>
-+ #undef _POSIX_
-
-limits.h without _POSIX_ is useless, but later it should be undefined.

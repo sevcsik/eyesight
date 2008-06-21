@@ -1,6 +1,0 @@
-
-line 10
-
-+ #include <ansidecl.h>
-
-<ansidecl.h> for __attribute__ macro.
