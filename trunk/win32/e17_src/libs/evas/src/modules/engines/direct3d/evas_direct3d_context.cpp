@@ -4,4 +4,5 @@
 D3DContext::D3DContext()
 {
    color = 0xff000000;
+   color_mul = 0xffffffff;
 }

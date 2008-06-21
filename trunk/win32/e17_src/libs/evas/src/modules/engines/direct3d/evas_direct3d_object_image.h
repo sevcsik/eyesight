@@ -23,6 +23,7 @@ public:
       int width, int height, const char *source);
    void Setup(FLOAT x, FLOAT y, FLOAT w, FLOAT h, 
       int sx, int sy, int sw, int sh);
+   void SetupColorFilter(DWORD color);
 
    inline bool IsValid();
    inline const char *GetSource();
@@ -34,6 +35,7 @@ private:
    {
       FLOAT x, y;
       FLOAT u, v;
+      D3DCOLOR col;
    };
 
 private:
@@ -46,6 +48,8 @@ private:
    FLOAT _u, _v, _du, _dv;
    int _image_id;
    int _width, _height;
+
+   D3DCOLOR _color;
 
    char _source[256];
 

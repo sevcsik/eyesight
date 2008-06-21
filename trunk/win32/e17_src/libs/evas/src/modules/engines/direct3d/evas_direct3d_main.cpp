@@ -10,6 +10,7 @@
 #include "evas_direct3d_object_line.h"
 #include "evas_direct3d_object_rect.h"
 #include "evas_direct3d_object_image.h"
+#include "evas_direct3d_vertex_buffer_cache.h"
 
 // Internal structure that joins two types of objects
 struct ImagePtr
@@ -25,6 +26,7 @@ struct DevicePtr
    Ref<D3DContext> context;
    Ref<D3DImageCache> image_cache;
    Ref<D3DShaderPack> shader_pack;
+   Ref<D3DVertexBufferCache> vb_cache;
 };
 
 DevicePtr *SelectDevice(Direct3DDeviceHandler d3d)
@@ -32,6 +34,7 @@ DevicePtr *SelectDevice(Direct3DDeviceHandler d3d)
    DevicePtr *dev_ptr = (DevicePtr *)d3d;
    D3DImageCache::SetCurrent(dev_ptr->image_cache);
    D3DShaderPack::SetCurrent(dev_ptr->shader_pack);
+   D3DVertexBufferCache::SetCurrent(dev_ptr->vb_cache);
    return dev_ptr;
 }
 
@@ -46,6 +49,7 @@ Direct3DDeviceHandler evas_direct3d_init(HWND window, int depth)
 
    D3DImageCache::SetCurrent(NULL);
    D3DShaderPack::SetCurrent(NULL);
+   D3DVertexBufferCache::SetCurrent(NULL);
 
    if (!D3DShaderPack::Current()->Initialize(device))
    {
@@ -61,6 +65,7 @@ Direct3DDeviceHandler evas_direct3d_init(HWND window, int depth)
    dev_ptr->context = new D3DContext();
    dev_ptr->image_cache = D3DImageCache::Current();
    dev_ptr->shader_pack = D3DShaderPack::Current();
+   dev_ptr->vb_cache = D3DVertexBufferCache::Current();
 
    return (Direct3DDeviceHandler)dev_ptr;
 }
@@ -75,8 +80,10 @@ evas_direct3d_free(Direct3DDeviceHandler d3d)
    dev_ptr->shader_pack = NULL;
    D3DShaderPack::Current()->Uninitialize();
    D3DImageCache::Current()->Uninitialize();
+   D3DVertexBufferCache::Current()->Uninitialize();
    D3DShaderPack::SetCurrent(NULL);
    D3DImageCache::SetCurrent(NULL);
+   D3DVertexBufferCache::SetCurrent(NULL);
 
    dev_ptr->device = NULL;
    delete dev_ptr;
@@ -89,6 +96,14 @@ evas_direct3d_context_color_set(Direct3DDeviceHandler d3d, int r, int g, int b, 
 {
    DevicePtr *dev_ptr = SelectDevice(d3d);
    dev_ptr->context->color = ((a & 0xff) << 24) | ((r & 0xff) << 16) |
+      ((g & 0xff) << 8) | (b & 0xff);
+}
+
+void
+evas_direct3d_context_set_multiplier(Direct3DDeviceHandler d3d, int r, int g, int b, int a)
+{
+   DevicePtr *dev_ptr = SelectDevice(d3d);
+   dev_ptr->context->color_mul = ((a & 0xff) << 24) | ((r & 0xff) << 16) |
       ((g & 0xff) << 8) | (b & 0xff);
 }
 
@@ -307,6 +322,9 @@ void evas_direct3d_image_draw(Direct3DDeviceHandler d3d, Direct3DImageHandler im
       -2.f * float(dst_h) / float(device->GetHeight()),
       0, 0, -1, -1);
 //      src_x, src_y, src_w, src_h);
+
+   image_ref->SetupColorFilter(dev_ptr->context->color_mul);
+
    image_ref->SetFree(false);
 }
 

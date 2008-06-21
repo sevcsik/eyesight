@@ -12,6 +12,7 @@ public:
 
 public:
    DWORD color;
+   DWORD color_mul;
 
 };
 
