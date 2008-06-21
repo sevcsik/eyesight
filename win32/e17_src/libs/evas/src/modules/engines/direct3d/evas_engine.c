@@ -128,6 +128,24 @@ eng_context_color_set(void *data, void *context, int r, int g, int b, int a)
    evas_common_draw_context_set_color(context, r, g, b, a);
 }
 
+static void
+eng_context_multiplier_set(void *data, void *context, int r, int g, int b, int a)
+{
+   Render_Engine *re = (Render_Engine *)data;
+   evas_direct3d_context_set_multiplier(re->d3d, 255, 255, 255, a);
+
+   evas_common_draw_context_set_multiplier(context, r, g, b, a);
+}
+
+static void
+eng_context_multiplier_unset(void *data, void *context)
+{
+   Render_Engine *re = (Render_Engine *)data;
+   evas_direct3d_context_set_multiplier(re->d3d, 255, 255, 255, 255);
+
+   evas_common_draw_context_unset_multiplier(context);
+}
+
 
 //////////////////////////////////////////////////////////////////////////////
 // Output manipulating
@@ -294,6 +312,8 @@ module_open(Evas_Module *em)
    ORD(info_free);
    ORD(setup);
    ORD(context_color_set);
+   ORD(context_multiplier_set);
+   ORD(context_multiplier_unset);
    ORD(output_free);
    ORD(output_resize);
    ORD(output_redraws_rect_add);

@@ -172,7 +172,7 @@ HRESULT D3DDevice::ResetDevice()
    // Reset the device
    if (FAILED(hr = _device->Reset(&_d3dpp)))
    {
-      //TrError(Strf::Printf("DXDevice: Reset of the device failed! Error (%X) \"%s\"", 
+      //TrError(Strf::Printf("D3DDevice: Reset of the device failed! Error (%X) \"%s\"", 
       //   (DWORD)hr, DXGetErrorStringA(hr)));
       return hr;
    }

@@ -28,6 +28,7 @@ public:
    {
       VDECL_XYC = 0,
       VDECL_XYUV,
+      VDECL_XYUVC,
 
       VDECL_NUM
    };
@@ -36,6 +37,7 @@ public:
    {
       VS_COPY_COLOR = 0,
       VS_COPY_UV,
+      VS_COPY_UV_COLOR,
 
       VS_NUM
    };
@@ -44,6 +46,7 @@ public:
    {
       PS_COLOR = 0,
       PS_TEX,
+      PS_TEX_COLOR_FILTER,
 
       PS_NUM
    };

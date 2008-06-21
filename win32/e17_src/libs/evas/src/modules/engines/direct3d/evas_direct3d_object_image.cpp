@@ -1,8 +1,11 @@
 
+//#define ENABLE_LOG_PRINTF
+
 #include "evas_direct3d_object_image.h"
 #include "evas_direct3d_image_cache.h"
 #include "evas_direct3d_device.h"
 #include "evas_direct3d_shader_pack.h"
+#include "evas_direct3d_vertex_buffer_cache.h"
 
 TArray<D3DObjectImage *> D3DObjectImage::_cache;
 bool D3DObjectImage::_cache_enabled = false;
@@ -15,6 +18,7 @@ D3DObjectImage::D3DObjectImage()
    _image_id = -1;
    _width = _height = 0;
    _source[0] = 0;
+   _color = 0xffffffff;
 }
 
 void D3DObjectImage::CopyTo(D3DObjectImage *image)
@@ -35,6 +39,7 @@ void D3DObjectImage::CopyTo(D3DObjectImage *image)
    image->_image_id = _image_id;
    image->_width = _width;
    image->_height = _height;
+   image->_color = _color;
    CopyMemory(image->_source, _source, sizeof(_source));
 }
 
@@ -46,11 +51,11 @@ void D3DObjectImage::BeginCache()
 
 void D3DObjectImage::EndCache(D3DDevice *d3d)
 {
-   if (!_cache_enabled)
+   if (!_cache_enabled || _cache.Length() == 0)
       return;
-   D3DShaderPack::Current()->SetVDecl(d3d, D3DShaderPack::VDECL_XYUV);
-   D3DShaderPack::Current()->SetVS(d3d, D3DShaderPack::VS_COPY_UV);
-   D3DShaderPack::Current()->SetPS(d3d, D3DShaderPack::PS_TEX);
+   D3DShaderPack::Current()->SetVDecl(d3d, D3DShaderPack::VDECL_XYUVC);
+   D3DShaderPack::Current()->SetVS(d3d, D3DShaderPack::VS_COPY_UV_COLOR);
+   D3DShaderPack::Current()->SetPS(d3d, D3DShaderPack::PS_TEX_COLOR_FILTER);
 
    struct GroupDesc
    {
@@ -86,9 +91,9 @@ void D3DObjectImage::EndCache(D3DDevice *d3d)
             sorted.Add(data[3]);
             sorted.Add(data[4]);
             sorted.Add(data[5]);
+            _cache[i]->_image_id = -_cache[i]->_image_id - 1;
+            num++;
          }
-         _cache[i]->_image_id = -_cache[i]->_image_id - 1;
-         num++;
       }
       if (num > 0)
       {
@@ -101,11 +106,20 @@ void D3DObjectImage::EndCache(D3DDevice *d3d)
    for (int i = 0; i < _cache.Length(); i++)
       _cache[i]->_image_id = -_cache[i]->_image_id - 1;
 
+   D3DVertexBufferCache::CacheEntryInfo ce_info;
+   if (!D3DVertexBufferCache::Current()->InitBuffer(d3d, (BYTE *)sorted.Data(), 
+      sorted.Length() * sizeof(Vertex), ce_info))
+   {
+      return;
+   }
+   D3DVertexBufferCache::Current()->SelectBufferToDevice(d3d, ce_info.id, sizeof(Vertex));
+
    for (int i = 0, cur = 0; i < groups.Length(); i++)
    {
       D3DImageCache::Current()->SelectImageToDevice(d3d, groups[i].id);
-      d3d->GetDevice()->DrawPrimitiveUP(D3DPT_TRIANGLELIST, groups[i].num * 2, 
-         &sorted[cur], sizeof(Vertex));
+//      d3d->GetDevice()->DrawPrimitiveUP(D3DPT_TRIANGLELIST, groups[i].num * 2, 
+//         &sorted[cur], sizeof(Vertex));
+      d3d->GetDevice()->DrawPrimitive(D3DPT_TRIANGLELIST, cur, groups[i].num * 2);
       cur += groups[i].num * 6;
    }
 
@@ -120,9 +134,9 @@ void D3DObjectImage::Draw(D3DDevice *d3d)
       return;
    }
 
-   D3DShaderPack::Current()->SetVDecl(d3d, D3DShaderPack::VDECL_XYUV);
-   D3DShaderPack::Current()->SetVS(d3d, D3DShaderPack::VS_COPY_UV);
-   D3DShaderPack::Current()->SetPS(d3d, D3DShaderPack::PS_TEX);
+   D3DShaderPack::Current()->SetVDecl(d3d, D3DShaderPack::VDECL_XYUVC);
+   D3DShaderPack::Current()->SetVS(d3d, D3DShaderPack::VS_COPY_UV_COLOR);
+   D3DShaderPack::Current()->SetPS(d3d, D3DShaderPack::PS_TEX_COLOR_FILTER);
 
    d3d->GetDevice()->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 2, MakeData(), sizeof(Vertex));
 }
@@ -157,15 +171,21 @@ void D3DObjectImage::Setup(FLOAT x, FLOAT y, FLOAT w, FLOAT h,
       _sh = 1.f;
 }
 
+void D3DObjectImage::SetupColorFilter(DWORD color)
+{
+   //_color = ((a & 0xff) << 24) | ((r & 0xff) << 16) | ((g & 0xff) << 8) | (b & 0xff);
+   _color = color;
+}
+
 D3DObjectImage::Vertex *D3DObjectImage::MakeData()
 {
    Vertex data[6] = {
-      {_x, _y,             _u + _sx * _du, _v + _sy * _dv}, 
-      {_x + _w, _y,        _u + (_sx + _sw) * _du, _v + _sy * _dv}, 
-      {_x, _y + _h,        _u + _sx * _du, _v + (_sy + _sh) * _dv},
-      {_x, _y + _h,        _u + _sx * _du, _v + (_sy + _sh) * _dv}, 
-      {_x + _w, _y,        _u + (_sx + _sw) * _du, _v + _sy * _dv}, 
-      {_x + _w, _y + _h,   _u + (_sx + _sw) * _du, _v + (_sy + _sh) * _dv}};
+      {_x, _y,             _u + _sx * _du, _v + _sy * _dv,                 _color}, 
+      {_x + _w, _y,        _u + (_sx + _sw) * _du, _v + _sy * _dv,         _color}, 
+      {_x, _y + _h,        _u + _sx * _du, _v + (_sy + _sh) * _dv,         _color},
+      {_x, _y + _h,        _u + _sx * _du, _v + (_sy + _sh) * _dv,         _color}, 
+      {_x + _w, _y,        _u + (_sx + _sw) * _du, _v + _sy * _dv,         _color}, 
+      {_x + _w, _y + _h,   _u + (_sx + _sw) * _du, _v + (_sy + _sh) * _dv, _color}};
    CopyMemory(_data, data, sizeof(data));
    return _data;
 }

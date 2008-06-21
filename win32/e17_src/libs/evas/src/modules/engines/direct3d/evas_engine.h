@@ -9,7 +9,7 @@
 #include "evas_common.h"
 #include "evas_private.h"
 
-#if 0
+#ifdef ENABLE_LOG_PRINTF
 #define Log(str, ...) printf("D3D "str"\n", __VA_ARGS__)
 #else
 #define Log(str, ...)
@@ -27,6 +27,7 @@ Direct3DDeviceHandler evas_direct3d_init(HWND window, int depth);
 void         evas_direct3d_free(Direct3DDeviceHandler d3d);
 
 void         evas_direct3d_context_color_set(Direct3DDeviceHandler d3d, int r, int g, int b, int a);
+void         evas_direct3d_context_set_multiplier(Direct3DDeviceHandler d3d, int r, int g, int b, int a);
 
 void         evas_direct3d_render_all(Direct3DDeviceHandler d3d);
 
