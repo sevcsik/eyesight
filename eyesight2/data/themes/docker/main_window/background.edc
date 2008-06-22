@@ -1,22 +1,9 @@
-part
+group
 {
-	name: "background";
-	type: GRADIENT;
-	mouse_events: 0;
-	description
+	name: "eyesight/main_window/background";
+	min: 640 480;
+	parts
 	{
-		state: "default" 0.0;
-		rel1
-		{
-			relative: 0.0 0.0;
-		}
-		rel2
-		{
-			relative: 1.0 1.0;
-		}
-		gradient
-		{
-			spectrum: "black_to_grey";
-		}
+		#include "background/background_grad.edc"
 	}
 }

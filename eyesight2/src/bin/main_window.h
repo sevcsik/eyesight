@@ -13,6 +13,7 @@ typedef struct _Main_Window
    //Ecore_Evas *ee;
    Evas *evas;
    Evas_Object *main_window;
+   Evas_Object *controls;
 }
 Main_Window;
 

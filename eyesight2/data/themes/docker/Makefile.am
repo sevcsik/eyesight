@@ -11,6 +11,3 @@ clean:
 
 EXTRA_DIST = border_trans.edc border_opaque.edc error_dialog.edc main.edc \
 	toolbar1_icon.edc
-
-SUBDIRS = img main_window
-
