@@ -1,0 +1,22 @@
+group
+{
+   name: "eyesight/main_window/controls";
+   min: 640 480;
+   parts
+   {
+   #include "controls/error_dialog.edc"
+   #include "controls/error_dialog_programs.edc"
+   #include "controls/top_bar.edc"
+   #include "controls/docker.edc"
+   #include "controls/toolbar1_sw.edc"
+   #include "controls/toolbar2_sw.edc"
+   #include "controls/toolbar3_sw.edc"
+   
+   // Built-in buttons
+   #include "controls/nav.edc"
+   }
+   programs
+   {
+   #include "controls/nav_programs.edc"
+   }
+}
