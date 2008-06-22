@@ -23,6 +23,7 @@ AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl)
 PKG_CHECK_MODULES(EYESIGHT,
 		  evas
 		  ecore
+		  ecore-evas
 		  edje)
 PKG_CHECK_MODULES(EPDF, epdf)
 
@@ -33,6 +34,7 @@ src/bin/Makefile
 src/plugins/Makefile
 src/plugins/pdf/Makefile
 data/Makefile
+data/other/Makefile
 data/themes/Makefile
 data/themes/docker/Makefile
 ])

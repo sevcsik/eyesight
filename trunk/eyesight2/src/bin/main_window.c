@@ -23,6 +23,7 @@ main_window_resize_cb(Ecore_Evas *ee)
    Main_Window *main_window = (Main_Window*)ecore_evas_data_get(ee, "main_window");
    ecore_evas_geometry_get(ee, NULL, NULL, &w, &h);
    evas_object_resize(main_window->main_window, w, h);
+   evas_object_resize(main_window->controls, w, h);
 }
 
 void
@@ -45,6 +46,7 @@ main_window_create(Args *args, Evas_List **startup_errors)
 {
    Main_Window *main_window = malloc(sizeof(Main_Window));
    Ecore_Evas *ee;
+   char *theme;
 
    ee = ecore_evas_software_x11_new(0, 0, 0, 0, 0, 0);
    main_window->evas = ecore_evas_get(ee);
@@ -58,7 +60,7 @@ main_window_create(Args *args, Evas_List **startup_errors)
    if (args->theme_path)
    {
       if (!edje_object_file_set(main_window->main_window, args->theme_path,
-                                "main_window"))
+                                "eyesight/main_window/background"))
       {
          append_startup_error(startup_errors, ERROR_THEME, args->theme_path);
       }
@@ -68,12 +70,21 @@ main_window_create(Args *args, Evas_List **startup_errors)
    if (!theme_loaded)
       edje_object_file_set(main_window->main_window,
                            PACKAGE_DATA_DIR"/themes/docker/docker.edj",
-                           "main_window");
+                           "eyesight/main_window/background");
+   evas_object_layer_set(main_window->main_window, 0);
+   
+   // Setting up foreground parts
+   main_window->controls = edje_object_add(main_window->evas);
+   edje_object_file_get(main_window->main_window, (const char *)&theme, NULL);
+   edje_object_file_set(main_window->controls, theme, "eyesight/main_window/controls");
+   evas_object_layer_set(main_window->controls, 9999);
+   
    int w, h;
    evas_object_name_set(main_window->main_window, "main_window");
    edje_object_size_min_get(main_window->main_window, &w, &h);
    evas_object_move(main_window->main_window, 0, 0);
    evas_object_resize(main_window->main_window, w, h);
+   evas_object_resize(main_window->controls, w, h);
    ecore_evas_resize(ee, w, h);
    ecore_evas_size_min_set(ee, w, h);
 
@@ -89,6 +100,7 @@ main_window_create(Args *args, Evas_List **startup_errors)
    
    ecore_animator_frametime_set(FRAMETIME);
    evas_object_show(main_window->main_window);
+   evas_object_show(main_window->controls);
    ecore_evas_show(ee);
    
    display_startup_error_dialog(ee, *startup_errors);
