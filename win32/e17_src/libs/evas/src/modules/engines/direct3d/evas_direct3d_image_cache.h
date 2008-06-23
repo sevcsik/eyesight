@@ -30,6 +30,7 @@ public:
    bool InsertImage(D3DDevice *d3d, DWORD *data, int w, int h, CacheEntryInfo &info);
    bool SelectImageToDevice(D3DDevice *d3d, int id);
    void RemoveImageUser(int id);
+   void AddImageUser(int id);
    void Uninitialize();
 
 private:

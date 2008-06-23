@@ -29,6 +29,7 @@ void D3DObjectLine::EndCache(D3DDevice *d3d)
       _cache.Data(), sizeof(Vertex));
 
    Log("Line cache drawn: %d items", _cache.Length() / 2);
+   _cache_enabled = false;
 }
 
 void D3DObjectLine::Draw(D3DDevice *d3d)

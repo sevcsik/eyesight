@@ -296,6 +296,21 @@ eng_image_colorspace_get(void *data, void *image)
    return EVAS_COLORSPACE_ARGB8888;
 }
 
+static void *
+eng_image_border_set(void *data, void *image, int l, int r, int t, int b)
+{
+   Render_Engine *re = (Render_Engine *)data;
+   evas_direct3d_image_border_set(re->d3d, image, l, t, r, b);
+   return image;
+}
+
+static void
+eng_image_border_get(void *data, void *image, int *l, int *r, int *t, int *b)
+{
+   Render_Engine *re = (Render_Engine *)data;
+   evas_direct3d_image_border_get(re->d3d, image, l, t, r, b);
+}
+
 
 /* module advertising code */
 EAPI int
@@ -331,6 +346,8 @@ module_open(Evas_Module *em)
    ORD(image_size_get);
    ORD(image_alpha_get);
    ORD(image_colorspace_get);
+   ORD(image_border_set);
+   ORD(image_border_get);
    /* now advertise out own api */
    em->functions = (void *)(&func);
    return 1;

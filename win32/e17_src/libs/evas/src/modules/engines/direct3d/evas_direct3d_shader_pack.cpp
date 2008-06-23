@@ -114,6 +114,20 @@ bool D3DShaderPack::InitVertexDeclarations(D3DDevice *d3d)
          return false;
    }
    _vdecl[VDECL_XYUVC] = vdecl;
+   vdecl = NULL;
+   {
+      D3DVERTEXELEMENT9 elements[] = {
+         {0, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0},
+         {0, 12, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0},
+         {0, 20, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0},
+         D3DDECL_END()
+         };
+      if (FAILED(d3d->GetDevice()->CreateVertexDeclaration(elements, &vdecl)))
+         return false;
+      if (vdecl == NULL)
+         return false;
+   }
+   _vdecl[VDECL_XYZUVC] = vdecl;
 
    return true;
 }
@@ -169,6 +183,23 @@ bool D3DShaderPack::InitVertexShaders(D3DDevice *d3d)
       _vs[VS_COPY_UV_COLOR] = (LPDIRECT3DVERTEXSHADER9)
          CompileShader(d3d, true, "CopyUVColor", buf, sizeof(buf) - 1);
       if (_vs[VS_COPY_UV_COLOR] == NULL)
+         return false;
+   }
+
+   {
+      char buf[] = 
+         "struct VsInput {	float3 pos : POSITION; float2 tex : TEXCOORD0; float4 col : COLOR; };\n"
+         "struct VsOutput { float4 pos : POSITION; float2 tex : TEXCOORD0; float4 col : COLOR0; };\n"
+         "VsOutput main(VsInput vs_in) {\n"
+         "VsOutput vs_out;\n"
+	      "vs_out.pos = float4(vs_in.pos, 1);\n"
+         "vs_out.tex = vs_in.tex;\n"
+         "vs_out.col = vs_in.col;\n"
+	      "return vs_out;}";
+
+      _vs[VS_COPY_UV_COLOR_Z] = (LPDIRECT3DVERTEXSHADER9)
+         CompileShader(d3d, true, "CopyUVColorZ", buf, sizeof(buf) - 1);
+      if (_vs[VS_COPY_UV_COLOR_Z] == NULL)
          return false;
    }
 

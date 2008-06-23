@@ -65,7 +65,8 @@ bool D3DDevice::Init(HWND window, int depth)
    pp.SwapEffect = D3DSWAPEFFECT_DISCARD;
    pp.hDeviceWindow = window;
    pp.Windowed  = TRUE;
-   pp.EnableAutoDepthStencil = FALSE;
+   //pp.EnableAutoDepthStencil = TRUE;
+   //pp.AutoDepthStencilFormat = D3DFMT_D16;
    pp.FullScreen_RefreshRateInHz = 0;
    pp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 
@@ -206,7 +207,11 @@ bool D3DDevice::Begin()
    if (FAILED(_device->BeginScene()))
       return false;
 
-   _device->Clear(0, NULL, D3DCLEAR_TARGET, 0xffdddddd, 1.f, 0);
+   //static const D3DVIEWPORT9 vp = {0, 0, _width, _height, 0.f, 1.f};
+   //_device->SetViewport(&vp);
+   //_device->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
+
+   _device->Clear(0, NULL, D3DCLEAR_TARGET /*| D3DCLEAR_ZBUFFER*/, 0xffdddddd, 1.f, 0);
    return true;
 }
 
