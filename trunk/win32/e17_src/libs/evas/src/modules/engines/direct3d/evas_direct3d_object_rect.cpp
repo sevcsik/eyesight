@@ -29,6 +29,7 @@ void D3DObjectRect::EndCache(D3DDevice *d3d)
       _cache.Data(), sizeof(Vertex));
 
    Log("Rect cache drawn: %d items", _cache.Length() / 6);
+   _cache_enabled = false;
 }
 
 void D3DObjectRect::Draw(D3DDevice *d3d)

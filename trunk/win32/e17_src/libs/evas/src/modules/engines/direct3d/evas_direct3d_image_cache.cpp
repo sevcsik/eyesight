@@ -34,8 +34,9 @@ void D3DImageCache::Uninitialize()
 {
    for (int i = 0; i < _cache.Length(); i++)
    {
-      assert(_cache[i].texture != NULL);
-      _cache[i].texture->Release();
+      // In normal case they all will be NULL
+      if (_cache[i].texture != NULL)
+         _cache[i].texture->Release();
    }
    _cache.Resize();
 }
@@ -59,6 +60,14 @@ void D3DImageCache::RemoveImageUser(int id)
       _cache[id].texture->Release();
       ZeroMemory(&_cache[id], sizeof(_cache[id]));
    }
+}
+
+void D3DImageCache::AddImageUser(int id)
+{
+   if (id < 0 || id >= _cache.Length())
+      return;
+   assert(_cache[id].texture != NULL);
+   _cache[id].users++;
 }
 
 bool D3DImageCache::InsertImage(D3DDevice *d3d, DWORD *data, int w, int h, CacheEntryInfo &info)

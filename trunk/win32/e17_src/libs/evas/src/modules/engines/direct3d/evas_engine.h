@@ -9,6 +9,7 @@
 #include "evas_common.h"
 #include "evas_private.h"
 
+//#define ENABLE_LOG_PRINTF
 #ifdef ENABLE_LOG_PRINTF
 #define Log(str, ...) printf("D3D "str"\n", __VA_ARGS__)
 #else
@@ -41,6 +42,10 @@ void evas_direct3d_image_draw(Direct3DDeviceHandler d3d, Direct3DImageHandler im
    int src_x, int src_y, int src_w, int src_h, 
    int dst_x, int dst_y, int dst_w, int dst_h, int smooth);
 void evas_direct3d_image_size_get(Direct3DImageHandler image, int *w, int *h);
+void evas_direct3d_image_border_set(Direct3DDeviceHandler d3d, Direct3DImageHandler image, 
+   int l, int r, int t, int b);
+void evas_direct3d_image_border_get(Direct3DDeviceHandler d3d, Direct3DImageHandler image, 
+   int *l, int *r, int *t, int *b);
 
 
 #ifdef __cplusplus

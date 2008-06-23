@@ -11,6 +11,7 @@ class D3DObject : virtual public Referenc
 {
 public:
    D3DObject();
+   virtual ~D3DObject();
 
    virtual void Draw(D3DDevice *d3d);
 

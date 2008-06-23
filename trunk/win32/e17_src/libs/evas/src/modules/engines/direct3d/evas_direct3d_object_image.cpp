@@ -19,19 +19,21 @@ D3DObjectImage::D3DObjectImage()
    _width = _height = 0;
    _source[0] = 0;
    _color = 0xffffffff;
+   _cache_i = 0;
+   _border = D3DXVECTOR4(0, 0, 0, 0);
+   _uvborder = D3DXVECTOR4(0, 0, 0, 0);
+   _with_border = false;
+   _dirty = false;
+}
+
+D3DObjectImage::~D3DObjectImage()
+{
+   D3DImageCache::Current()->RemoveImageUser(_image_id);
 }
 
 void D3DObjectImage::CopyTo(D3DObjectImage *image)
 {
    assert(image != NULL);
-   image->_x = _x;
-   image->_y = _y;
-   image->_w = _w;
-   image->_h = _h;
-   image->_sx = _sx;
-   image->_sy = _sy;
-   image->_sw = _sw;
-   image->_sh = _sh;
    image->_u = _u;
    image->_v = _v;
    image->_du = _du;
@@ -39,8 +41,8 @@ void D3DObjectImage::CopyTo(D3DObjectImage *image)
    image->_image_id = _image_id;
    image->_width = _width;
    image->_height = _height;
-   image->_color = _color;
    CopyMemory(image->_source, _source, sizeof(_source));
+   D3DImageCache::Current()->AddImageUser(image->_image_id);
 }
 
 void D3DObjectImage::BeginCache()
@@ -84,15 +86,27 @@ void D3DObjectImage::EndCache(D3DDevice *d3d)
             cur_id = _cache[i]->_image_id;
          if (_cache[i]->_image_id == cur_id)
          {
-            Vertex *data = _cache[i]->MakeData();
-            sorted.Add(data[0]);
-            sorted.Add(data[1]);
-            sorted.Add(data[2]);
-            sorted.Add(data[3]);
-            sorted.Add(data[4]);
-            sorted.Add(data[5]);
-            _cache[i]->_image_id = -_cache[i]->_image_id - 1;
-            num++;
+            if (!_cache[i]->_with_border)
+            {
+               Vertex *data = _cache[i]->MakeData();
+               sorted.Add(data[0]);
+               sorted.Add(data[1]);
+               sorted.Add(data[2]);
+               sorted.Add(data[3]);
+               sorted.Add(data[4]);
+               sorted.Add(data[5]);
+               _cache[i]->_image_id = -_cache[i]->_image_id - 1;
+               num++;
+            }
+            else
+            {
+               Vertex *data = _cache[i]->MakeDataBorder();
+               int last_len = sorted.Length();
+               sorted.Allocate(last_len + 6 * 9);
+               CopyMemory(&sorted[last_len], data, sizeof(Vertex) * 6 * 9);
+               _cache[i]->_image_id = -_cache[i]->_image_id - 1;
+               num += 9;
+            }
          }
       }
       if (num > 0)
@@ -124,21 +138,31 @@ void D3DObjectImage::EndCache(D3DDevice *d3d)
    }
 
    Log("Image cache drawn: %d items, %d groups", _cache.Length(), groups.Length());
+   _cache_enabled = false;
 }
 
 void D3DObjectImage::Draw(D3DDevice *d3d)
 {
+   _dirty = false;
+
+   Log("Image draw: (%.3f, %.3f, %.3f, %.3f)", _x, _y, _w, _h);
+
    if (_cache_enabled)
    {
       _cache.Add(this);
+      _cache_i = _cache.Length() - 1;
       return;
    }
 
    D3DShaderPack::Current()->SetVDecl(d3d, D3DShaderPack::VDECL_XYUVC);
    D3DShaderPack::Current()->SetVS(d3d, D3DShaderPack::VS_COPY_UV_COLOR);
    D3DShaderPack::Current()->SetPS(d3d, D3DShaderPack::PS_TEX_COLOR_FILTER);
+   D3DImageCache::Current()->SelectImageToDevice(d3d, _image_id);
 
-   d3d->GetDevice()->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 2, MakeData(), sizeof(Vertex));
+   if (!_with_border)
+      d3d->GetDevice()->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 2, MakeData(), sizeof(Vertex));
+   else
+      d3d->GetDevice()->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 18, MakeDataBorder(), sizeof(Vertex));
 }
 
 void D3DObjectImage::Init(FLOAT u, FLOAT v, FLOAT du, FLOAT dv, 
@@ -157,18 +181,39 @@ void D3DObjectImage::Init(FLOAT u, FLOAT v, FLOAT du, FLOAT dv,
 void D3DObjectImage::Setup(FLOAT x, FLOAT y, FLOAT w, FLOAT h, 
    int sx, int sy, int sw, int sh)
 {
-   _x = x;
-   _y = y;
-   _w = w;
-   _h = h;
-   _sx = FLOAT(sx) / FLOAT(_width);
-   _sy = FLOAT(sy) / FLOAT(_height);
-   _sw = FLOAT(sw) / FLOAT(_width);
-   _sh = FLOAT(sh) / FLOAT(_height);
-   if (_sw < 0.f)
-      _sw = 1.f;
-   if (_sh < 0.f)
-      _sh = 1.f;
+   if (!_dirty)
+   {
+      _x = 1.f;
+      _y = -1.f;
+      _w = _h = 0.f;
+      _sx = _sy = 1.f;
+      _sw = _sh = 0.f;
+   }
+
+   if (!_with_border)
+   {
+      _x = x;
+      _y = y;
+      _w = w;
+      _h = h;
+      _sx = FLOAT(sx) / FLOAT(_width);
+      _sy = FLOAT(sy) / FLOAT(_height);
+      _sw = FLOAT(sw) / FLOAT(_width);
+      _sh = FLOAT(sh) / FLOAT(_height);
+   }
+   else
+   {
+      _x = min(_x, x);
+      _y = max(_y, y);
+      _w += w / 3;
+      _h += h / 3;
+      _sx = min(_sx, FLOAT(sx) / FLOAT(_width));
+      _sy = min(_sy, FLOAT(sy) / FLOAT(_height));
+      _sw += FLOAT(sw) / (3.f * FLOAT(_width));
+      _sh += FLOAT(sh) / (3.f * FLOAT(_height));
+   }
+   _dirty = true;
+
 }
 
 void D3DObjectImage::SetupColorFilter(DWORD color)
@@ -179,6 +224,7 @@ void D3DObjectImage::SetupColorFilter(DWORD color)
 
 D3DObjectImage::Vertex *D3DObjectImage::MakeData()
 {
+   //FLOAT z = (FLOAT(_cache_i) + 0.5f) / _cache.Length();
    Vertex data[6] = {
       {_x, _y,             _u + _sx * _du, _v + _sy * _dv,                 _color}, 
       {_x + _w, _y,        _u + (_sx + _sw) * _du, _v + _sy * _dv,         _color}, 
@@ -188,4 +234,64 @@ D3DObjectImage::Vertex *D3DObjectImage::MakeData()
       {_x + _w, _y + _h,   _u + (_sx + _sw) * _du, _v + (_sy + _sh) * _dv, _color}};
    CopyMemory(_data, data, sizeof(data));
    return _data;
+}
+
+D3DObjectImage::Vertex *D3DObjectImage::MakeDataBorder()
+{
+   //FLOAT z = (FLOAT(_cache_i) + 0.5f) / _cache.Length();
+   if (_border.x + _border.z > _w)
+      _border.x = _border.z = _w / 2;
+   if (_border.y + _border.w < _h)
+      _border.y = _border.w = _h / 2;
+
+   FLOAT ul, ut, ur, ub;
+   ul = _uvborder.x * _du;
+   ut = _uvborder.y * _dv;
+   ur = _uvborder.z * _du;
+   ub = _uvborder.w * _dv;
+   FLOAT bl, bt, br, bb;
+   bl = _border.x;
+   bt = _border.y;
+   br = _border.z;
+   bb = _border.w;
+
+   const FLOAT half_x = 0.5f * _du / FLOAT(_width);
+   const FLOAT half_y = 0.5f * _dv / FLOAT(_height);
+
+   // Diagonal knots
+   Vertex data[4] = {
+      {_x, _y,                         _u + _sx * _du + half_x,     _v + _sy * _dv + half_y,         _color}, 
+      {_x + bl, _y + bt,               _u + ul + _sx * _du,         _v + ut + _sy * _dv,             _color}, 
+      {_x + _w - br, _y + _h - bb,     _u - ur + (_sx + _sw) * _du, _v - ub + (_sy + _sh) * _dv,     _color}, 
+      {_x + _w, _y + _h,               _u + (_sx + _sw) * _du - half_x, _v + (_sy + _sh) * _dv - half_y, _color}};
+
+   static const int yshift[6] = {0, 0, 1, 1, 0, 1};
+   static const int xshift[6] = {0, 1, 0, 0, 1, 1};
+
+   int vi = 0;
+   for (int i = 0; i < 3; i++)
+   {
+      for (int j = 0; j < 3; j++)
+      {
+         for (int v = 0; v < 6; v++)
+         {
+            _data[vi].x = data[xshift[v] + j].x;
+            _data[vi].y = data[yshift[v] + i].y;
+            _data[vi].u = data[xshift[v] + j].u;
+            _data[vi].v = data[yshift[v] + i].v;
+            _data[vi].col = data[0].col;
+            vi++;
+         }
+      }
+   }
+
+   return _data;
+}
+
+void D3DObjectImage::SetupBorder(const D3DXVECTOR4 &world_border, const D3DXVECTOR4 &pix_border)
+{
+   _border = world_border;
+   _uvborder = pix_border;
+   _with_border = (_border.x > 0.0001f || _border.y > 0.0001f || 
+      _border.z > 0.0001f || _border.w > 0.0001f);
 }
