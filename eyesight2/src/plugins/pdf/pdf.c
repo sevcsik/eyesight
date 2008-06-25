@@ -1,9 +1,13 @@
+#include "pdf.h"
+
 #include "plugin.h"
 #include "animations.h"
+#include "toolbar.h"
 #include <esmart_pdf.h>
 #include <Ecore.h>
 #include <Ecore_Data.h>
 #include <Edje.h>
+#include <Efreet.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -38,6 +42,7 @@ init(void **plugin_data)
    ((Pdf_Plugin_Data *)*plugin_data)->files = ecore_hash_new(NULL, NULL);
    if (!((Pdf_Plugin_Data *)*plugin_data)->files) return PLUGIN_INIT_FAIL;
    
+   efreet_init();
    // No need to init epdf
    return PLUGIN_INIT_SUCCESS;
 }
@@ -102,7 +107,7 @@ open_file(void **_plugin_data, char *filename, Evas_Object *main_window,
 }
 
 void
-show(void **_plugin_data, char *filename, Evas_Object *main_window, Evas *evas)
+show(void **_plugin_data, char *filename, Evas *evas)
 {
    Pdf_Plugin_Data *plugin_data = *_plugin_data;
    Pdf_File_Data *file_data = NULL;
@@ -120,9 +125,22 @@ show(void **_plugin_data, char *filename, Evas_Object *main_window, Evas *evas)
    show_anim_data->object = border;
    
    evas_object_geometry_get(border, &(show_anim_data->start_x), NULL, NULL, NULL);
-   evas_object_geometry_get(main_window, NULL, NULL, &(show_anim_data->ew), NULL);
+   evas_object_geometry_get(evas_object_name_find(evas, "main_window"), 
+                            NULL, NULL, &(show_anim_data->ew), NULL);
+   
+   setup_toolbar(evas_object_name_find(evas, "controls"));
    
    evas_object_show(border);
    evas_object_show(page);
    ecore_animator_add(show_anim, show_anim_data);
+}
+
+void
+setup_toolbar(Evas_Object *controls)
+{   
+   /* Populating toolbar1 (navigation) */
+   // TODO: pdf.c: resize toolbar to fit icons
+   
+   add_toolbar1_icon(PREV_PAGE, controls);
+   add_toolbar1_icon(NEXT_PAGE, controls);
 }

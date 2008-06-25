@@ -13,7 +13,7 @@ show_anim(void *_data)
    
    Pdf_Show_Anim_Data *data = _data;
    Evas_Object *object = data->object;
-   Evas *evas = data->evas;
+   //Evas *evas = data->evas;
    int start_x = data->start_x;
    int ew = data->ew;
    int x, y, w, delta_x, end_x;

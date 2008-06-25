@@ -1,14 +1,14 @@
 group
 {
-	name: "toolbar1_icon";
-	min: 48 48;
-	max: 48 48;
+	name: "eyesight/toolbar1_icon";
+	min: 45 45;
+	max: 45 45;
 	parts
 	{
 		part
 		{
-			name: "icon";
-			type: IMAGE;
+			name: "eyesight/toolbar1_icon/icon";
+			type: SWALLOW;
 			mouse_events: 1;
 			description
 			{
@@ -21,10 +21,6 @@ group
 				{
 					relative: 1.0 1.0;
 				}
-				image
-				{
-					normal: "img/open.png";
-				}
 			}
 			description
 			{
@@ -33,18 +29,18 @@ group
 				rel1
 				{
 					relative: 0.0 0.0;
-					offset: -20 -20;	
+					offset: -10 -10;	
 				}
 				rel2
 				{
 					relative: 1.0 1.0;
-					offset: 20 20;
+					offset: 10 10;
 				}
 			}
 		}
 		part
 		{
-			name: "tooltip";
+			name: "eyesight/toolbar1_icon/tooltip";
 			type: TEXT;
 			effect: SOFT_SHADOW;
 			description
@@ -54,17 +50,17 @@ group
 				color3: 0 0 0 0;
 				rel1
 				{
-					relative: 0.0 1.0;
-					offset: -50 20;
+					relative: 0.0 0.0;
+					offset: -50 -40;
 				}
 				rel2
 				{
-					relative: 1.0 1.0;
-					offset: 150 40;
+					relative: 1.0 0.0;
+					offset: 150 -20;
 				}
 				text
 				{
-					font: "VeraBd";
+					font: "BoldItalic";
 					size: 15;
 					text: "Tooltip sample";
 					align: 0.0 0.5;
@@ -78,13 +74,13 @@ group
 				color3: 0 0 0 255;
 				rel1
 				{
-					relative: 0.0 1.0;
-					offset: 0 20;
+					relative: 0.0 0.0;
+					offset: 0 -40;
 				}
 				rel2
 				{
-					relative: 1.0 1.0;
-					offset: 200 40;
+					relative: 1.0 0.0;
+					offset: 200 -20;
 				}
 			}
 			description
@@ -93,13 +89,13 @@ group
 				inherit: "default" 0.0;
 				rel1
 				{
-					relative: 0.0 1.0;
-					offset: 50 20;
+					relative: 0.0 0.0;
+					offset: 50 -40;
 				}
 				rel2
 				{
-					relative: 1.0 1.0;
-					offset: 250 40;
+					relative: 1.0 0.0;
+					offset: 250 -20;
 				}
 			}
 		}
@@ -110,34 +106,34 @@ group
 		{
 			name: "icon_mousein";
 			signal: "mouse,in";
-			source: "icon";
+			source: "eyesight/toolbar1_icon/icon";
 			action: STATE_SET "mouseover" 0.0;
-			target: "icon";
+			target: "eyesight/toolbar1_icon/icon";
 			transition: DECELERATE 0.2;
 		}
 		program
 		{
 			name: "icon_mouseout";
 			signal: "mouse,out";
-			source: "icon";
+			source: "eyesight/toolbar1_icon/icon";
 			action: STATE_SET "default" 0.0;
-			target: "icon";
+			target: "eyesight/toolbar1_icon/icon";
 			transition: ACCELERATE 0.2;
 		}
 		program
 		{
 			name: "tooltip_reset";
 			action: STATE_SET "default" 0.0;
-			target: "tooltip";
+			target: "eyesight/toolbar1_icon/tooltip";
 			after: "tooltip_show";
 			signal: "mouse,in";
-			source: "icon";
+			source: "eyesight/toolbar1_icon/icon";
 		}
 		program
 		{
 			name: "tooltip_show";
 			action: STATE_SET "mouseover" 0.0;
-			target: "tooltip";
+			target: "eyesight/toolbar1_icon/tooltip";
 			transition: DECELERATE 1.0;
 			after: "tooltip_hide";
 		}
@@ -145,7 +141,7 @@ group
 		{
 			name: "tooltip_hide";
 			action: STATE_SET "hidden_right" 0.0;
-			target: "tooltip";
+			target: "eyesight/toolbar1_icon/tooltip";
 			transition: ACCELERATE 1.0;
 		}
 	}

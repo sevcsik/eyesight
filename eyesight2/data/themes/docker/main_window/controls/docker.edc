@@ -1,6 +1,6 @@
 part
 {
-   name: "eyesight/main_window/foregrund/docker";
+   name: "eyesight/main_window/controls/docker";
    type: IMAGE;
    mouse_events: 0;
    description
@@ -9,13 +9,13 @@ part
       rel1
       {
          relative, 0.0 0.0;
-         to: "eyesight/main_window/foregruond/toolbar1_sw";
+         to: "eyesight/main_window/controls/toolbar1_sw";
          offset:  -50 20;
       }
       rel2
       {
          relative, 1.0 1.0;
-         to: "eyesight/main_window/foregruond/toolbar1_sw";
+         to: "eyesight/main_window/controls/toolbar1_sw";
          offset: 50 10;
       }
       image

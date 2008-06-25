@@ -23,6 +23,14 @@ images
    image: "img/nav_prev.png" COMP;
 }
 
+fonts
+{
+   font: "FreeSans.ttf" "Normal";
+   font: "FreeSansBold.ttf" "Bold";
+   font: "FreeSansOblique.ttf" "Italic";
+   font: "FreeSansBoldOblique.ttf" "BoldItalic";
+}
+
 spectra
 {
 	spectrum
@@ -33,7 +41,7 @@ spectra
 	}
 	spectrum
 	{
-		name: "eyesight/main_window/foreground/black_to_trans";
+		name: "eyesight/main_window/controls/black_to_trans";
       color: 0 0 0 30 0;
 		color: 0 0 0 200 0;
 	}

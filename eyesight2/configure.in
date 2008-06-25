@@ -24,7 +24,9 @@ PKG_CHECK_MODULES(EYESIGHT,
 		  evas
 		  ecore
 		  ecore-evas
-		  edje)
+		  edje
+        efreet
+        )
 PKG_CHECK_MODULES(EPDF, epdf)
 
 AC_OUTPUT([
