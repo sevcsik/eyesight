@@ -27,7 +27,7 @@ file_open(Evas *evas, Evas_Object *main_window, Ecore_List *plugins, char *file)
       
       // TEMP
       show = ecore_plugin_symbol_get(plugin->plugin, "show");
-      show(&(plugin->plugin_data), file, main_window, evas);
+      show(&(plugin->plugin_data), file, evas);
       return 1;
    }
    

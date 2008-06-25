@@ -79,7 +79,7 @@ typedef void (*Plugin_Close_File_Func) (void **plugin_data, char *filename,
  * with decelerating speed animation in 500 ms.
  */
 typedef void (*Plugin_Show_Func) (void **plugin_data, char *filename,
-                                  Evas_Object *main_window, Evas *evas);
+                                  Evas *evas);
 
 /*
  * Plugin hide() function:

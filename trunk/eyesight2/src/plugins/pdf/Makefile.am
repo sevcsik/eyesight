@@ -9,7 +9,7 @@ plugindir = $(prefix)/lib/eyesight/plugins
 
 plugin_LTLIBRARIES = pdf.la
 
-pdf_la_SOURCES = pdf.c animations.c
+pdf_la_SOURCES = pdf.c animations.c toolbar.c
 
 pdf_la_CFLAGS = -Wall
 pdf_la_LDFLAGS = -module -avoid-version

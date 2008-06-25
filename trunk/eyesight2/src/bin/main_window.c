@@ -75,9 +75,10 @@ main_window_create(Args *args, Evas_List **startup_errors)
    
    // Setting up foreground parts
    main_window->controls = edje_object_add(main_window->evas);
-   edje_object_file_get(main_window->main_window, (const char *)&theme, NULL);
+   edje_object_file_get(main_window->main_window, (const char **)&theme, NULL);
    edje_object_file_set(main_window->controls, theme, "eyesight/main_window/controls");
-   evas_object_layer_set(main_window->controls, 9999);
+   evas_object_layer_set(main_window->controls, 99);
+   evas_object_name_set(main_window->controls, "controls");
    
    int w, h;
    evas_object_name_set(main_window->main_window, "main_window");

@@ -1,6 +1,6 @@
 part
 {
-	name: "eyesight/main_window/foreground/top_bar";
+	name: "eyesight/main_window/controls/top_bar";
 	type: GRADIENT;
 	description
 	{
@@ -16,7 +16,7 @@ part
 		}
 		gradient
 		{
-			spectrum: "eyesight/main_window/foreground/black_to_trans";
+			spectrum: "eyesight/main_window/controls/black_to_trans";
 		}
 	}
 }
