@@ -21,6 +21,8 @@ images
    image: "img/nav.png" COMP;
    image: "img/nav_next.png" COMP;
    image: "img/nav_prev.png" COMP;
+   image: "go-up.png" COMP;
+   image: "go-down.png" COMP;
 }
 
 fonts
