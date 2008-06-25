@@ -6,6 +6,8 @@ data
 	item: "contact" "sevcsik@gmail.com";
 	item: "version" "0.1";
 	item: "date" "Not yet released :)";
+   item: "icon_theme" "oxygen";
+   item: "icon_size" "128x128";
 }
 
 
@@ -67,4 +69,5 @@ collections
 	#include "border_trans.edc"
 	#include "border_opaque.edc"
 	#include "toolbar1_icon.edc"
+   #include "icons.edc"
 }

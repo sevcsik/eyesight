@@ -28,6 +28,7 @@ add_toolbar1_icon(Pdf_Toolbar1_Icon icon, Evas_Object *controls)
    char *icon_size;
    char *theme_file;
    int x0, y0, w, h;
+   enum {ICON_TYPE_GROUP, ICON_TYPE_IMAGE} type;
    
    // Get icon filename
    switch (icon)
@@ -42,16 +43,37 @@ add_toolbar1_icon(Pdf_Toolbar1_Icon icon, Evas_Object *controls)
       icon_name = "dialog-error";
    }
    
-   // TODO: toolbar.c: get theme and icon size from edje
-   icon_theme = "oxygen";
-   icon_size = "128x128";
+   edje_object_file_get(controls, (const char **)&theme_file, NULL);
+   
+   // Load toolbar1_icon from theme
+   
+   icon_object = edje_object_add(evas);
+   if (!edje_object_file_set(icon_object, theme_file, "eyesight/toolbar1_icon"))
+   {
+      fprintf(stderr, "Bad theme!, no eyesight/toolbar1_icon group!");
+   }
+   icon_theme = edje_file_data_get(theme_file, "icon_theme");
+   icon_size = edje_file_data_get(theme_file, "icon_size");
+   if (!icon_theme) 
+      icon_theme = "Tango";
+   if (!icon_size) 
+      icon_size = "128x128";
       
    // Try to load image from edje file
-   edje_object_file_get(controls, (const char **)&theme_file, NULL);
-   icon_image = evas_object_image_add(evas);
-   evas_object_image_file_set(icon_image, theme_file, icon_name);
+   type = ICON_TYPE_GROUP;
+   icon_image = edje_object_add(evas);
+   if (!edje_object_file_set(icon_image, theme_file, icon_name))
+   {
+      // Failed to get icon from edje
+      printf("ouadfsdf\n");
+      evas_object_del(icon_image);
+      type = ICON_TYPE_IMAGE;
+      icon_image = evas_object_image_add(evas);
+   }
+   
+   
    // If failed, try to load from icon set
-   if (evas_object_image_load_error_get(icon_image) != EVAS_LOAD_ERROR_NONE)
+   if (type == ICON_TYPE_IMAGE)
    {
       icon_path = efreet_icon_path_find(icon_theme, icon_name, icon_size);
       if (!icon_path)
@@ -64,10 +86,6 @@ add_toolbar1_icon(Pdf_Toolbar1_Icon icon, Evas_Object *controls)
    {
       fprintf(stderr, "Failed to load icon %s\n", icon_name);  
    }
-
-   // Load toolbar1_icon from theme
-   icon_object = edje_object_add(evas);
-   edje_object_file_set(icon_object, theme_file, "eyesight/toolbar1_icon");
    
    edje_object_part_swallow(icon_object, "eyesight/toolbar1_icon/icon", icon_image);
    
@@ -80,8 +98,9 @@ add_toolbar1_icon(Pdf_Toolbar1_Icon icon, Evas_Object *controls)
    evas_object_image_fill_set(icon_image, 0, 0, w, h);
    evas_object_layer_set(icon_object, 100);
    
-   evas_object_event_callback_add(icon_image, EVAS_CALLBACK_RESIZE,
-                                  toolbar_icon_resize_cb, NULL);
+   if (type == ICON_TYPE_IMAGE) // Set only if image is loded from file
+      evas_object_event_callback_add(icon_image, EVAS_CALLBACK_RESIZE,
+                                     toolbar_icon_resize_cb, NULL);
    
    // Set tooltip text
    edje_object_part_text_set(icon_object, "eyesight/toolbar1_icon/tooltip",
