@@ -1,6 +1,8 @@
 
 //#define ENABLE_LOG_PRINTF
 
+#include <string.h>
+
 #include "evas_direct3d_object_image.h"
 #include "evas_direct3d_image_cache.h"
 #include "evas_direct3d_device.h"
@@ -175,7 +177,11 @@ void D3DObjectImage::Init(FLOAT u, FLOAT v, FLOAT du, FLOAT dv,
    _image_id = image_id;
    _width = width;
    _height = height;
+#ifdef __MINGW32__
+   strncpy(_source, source, sizeof(_source) - 1);
+#else
    strncpy_s(_source, sizeof(_source), source, sizeof(_source) - 1);
+#endif // ! __MINGW32__
 }
 
 void D3DObjectImage::Setup(FLOAT x, FLOAT y, FLOAT w, FLOAT h, 

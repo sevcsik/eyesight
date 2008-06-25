@@ -55,7 +55,6 @@ Direct3DDeviceHandler evas_direct3d_init(HWND window, int depth)
    {
       Log("Failed to build shader pack");
       device->Destroy();
-      delete device;
       return NULL;
    }
 
@@ -354,10 +353,10 @@ void evas_direct3d_image_border_get(Direct3DDeviceHandler d3d, Direct3DImageHand
    if (image_ref.IsNull())
       return;
    assert(l != NULL && r != NULL && b != NULL && t != NULL);
-   *l = 0.5f * image_ref->GetBorderLeft() * device->GetWidth();
-   *r = 0.5f * image_ref->GetBorderRight() * device->GetWidth();
-   *t = -0.5f * image_ref->GetBorderTop() * device->GetHeight();
-   *b = -0.5f * image_ref->GetBorderBottom() * device->GetHeight();
+   *l = (int)(0.5f * image_ref->GetBorderLeft() * device->GetWidth());
+   *r = (int)(0.5f * image_ref->GetBorderRight() * device->GetWidth());
+   *t = (int)(-0.5f * image_ref->GetBorderTop() * device->GetHeight());
+   *b = (int)(-0.5f * image_ref->GetBorderBottom() * device->GetHeight());
 }
 
 
