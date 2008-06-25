@@ -43,6 +43,7 @@ public:
    // Constructors & destructor
    Ref();
    Ref(Ref<T> &ref);
+   Ref(const Ref<T> &ref);
    Ref(T *ptr);
    Ref(const T *ptr);
    ~Ref();
@@ -51,6 +52,7 @@ public:
    Ref<T> &operator =(T *ptr);
 
    inline T *Addr();
+   inline T *Addr() const;
    inline int RefCount();
    inline bool IsNull();
 
@@ -73,6 +75,16 @@ template <class T> Ref<T>::Ref()
 }
 
 template <class T> Ref<T>::Ref(Ref<T> &ref)
+: m_ptr(NULL)
+{
+   if (ref.Addr() != NULL)
+   {
+      m_ptr = ref.Addr();
+      ((Referenc *)m_ptr)->AddRef();
+   }
+}
+
+template <class T> Ref<T>::Ref(const Ref<T> &ref)
 : m_ptr(NULL)
 {
    if (ref.Addr() != NULL)
@@ -152,6 +164,11 @@ template <class T> Ref<T> &Ref<T>::operator =(Ref<T> &ref)
 
 // Get pointer
 template <class T> T *Ref<T>::Addr()
+{
+   return m_ptr;
+}
+
+template <class T> T *Ref<T>::Addr() const
 {
    return m_ptr;
 }
