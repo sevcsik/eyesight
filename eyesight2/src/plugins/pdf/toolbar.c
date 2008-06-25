@@ -6,6 +6,16 @@
 
 char *toolbar1_tooltips[] = {"Previous page", 0, 0, "Next page"};
 
+void 
+toolbar_icon_resize_cb(void *data, Evas *evas, Evas_Object *obj,
+                       void *event_info)
+{
+   int w, h;
+   evas_object_geometry_get(obj, NULL, NULL, &w, &h);
+   evas_object_image_fill_set(obj, 0, 0, w, h);
+}
+      
+
 void
 add_toolbar1_icon(Pdf_Toolbar1_Icon icon, Evas_Object *controls)
 {
@@ -69,6 +79,9 @@ add_toolbar1_icon(Pdf_Toolbar1_Icon icon, Evas_Object *controls)
    evas_object_resize(icon_object, w, h);
    evas_object_image_fill_set(icon_image, 0, 0, w, h);
    evas_object_layer_set(icon_object, 100);
+   
+   evas_object_event_callback_add(icon_image, EVAS_CALLBACK_RESIZE,
+                                  toolbar_icon_resize_cb, NULL);
    
    // Set tooltip text
    edje_object_part_text_set(icon_object, "eyesight/toolbar1_icon/tooltip",

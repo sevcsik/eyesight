@@ -12,4 +12,7 @@ typedef enum _Pdf_Toolbar1_Icon
 
 void add_toolbar1_icon(Pdf_Toolbar1_Icon icon, Evas_Object *controls);
 
+void toolbar_icon_resize_cb(void *data, Evas *evas, Evas_Object *obj,
+                            void *event_info);
+
 #endif /* TOOLBAR_H_ */
