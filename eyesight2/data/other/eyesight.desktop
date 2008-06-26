@@ -8,3 +8,4 @@ Type=Application
 Icon=eyesight
 Categories=ENLIGHTENMENT;Application;Graphics
 Encoding=UTF-8
+MimeType=application/pdf;

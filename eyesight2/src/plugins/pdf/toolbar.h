@@ -15,4 +15,12 @@ void add_toolbar1_icon(Pdf_Toolbar1_Icon icon, Evas_Object *controls);
 void toolbar_icon_resize_cb(void *data, Evas *evas, Evas_Object *obj,
                             void *event_info);
 
+void page_next_clicked(void *data, Evas_Object *o, const char *emission, 
+                       const char *source);
+
+void page_prev_clicked(void *data, Evas_Object *o, const char *emission, 
+                       const char *source);
+
+int page_next_animator(void *_data);
+
 #endif /* TOOLBAR_H_ */

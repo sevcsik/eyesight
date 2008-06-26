@@ -120,6 +120,29 @@ group
 			target: "eyesight/toolbar1_icon/icon";
 			transition: ACCELERATE 0.2;
 		}
+      program
+      {
+         name: "icon_clicked_signal_emit";
+         signal: "mouse,clicked,1";
+         source: "eyesight/toolbar1_icon/icon";
+         action: SIGNAL_EMIT "clicked" "toolbar1_icon";
+         after: "icon_clicked_shrink";
+      }
+      program
+      {
+         name: "icon_clicked_shrink";
+         action: STATE_SET "default" 0.0;
+         target: "eyesight/toolbar1_icon/icon";
+         transition: ACCELERATE 0.2;
+         after: "icon_clicked_grow";
+      }
+      program
+      {
+         name: "icon_clicked_grow";
+         action: STATE_SET "mouseover" 0.0;
+         target: "eyesight/toolbar1_icon/icon";
+         transition: DECELERATE 0.2;
+      }
 		program
 		{
 			name: "tooltip_reset";

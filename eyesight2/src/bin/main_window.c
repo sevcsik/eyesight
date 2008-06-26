@@ -96,7 +96,7 @@ main_window_create(Args *args, Evas_List **startup_errors)
    /* Callbacks */
    ecore_evas_callback_resize_set(ee, main_window_resize_cb);
    ecore_evas_callback_delete_request_set(ee, main_window_delete_request_cb);
-   edje_object_signal_callback_add(main_window->main_window, "load", "*",
+   edje_object_signal_callback_add(main_window->controls, "load", "*",
                                    main_window_load_cb, startup_errors);
    
    ecore_animator_frametime_set(FRAMETIME);

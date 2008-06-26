@@ -1,6 +1,6 @@
 group
 {
-	name: "border_trans";
+	name: "eyesight/border_trans";
 	min: 9 9;
 	parts
 	{
