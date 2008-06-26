@@ -18,12 +18,6 @@ typedef struct _Pdf_Plugin_Data
    Ecore_Hash *files;
 } Pdf_Plugin_Data;
 
-typedef struct _Pdf_File_Data
-{
-   Evas_Object *border;
-   Evas_Object *page;
-} Pdf_File_Data;
-
 void 
 identify(char **name, char **version, char **email)
 {
@@ -58,9 +52,11 @@ open_file(void **_plugin_data, char *filename, Evas_Object *main_window,
    char *themefile;
    int ew, eh, nw, nh;
    double scale;
+   int top_margin, bottom_margin, left_margin, right_margin;
    
    page = esmart_pdf_add(evas);
    esmart_pdf_init(page);
+   evas_object_name_set(page, "page");
    
    // FIXME: pdf.c: EPDF api refresh to use return val of file_set
    esmart_pdf_file_set(page, filename);
@@ -71,8 +67,9 @@ open_file(void **_plugin_data, char *filename, Evas_Object *main_window,
    // Set up border
    edje_object_file_get(main_window, (const char **)&themefile, NULL);
    border = edje_object_add(evas);
-   edje_object_file_set(border, themefile, "border_opaque");
-   edje_object_part_swallow(border, "content", page);
+   edje_object_file_set(border, themefile, "eyesight/border_opaque");
+   edje_object_part_swallow(border, "eyesight/border_opaque/content", page);
+   evas_object_name_set(border, "border");
    
    // Resize 
    evas_object_geometry_get(main_window, NULL, NULL, &ew, &eh);
@@ -80,19 +77,27 @@ open_file(void **_plugin_data, char *filename, Evas_Object *main_window,
    
    // Scale to fit window
    // TODO: pdf/pdf.c: Add more scaling options
-   // TODO: pdf/pdf.c: Get margins from theme (not hardcoded 15 :))
+   top_margin = atoi(edje_file_data_get(themefile, "top_margin"));
+   bottom_margin = atoi(edje_file_data_get(themefile, "bottom_margin"));
+   left_margin = atoi(edje_file_data_get(themefile, "left_margin"));
+   right_margin = atoi(edje_file_data_get(themefile, "right_margin"));
    
-   if (((double) ew - 15.0) / ((double) nw) < ((double) eh - 15.0) / ((double) nh))
-      scale = ((double) ew - 15.0) / ((double) nw);
+   if ((double) ew - (left_margin + right_margin) / ((double) nw) < 
+       ((double) eh - (top_margin + bottom_margin) / ((double) nh)))
+   {
+      scale = (double) (eh - (top_margin + bottom_margin)) / (double) nh;
+   }
    else
-      scale = ((double) eh - 15.0) / ((double) nh);
-      
+   {
+      scale = (double) (eh - (top_margin + bottom_margin)) / (double) nh;
+   }  
+
    esmart_pdf_scale_set(page, scale, scale);
-   esmart_pdf_page_set(page, 1);
+   esmart_pdf_page_set(page, 0);
    evas_object_resize(border, nw * scale, nh * scale);
    
    // Move to left
-   evas_object_move(border, ew + 50, eh / 2 - nh * scale / 2);
+   evas_object_move(border, ew + left_margin, eh / 2 - nh * scale / 2);
    
    // Render
    esmart_pdf_render(page);
@@ -101,6 +106,8 @@ open_file(void **_plugin_data, char *filename, Evas_Object *main_window,
    file_data = malloc(sizeof(Pdf_File_Data));
    file_data->page = page;
    file_data->border = border;
+   file_data->tmp_page = NULL;
+   file_data->tmp_border = NULL;
    ecore_hash_set(plugin_data->files, filename, file_data);
   
    return 1;

@@ -66,8 +66,10 @@ display_startup_error_dialog(Ecore_Evas *ee, Evas_List *startup_errors)
    
    // Display error dialog (error_show signal will be emitted later)
    // TODO: error.c: Resize dialog to fit text
-   main_window = ((Main_Window *)ecore_evas_data_get(ee, "main_window"))->main_window;
-   edje_object_part_text_set(main_window, "error_dialog_text", str);   
+   main_window = ((Main_Window *)ecore_evas_data_get(ee, "main_window"))->controls;
+   edje_object_part_text_set(main_window, 
+                             "eyesight/main_window/controls/error_dialog_text", 
+                             str);   
 }
 
 
