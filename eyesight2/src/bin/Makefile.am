@@ -4,7 +4,7 @@ MAINTAINERCLEANFILES = Makefile.in
 
 AM_CPPFLAGS =\
  -I$(top_srcdir) \
- -I$(top_srcdir)/src \ 
+ -I$(top_srcdir)/src \
  -I$(top_srcdir)/src/bin \
  -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
  -DPACKAGE_PLUGIN_DIR=\"$(libdir)/$(PACKAGE)/plugins\" \
@@ -18,5 +18,3 @@ eyesight_LDADD = @EYESIGHT_LIBS@ -ldl
 
 EXTRA_DIST = conf.h error.h eyesight_private.h file.h main.h\
 	 main_window.h plugin.h plugin_private.h
-
-

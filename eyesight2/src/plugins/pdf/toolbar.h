@@ -21,6 +21,4 @@ void page_next_clicked(void *data, Evas_Object *o, const char *emission,
 void page_prev_clicked(void *data, Evas_Object *o, const char *emission, 
                        const char *source);
 
-int page_next_animator(void *_data);
-
 #endif /* TOOLBAR_H_ */

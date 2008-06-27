@@ -11,8 +11,19 @@ typedef struct _Pdf_Show_Anim_Data
    int ew;
 } Pdf_Show_Anim_Data;
 
+typedef struct _Pdf_Nav_Animator_Data
+{
+   Evas_Object *controls;
+   Evas_Object *border;
+   Evas_Object *tmp_border;
+   int step;
+   int top_margin;
+   int bottom_margin;
+} Pdf_Nav_Animator_Data;
+
 int show_anim(void *data);
 
-int anim_acc_x_calc(void *data);
+int page_next_animator(void *_data);
+int page_prev_animator(void *_data);
 
 #endif /*ANIMATIONS_H*/
