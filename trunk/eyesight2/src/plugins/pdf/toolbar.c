@@ -1,11 +1,13 @@
 #include "toolbar.h"
 #include "pdf.h"
 #include "stdlib.h"
+#include "animations.h"
 #include <Evas.h>
 #include <Ecore.h>
 #include <Edje.h>
 #include <Efreet.h>
 #include <esmart_pdf.h>
+#include <Epdf.h>
 #include <stdio.h>
 
 typedef void (*Edje_Signal_Callback) (void *data, Evas_Object *o, 
@@ -19,16 +21,6 @@ Edje_Signal_Callback toolbar1_callbacks[] = {
                                                0,
                                                page_next_clicked
                                             };
-                                            
-typedef struct _Pdf_Nav_Animator_Data
-{
-   Evas_Object *controls;
-   Evas_Object *border;
-   Evas_Object *tmp_border;
-   int step;
-   int top_margin;
-   int bottom_margin;
-} Pdf_Nav_Animator_Data;
 
 void 
 toolbar_icon_resize_cb(void *data, Evas *evas, Evas_Object *obj,
@@ -154,9 +146,13 @@ void page_next_clicked(void *_data, Evas_Object *icon, const char *emission,
    Evas_Object *page = evas_object_name_find(evas_object_evas_get(icon), "page");
    Evas_Object *tmp_border;
    Evas_Object *tmp_page;
-   
    double hscale, vscale;
    char *theme_file;
+   
+   // Check if it's the last page
+   if (esmart_pdf_page_get(page) + 1 >= epdf_document_page_count_get(
+                                          esmart_pdf_pdf_document_get(page)))
+      return;
    
    edje_object_file_get(controls, (const char **)&theme_file, NULL);
    evas_object_geometry_get(controls, NULL, NULL, &ww, &wh);
@@ -204,52 +200,69 @@ void page_next_clicked(void *_data, Evas_Object *icon, const char *emission,
    ecore_animator_add(page_next_animator, animdata);
 }
 
-int
-page_next_animator(void *_data)
-{
-   Pdf_Nav_Animator_Data *data = _data;
-   int x1, y1, w1, h1;
-   int x2, y2, w2, h2;
-   int ww, wh;
-   int dy; // Delta Y
-   
-   evas_object_geometry_get(data->controls, NULL, NULL, &ww, &wh);
-   evas_object_geometry_get(data->border, &x1, &y1, &w1, &h1);
-   evas_object_geometry_get(data->tmp_border, &x2, &y2, &w2, &h2);
-   
-   dy = 2 * ++(data->step);
-   
-   //printf("ANIMATE: %d, %d, delta: %d\n", x2, y2, dy);
-   
-   // Move border1
-   if (y1 - dy <= 0 - data->top_margin - h1)
-      evas_object_move(data->border, x1, 0 - data->top_margin - h1);
-   else
-      evas_object_move(data->border, x1, y1 - dy);
-      
-   if (y2 - dy <= data->top_margin)
-      evas_object_move(data->tmp_border, x2, data->top_margin);
-   else
-      evas_object_move(data->tmp_border, x2, y2-dy);
-   
-   if (y1 == 0 - data->top_margin - h1 || y2 == data->top_margin)
-   {
-      evas_object_del(edje_object_part_swallow_get(data->border, 
-                                             "eyesight/border_opaque/content"));
-      evas_object_del(data->border);
-      evas_object_name_set(data->tmp_border, "border");
-      evas_object_name_set(edje_object_part_swallow_get(data->tmp_border,
-                                              "eyesight/border_opaque/content"),
-                                               "page");
-      return 0;   // Stop animation
-   }
-   else
-      return 1;
-}
-
 void page_prev_clicked(void *data, Evas_Object *icon, const char *emission,
                        const char *source)
 {
-   printf("Previous page not implented :)\n");
+   Evas_Object *controls = evas_object_name_find(evas_object_evas_get(icon), 
+                                                 "controls");
+   int ww, wh; // window size
+   int nw, nh; // page native size
+   int top_margin;
+   int bottom_margin;
+   Pdf_Nav_Animator_Data *animdata = malloc(sizeof(Pdf_Nav_Animator_Data));
+   Evas_Object *border = evas_object_name_find(evas_object_evas_get(icon), "border");
+   Evas_Object *page = evas_object_name_find(evas_object_evas_get(icon), "page");
+   Evas_Object *tmp_border;
+   Evas_Object *tmp_page;
+   
+   double hscale, vscale;
+   char *theme_file;
+   
+   if (esmart_pdf_page_get(page) == 0) return;
+   
+   edje_object_file_get(controls, (const char **)&theme_file, NULL);
+   evas_object_geometry_get(controls, NULL, NULL, &ww, &wh);
+   
+   // Load next page
+   tmp_page = esmart_pdf_add(evas_object_evas_get(icon));
+   tmp_border = edje_object_add(evas_object_evas_get(icon));
+   evas_object_name_set(tmp_page, "tmp_page");
+   evas_object_name_set(tmp_border, "tmp_border");
+   edje_object_file_set(tmp_border, theme_file, "eyesight/border_opaque");
+   
+   // Render pdf
+   esmart_pdf_file_set(tmp_page, esmart_pdf_file_get(page));
+   esmart_pdf_page_set(tmp_page, esmart_pdf_page_get(page) - 1);
+   esmart_pdf_scale_get(page, &hscale, &vscale);
+   esmart_pdf_scale_set(tmp_page, hscale, vscale);
+   esmart_pdf_render(tmp_page);
+   
+   // Swallow tmp_page
+   edje_object_part_swallow(tmp_border, "eyesight/border_opaque/content",
+                            tmp_page);
+   
+   // Resize tmp_border
+   esmart_pdf_size_get(tmp_page, &nw, &nh);
+   evas_object_resize(tmp_border, (double)nw * hscale, (double)nh * vscale);
+   
+   // Position tmp_border
+   bottom_margin = atoi(edje_file_data_get(theme_file, "bottom_margin"));
+   top_margin = atoi(edje_file_data_get(theme_file, "top_margin"));
+   evas_object_move(tmp_border, (ww / 2 - (nw * hscale / 2)), 
+                    0 - bottom_margin - (double)nh * vscale);
+   
+   // Show
+   evas_object_show(tmp_page);
+   evas_object_show(tmp_border);
+   
+   // Set up animation
+   animdata->controls = controls;
+   animdata->border = border;
+   animdata->tmp_border = tmp_border;
+   animdata->step = 0;
+   animdata->top_margin = top_margin;
+   animdata->bottom_margin = bottom_margin;
+   
+   ecore_animator_add(page_prev_animator, animdata);
 }
 
