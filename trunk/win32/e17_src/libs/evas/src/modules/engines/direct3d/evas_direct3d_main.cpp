@@ -11,6 +11,7 @@
 #include "evas_direct3d_object_rect.h"
 #include "evas_direct3d_object_image.h"
 #include "evas_direct3d_vertex_buffer_cache.h"
+#include "evas_direct3d_object_font.h"
 
 // Internal structure that joins two types of objects
 struct ImagePtr
@@ -359,6 +360,63 @@ void evas_direct3d_image_border_get(Direct3DDeviceHandler d3d, Direct3DImageHand
    *b = (int)(-0.5f * image_ref->GetBorderBottom() * device->GetHeight());
 }
 
+
+Direct3DFontHandler evas_direct3d_font_load(Direct3DDeviceHandler d3d, 
+   const char *name, int size)
+{
+   DevicePtr *dev_ptr = SelectDevice(d3d);
+   D3DDevice *device = dev_ptr->device;
+   D3DScene *scene = dev_ptr->scene;
+
+   Ref<D3DObjectFont> font = new D3DObjectFont();
+   TArray<D3DObjectFont *> fonts;
+   scene->GetObjectsOfType<D3DObjectFont>(fonts);
+   bool found = false;
+   for (int i = 0; i < fonts.Length(); i++)
+   {
+      if (fonts[i]->Compare(name, size))
+      {
+         fonts[i]->CopyTo(font);
+         found = true;
+         Log("Font object info reused");
+         break;
+      }
+   }
+   if (!found)
+   {
+      if (!font->Init(device, name, size))
+      {
+         Log("Failed to build font");
+         return NULL;
+      }
+   }
+
+   scene->AddObject(font);
+   return (Direct3DFontHandler)font.Addr();
+}
+
+void evas_direct3d_font_free(Direct3DDeviceHandler d3d, Direct3DFontHandler font)
+{
+   DevicePtr *dev_ptr = SelectDevice(d3d);
+   dev_ptr->scene->DeleteObject((D3DObjectFont *)font);
+}
+
+void evas_direct3d_font_draw(Direct3DDeviceHandler d3d, Direct3DFontHandler font,
+   int x, int y, int w, int h, int ow, int oh, const char *text)
+{
+   DevicePtr *dev_ptr = SelectDevice(d3d);
+   D3DDevice *device = dev_ptr->device;
+   D3DObjectFont *font_ptr = (D3DObjectFont *)font;
+   font_ptr->Setup(
+      2.f * float(x) / float(device->GetWidth()), 
+      -2.f * float(y) / float(device->GetHeight()),
+      2.f * float(w) / float(device->GetWidth()), 
+      2.f * float(h) / float(device->GetHeight()),
+      2.f * float(ow) / float(device->GetWidth()), 
+      2.f * float(oh) / float(device->GetHeight()),
+      text);
+   font_ptr->SetFree(false);
+}
 
 
 }  // extern "C"

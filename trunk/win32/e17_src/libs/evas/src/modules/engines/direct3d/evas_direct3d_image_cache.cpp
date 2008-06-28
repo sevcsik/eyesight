@@ -171,7 +171,7 @@ bool D3DImageCache::InsertData(CacheEntry &entry, DWORD *data, int w, int h)
 
    RECT rc = {entry.cur_x, entry.cur_y, entry.cur_x + w, entry.cur_y + h};
    D3DLOCKED_RECT lr;
-   if (FAILED(entry.texture->LockRect(0, &lr, &rc, D3DLOCK_DISCARD)))
+   if (FAILED(entry.texture->LockRect(0, &lr, &rc, 0)))
    {
       Log("Failed to lock texture");
       return false;

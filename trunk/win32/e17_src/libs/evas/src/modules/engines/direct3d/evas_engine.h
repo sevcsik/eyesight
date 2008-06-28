@@ -18,6 +18,7 @@
 
 typedef void * Direct3DDeviceHandler;
 typedef void * Direct3DImageHandler;
+typedef void * Direct3DFontHandler;
 
 #ifdef __cplusplus
 extern "C" {
@@ -46,6 +47,12 @@ void evas_direct3d_image_border_set(Direct3DDeviceHandler d3d, Direct3DImageHand
    int l, int r, int t, int b);
 void evas_direct3d_image_border_get(Direct3DDeviceHandler d3d, Direct3DImageHandler image, 
    int *l, int *r, int *t, int *b);
+
+Direct3DFontHandler evas_direct3d_font_load(Direct3DDeviceHandler d3d, 
+   const char *name, int size);
+void evas_direct3d_font_free(Direct3DDeviceHandler d3d, Direct3DFontHandler font);
+void evas_direct3d_font_draw(Direct3DDeviceHandler d3d, Direct3DFontHandler font,
+   int x, int y, int w, int h, int ow, int oh, const char *text);
 
 
 #ifdef __cplusplus

@@ -42,7 +42,7 @@ class Ref
 public:
    // Constructors & destructor
    Ref();
-   Ref(Ref<T> &ref);
+   //Ref(Ref<T> &ref);
    Ref(const Ref<T> &ref);
    Ref(T *ptr);
    Ref(const T *ptr);
@@ -74,15 +74,15 @@ template <class T> Ref<T>::Ref()
 {
 }
 
-template <class T> Ref<T>::Ref(Ref<T> &ref)
-: m_ptr(NULL)
-{
-   if (ref.Addr() != NULL)
-   {
-      m_ptr = ref.Addr();
-      ((Referenc *)m_ptr)->AddRef();
-   }
-}
+//template <class T> Ref<T>::Ref(Ref<T> &ref)
+//: m_ptr(NULL)
+//{
+//   if (ref.Addr() != NULL)
+//   {
+//      m_ptr = ref.Addr();
+//      ((Referenc *)m_ptr)->AddRef();
+//   }
+//}
 
 template <class T> Ref<T>::Ref(const Ref<T> &ref)
 : m_ptr(NULL)
