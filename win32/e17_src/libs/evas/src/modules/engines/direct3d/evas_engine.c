@@ -311,6 +311,29 @@ eng_image_border_get(void *data, void *image, int *l, int *r, int *t, int *b)
    evas_direct3d_image_border_get(re->d3d, image, l, t, r, b);
 }
 
+static void *
+eng_font_load(void *data, const char *name, int size)
+{
+   Render_Engine *re = (Render_Engine *)data;
+   return evas_direct3d_font_load(re->d3d, name, size);
+}
+
+static void
+eng_font_free(void *data, void *font)
+{
+   Render_Engine *re = (Render_Engine *)data;
+   evas_direct3d_font_free(re->d3d, (Direct3DFontHandler)font);
+}
+
+static void
+eng_font_draw(void *data, void *context, void *surface, void *font, int x, int y, int w, int h, int ow, int oh, const char *text)
+{
+   Render_Engine *re = (Render_Engine *)data;
+   evas_direct3d_font_draw(re->d3d, (Direct3DFontHandler)font,
+      x, y, w, h, ow, oh, text);
+}
+
+
 
 /* module advertising code */
 EAPI int
@@ -348,6 +371,9 @@ module_open(Evas_Module *em)
    ORD(image_colorspace_get);
    ORD(image_border_set);
    ORD(image_border_get);
+   //ORD(font_load);
+   //ORD(font_free);
+   //ORD(font_draw);
    /* now advertise out own api */
    em->functions = (void *)(&func);
    return 1;

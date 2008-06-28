@@ -20,7 +20,7 @@ void D3DObjectRect::BeginCache()
 
 void D3DObjectRect::EndCache(D3DDevice *d3d)
 {
-   if (!_cache_enabled)
+   if (!_cache_enabled || _cache.Length() == 0)
       return;
    D3DShaderPack::Current()->SetVDecl(d3d, D3DShaderPack::VDECL_XYC);
    D3DShaderPack::Current()->SetVS(d3d, D3DShaderPack::VS_COPY_COLOR);
