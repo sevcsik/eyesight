@@ -49,6 +49,11 @@ main_window_create(Args *args, Evas_List **startup_errors)
    char *theme;
 
    ee = ecore_evas_software_x11_new(0, 0, 0, 0, 0, 0);
+   if (!ee)
+   {
+      printf(_("Can't create X11 window. Is an X server running?\n"));
+      return 0;
+   }
    main_window->evas = ecore_evas_get(ee);
    main_window->main_window = edje_object_add(main_window->evas);
 
