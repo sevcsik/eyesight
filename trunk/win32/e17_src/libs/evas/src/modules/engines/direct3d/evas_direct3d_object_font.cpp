@@ -55,12 +55,6 @@ void D3DObjectFont::EndCache(D3DDevice *d3d)
    D3DShaderPack::Current()->SetVS(d3d, D3DShaderPack::VS_COPY_UV_COLOR);
    D3DShaderPack::Current()->SetPS(d3d, D3DShaderPack::PS_TEX_COLOR_FILTER);
 
-   struct GroupDesc
-   {
-      int num;
-      int id;
-   };
-
    static TArray<Vertex> sorted;
    static TArray<GroupDesc> groups;
    sorted.Allocate(0);

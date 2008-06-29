@@ -31,6 +31,8 @@ public:
    bool SelectImageToDevice(D3DDevice *d3d, int id);
    void RemoveImageUser(int id);
    void AddImageUser(int id);
+   bool UpdateImageData(CacheEntryInfo &info, DWORD *data);
+   bool GetImageData(CacheEntryInfo &info, TArray<DWORD> &data);
    void Uninitialize();
 
 private:
@@ -51,6 +53,7 @@ private:
    bool RequestInsert(CacheEntry &entry, int w, int h);
    bool CreateEntry(D3DDevice *d3d, CacheEntry &entry, int w, int h);
    bool InsertData(CacheEntry &entry, DWORD *data, int w, int h);
+   bool RetrieveData(CacheEntry &entry, DWORD *data, int w, int h);
    void UpdateInsert(CacheEntry &entry, int w, int h);
 
 private:

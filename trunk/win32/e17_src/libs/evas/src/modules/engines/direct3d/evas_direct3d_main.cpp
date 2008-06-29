@@ -228,6 +228,50 @@ Direct3DImageHandler evas_direct3d_image_load(Direct3DDeviceHandler d3d,
    return (Direct3DImageHandler)ptr;
 }
 
+Direct3DImageHandler evas_direct3d_image_new_from_data(Direct3DDeviceHandler d3d, 
+   int w, int h, DWORD *image_data, int alpha, int cspace)
+{
+   DevicePtr *dev_ptr = SelectDevice(d3d);
+   D3DDevice *device = dev_ptr->device;
+   D3DScene *scene = dev_ptr->scene;
+
+   int image_width = w;
+   int image_height = h;
+   assert(image_width > 0 && image_height > 0);
+
+   Ref<D3DObjectImage> image = new D3DObjectImage();
+
+   D3DImageCache::CacheEntryInfo info;
+   ZeroMemory(&info, sizeof(info));
+   if (!D3DImageCache::Current()->InsertImage(device, image_data,
+      image_width, image_height, info))
+   {
+      Log("Couldnt add image to the cache");
+      return NULL;
+   }
+   char buf[64];
+   sprintf(buf, "%p", image_data);
+   image->Init(info.u, info.v, info.du, info.dv, info.id, 
+      info.width, info.height, buf);
+
+   image->SetFree(true);
+   scene->AddObject(image);
+
+   Log("New image object (total objects: %d)", scene->GetObjectCount());
+
+   ImagePtr *ptr = new ImagePtr;
+   ptr->ref = image;
+   ptr->img = NULL;
+
+   return (Direct3DImageHandler)ptr;
+}
+
+Direct3DImageHandler evas_direct3d_image_new_from_copied_data(Direct3DDeviceHandler d3d, 
+   int w, int h, DWORD *image_data, int alpha, int cspace)
+{
+   return evas_direct3d_image_new_from_data(d3d, w, h, image_data, alpha, cspace);
+}
+
 void evas_direct3d_image_free(Direct3DDeviceHandler d3d, Direct3DImageHandler image)
 {
    DevicePtr *dev_ptr = SelectDevice(d3d);
@@ -243,6 +287,32 @@ void evas_direct3d_image_free(Direct3DDeviceHandler d3d, Direct3DImageHandler im
    delete ptr;
 }
 
+void evas_direct3d_image_data_put(Direct3DDeviceHandler d3d, Direct3DImageHandler image,
+   DWORD *image_data)
+{
+   ImagePtr *ptr = (ImagePtr *)image;
+   Ref<D3DObjectImage> image_ref = ptr->ref;
+   //assert(!image_ref.IsNull());
+   if (image_ref.IsNull())
+      return;
+
+   if (!image_ref->UpdateImageData(image_data))
+      Log("Failed to update image data");
+}
+
+void evas_direct3d_image_data_get(Direct3DDeviceHandler d3d, Direct3DImageHandler image,
+   int to_write, DATA32 **image_data)
+{
+   ImagePtr *ptr = (ImagePtr *)image;
+   Ref<D3DObjectImage> image_ref = ptr->ref;
+   if (image_ref.IsNull())
+      return;
+   if (image_data == NULL)
+      return;
+   assert(sizeof(DATA32) == sizeof(DWORD));
+   *image_data = (DATA32 *)image_ref->GetImageData();
+}
+
 void evas_direct3d_image_draw(Direct3DDeviceHandler d3d, Direct3DImageHandler image,
    int src_x, int src_y, int src_w, int src_h, 
    int dst_x, int dst_y, int dst_w, int dst_h, int smooth)
@@ -253,7 +323,7 @@ void evas_direct3d_image_draw(Direct3DDeviceHandler d3d, Direct3DImageHandler im
    DevicePtr *dev_ptr = SelectDevice(d3d);
    D3DDevice *device = dev_ptr->device;
    D3DScene *scene = dev_ptr->scene;
-   assert(!image_ref.IsNull());
+   //assert(!image_ref.IsNull());
    if (image_ref.IsNull())
       return;
 
@@ -273,12 +343,12 @@ void evas_direct3d_image_draw(Direct3DDeviceHandler d3d, Direct3DImageHandler im
             break;
          }
       }
-      if (!found)
+      if (!found && evas_image != NULL)
          evas_cache_image_load_data(&evas_image->cache_entry);
    }
 
    // If the image object wasnt initialized yet
-   if (evas_image->image.data != NULL && !image_ref->IsValid())
+   if (evas_image != NULL && evas_image->image.data != NULL && !image_ref->IsValid())
    {
       D3DImageCache::CacheEntryInfo info;
       ZeroMemory(&info, sizeof(info));
@@ -316,10 +386,20 @@ void evas_direct3d_image_size_get(Direct3DImageHandler image, int *w, int *h)
    ImagePtr *ptr = (ImagePtr *)image;
    if (ptr == NULL)
       return;
-   if (w != NULL) 
-      *w = ptr->img->cache_entry.w;
-   if (h != NULL)
-      *h = ptr->img->cache_entry.h;
+   if (ptr->img != NULL)
+   {
+      if (w != NULL) 
+         *w = ptr->img->cache_entry.w;
+      if (h != NULL)
+         *h = ptr->img->cache_entry.h;
+   }
+   else if (!ptr->ref.IsNull())
+   {
+      if (w != NULL) 
+         *w = ptr->ref->GetWidth();
+      if (h != NULL)
+         *h = ptr->ref->GetHeight();
+   }
 }
 
 void evas_direct3d_image_border_set(Direct3DDeviceHandler d3d, Direct3DImageHandler image, 
@@ -332,16 +412,28 @@ void evas_direct3d_image_border_set(Direct3DDeviceHandler d3d, Direct3DImageHand
    if (image_ref.IsNull())
       return;
 
+   int im_w, im_h;
+   if (ptr->img != NULL)
+   {
+      im_w = ptr->img->cache_entry.w;
+      im_h = ptr->img->cache_entry.h;
+   }
+   else
+   {
+      im_w = image_ref->GetWidth();
+      im_h = image_ref->GetHeight();
+   }
+
    image_ref->SetupBorder(
       D3DXVECTOR4(
          2.f * float(l) / float(device->GetWidth()), 
          -2.f * float(t) / float(device->GetHeight()),
          2.f * float(r) / float(device->GetWidth()), 
          -2.f * float(b) / float(device->GetHeight())),
-      D3DXVECTOR4(float(l) / float(ptr->img->cache_entry.w), 
-         float(t) / float(ptr->img->cache_entry.h),
-         float(r) / float(ptr->img->cache_entry.w), 
-         float(b) / float(ptr->img->cache_entry.h)));
+      D3DXVECTOR4(float(l) / float(im_w), 
+         float(t) / float(im_h),
+         float(r) / float(im_w), 
+         float(b) / float(im_h)));
 }
 
 void evas_direct3d_image_border_get(Direct3DDeviceHandler d3d, Direct3DImageHandler image, 

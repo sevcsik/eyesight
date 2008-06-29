@@ -255,6 +255,20 @@ eng_image_load(void *data, const char *file, const char *key, int *error, Evas_I
    return evas_direct3d_image_load(re->d3d, file, key, NULL, lo);
 }
 
+static void *
+eng_image_new_from_data(void *data, int w, int h, DATA32 *image_data, int alpha, int cspace)
+{
+   Render_Engine *re = (Render_Engine *)data;
+   return evas_direct3d_image_new_from_data(re->d3d, w, h, image_data, alpha, cspace);
+}
+
+static void *
+eng_image_new_from_copied_data(void *data, int w, int h, DATA32 *image_data, int alpha, int cspace)
+{
+   Render_Engine *re = (Render_Engine *)data;
+   return evas_direct3d_image_new_from_copied_data(re->d3d, w, h, image_data, alpha, cspace);
+}
+
 static void
 eng_image_free(void *data, void *image)
 {
@@ -262,6 +276,27 @@ eng_image_free(void *data, void *image)
    evas_direct3d_image_free(re->d3d, image);
 }
 
+static void *
+eng_image_data_put(void *data, void *image, DATA32 *image_data)
+{
+   Render_Engine *re = (Render_Engine *)data;
+   evas_direct3d_image_data_put(re->d3d, image, image_data);
+   return image;
+}
+
+static void *
+eng_image_dirty_region(void *data, void *image, int x, int y, int w, int h)
+{
+   return image;
+}
+
+static void *
+eng_image_data_get(void *data, void *image, int to_write, DATA32 **image_data)
+{
+   Render_Engine *re = (Render_Engine *)data;
+   evas_direct3d_image_data_get(re->d3d, image, to_write, image_data);
+   return image;
+}
 
 static void
 eng_image_draw(void *data, void *context, void *surface, void *image, 
@@ -329,8 +364,8 @@ static void
 eng_font_draw(void *data, void *context, void *surface, void *font, int x, int y, int w, int h, int ow, int oh, const char *text)
 {
    Render_Engine *re = (Render_Engine *)data;
-   evas_direct3d_font_draw(re->d3d, (Direct3DFontHandler)font,
-      x, y, w, h, ow, oh, text);
+//   evas_direct3d_font_draw(re->d3d, (Direct3DFontHandler)font,
+//      x, y, w, h, ow, oh, text);
 }
 
 
@@ -364,7 +399,12 @@ module_open(Evas_Module *em)
    ORD(line_draw);
    ORD(rectangle_draw);
    ORD(image_load);
+   ORD(image_new_from_data);
+   ORD(image_new_from_copied_data);
    ORD(image_free);
+   ORD(image_data_put);
+   ORD(image_dirty_region);
+   ORD(image_data_get);
    ORD(image_draw);
    ORD(image_size_get);
    ORD(image_alpha_get);
@@ -373,7 +413,7 @@ module_open(Evas_Module *em)
    ORD(image_border_get);
    //ORD(font_load);
    //ORD(font_free);
-   //ORD(font_draw);
+   ORD(font_draw);
    /* now advertise out own api */
    em->functions = (void *)(&func);
    return 1;

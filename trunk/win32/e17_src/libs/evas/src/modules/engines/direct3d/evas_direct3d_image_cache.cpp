@@ -167,7 +167,6 @@ bool D3DImageCache::InsertData(CacheEntry &entry, DWORD *data, int w, int h)
 {
    if (entry.texture == NULL)
       return false;
-   assert(data != NULL);
 
    RECT rc = {entry.cur_x, entry.cur_y, entry.cur_x + w, entry.cur_y + h};
    D3DLOCKED_RECT lr;
@@ -177,8 +176,42 @@ bool D3DImageCache::InsertData(CacheEntry &entry, DWORD *data, int w, int h)
       return false;
    }
 
+   if (data != NULL)
+   {
+      for (int i = 0; i < h; i++)
+         CopyMemory(((BYTE *)lr.pBits) + i * lr.Pitch, data + i * w, sizeof(DWORD) * w);
+   }
+   else
+   {
+      for (int i = 0; i < h; i++)
+         ZeroMemory(((BYTE *)lr.pBits) + i * lr.Pitch, sizeof(DWORD) * w);
+   }
+
+   if (FAILED(entry.texture->UnlockRect(0)))
+   {
+      Log("Failed to unlock texture");
+      return false;
+   }
+   return true;
+}
+
+
+bool D3DImageCache::RetrieveData(CacheEntry &entry, DWORD *data, int w, int h)
+{
+   if (entry.texture == NULL || data == NULL)
+      return false;
+
+   RECT rc = {entry.cur_x, entry.cur_y, entry.cur_x + w, entry.cur_y + h};
+   D3DLOCKED_RECT lr;
+   if (FAILED(entry.texture->LockRect(0, &lr, &rc, D3DLOCK_READONLY)))
+   {
+      Log("Failed to lock texture");
+      return false;
+   }
+
    for (int i = 0; i < h; i++)
-      CopyMemory(((BYTE *)lr.pBits) + i * lr.Pitch, data + i * w, sizeof(DWORD) * w);
+      CopyMemory(data + i * w, ((BYTE *)lr.pBits) + i * lr.Pitch, sizeof(DWORD) * w);
+
    if (FAILED(entry.texture->UnlockRect(0)))
    {
       Log("Failed to unlock texture");
@@ -192,4 +225,27 @@ void D3DImageCache::UpdateInsert(CacheEntry &entry, int w, int h)
    entry.cur_h = max(entry.cur_h, entry.cur_y + h);
    entry.cur_x += w;
    entry.users++;
+}
+
+bool D3DImageCache::UpdateImageData(CacheEntryInfo &info, DWORD *data)
+{
+   assert(data != NULL);
+   if (info.id < 0 || info.id >= _cache.Length())
+      return false;
+   CacheEntry ce_copy = _cache[info.id];
+   ce_copy.cur_x = int(info.u * FLOAT(ce_copy.width));
+   ce_copy.cur_y = int(info.v * FLOAT(ce_copy.height));
+   return InsertData(ce_copy, data, info.width, info.height);
+}
+
+bool D3DImageCache::GetImageData(CacheEntryInfo &info, TArray<DWORD> &data)
+{
+   if (info.id < 0 || info.id >= _cache.Length())
+      return false;
+   CacheEntry ce_copy = _cache[info.id];
+   ce_copy.cur_x = int(info.u * FLOAT(ce_copy.width));
+   ce_copy.cur_y = int(info.v * FLOAT(ce_copy.height));
+   data.Allocate(info.width * info.height);
+
+   return RetrieveData(ce_copy, data.Data(), info.width, info.height);
 }
