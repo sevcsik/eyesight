@@ -211,7 +211,7 @@ bool D3DDevice::Begin()
    //_device->SetViewport(&vp);
    //_device->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
 
-   _device->Clear(0, NULL, D3DCLEAR_TARGET /*| D3DCLEAR_ZBUFFER*/, 0xffdddddd, 1.f, 0);
+   //_device->Clear(0, NULL, D3DCLEAR_TARGET /*| D3DCLEAR_ZBUFFER*/, 0xffdddddd, 1.f, 0);
    return true;
 }
 

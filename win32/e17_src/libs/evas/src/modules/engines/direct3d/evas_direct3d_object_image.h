@@ -36,12 +36,21 @@ public:
    inline FLOAT GetBorderTop();
    inline FLOAT GetBorderBottom();
 
+   bool UpdateImageData(DWORD *image_data);
+   DWORD *GetImageData();
+
 private:
    struct Vertex
    {
       FLOAT x, y;
       FLOAT u, v;
       D3DCOLOR col;
+   };
+
+   struct GroupDesc
+   {
+      int num;
+      int id;
    };
 
 private:
@@ -62,6 +71,9 @@ private:
    int _cache_i;
    bool _with_border;
    bool _dirty;
+
+   TArray<DWORD> _image_data;
+   bool _image_data_updated;
 
    char _source[256];
 

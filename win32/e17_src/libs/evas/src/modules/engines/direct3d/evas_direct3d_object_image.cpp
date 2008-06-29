@@ -26,6 +26,7 @@ D3DObjectImage::D3DObjectImage()
    _uvborder = D3DXVECTOR4(0, 0, 0, 0);
    _with_border = false;
    _dirty = false;
+   _image_data_updated = false;
 }
 
 D3DObjectImage::~D3DObjectImage()
@@ -60,12 +61,6 @@ void D3DObjectImage::EndCache(D3DDevice *d3d)
    D3DShaderPack::Current()->SetVDecl(d3d, D3DShaderPack::VDECL_XYUVC);
    D3DShaderPack::Current()->SetVS(d3d, D3DShaderPack::VS_COPY_UV_COLOR);
    D3DShaderPack::Current()->SetPS(d3d, D3DShaderPack::PS_TEX_COLOR_FILTER);
-
-   struct GroupDesc
-   {
-      int num;
-      int id;
-   };
 
    static TArray<Vertex> sorted;
    static TArray<GroupDesc> groups;
@@ -300,4 +295,21 @@ void D3DObjectImage::SetupBorder(const D3DXVECTOR4 &world_border, const D3DXVECT
    _uvborder = pix_border;
    _with_border = (_border.x > 0.0001f || _border.y > 0.0001f || 
       _border.z > 0.0001f || _border.w > 0.0001f);
+}
+
+bool D3DObjectImage::UpdateImageData(DWORD *image_data)
+{
+   D3DImageCache::CacheEntryInfo info = {_image_id, _width, _height, _u, _v, _du, _dv};
+   _image_data_updated = false;
+   return D3DImageCache::Current()->UpdateImageData(info, image_data);
+}
+
+DWORD *D3DObjectImage::GetImageData()
+{
+   if (_image_data_updated)
+      return _image_data.Data();
+   _image_data_updated = true;
+   D3DImageCache::CacheEntryInfo info = {_image_id, _width, _height, _u, _v, _du, _dv};
+   D3DImageCache::Current()->GetImageData(info, _image_data);
+   return _image_data.Data();
 }

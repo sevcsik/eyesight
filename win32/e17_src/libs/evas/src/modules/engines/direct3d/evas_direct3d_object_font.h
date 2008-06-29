@@ -38,6 +38,12 @@ private:
       char ch;
    };
 
+   struct GroupDesc
+   {
+      int num;
+      int id;
+   };
+
 private:
    void MakeData(D3DDevice *d3d, TArray<Vertex> &data);
 

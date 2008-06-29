@@ -38,7 +38,15 @@ void         evas_direct3d_rectangle_draw(Direct3DDeviceHandler d3d, int x, int 
 
 Direct3DImageHandler evas_direct3d_image_load(Direct3DDeviceHandler d3d, 
    const char *file, const char *key, int *error, Evas_Image_Load_Opts *lo);
+Direct3DImageHandler evas_direct3d_image_new_from_data(Direct3DDeviceHandler d3d, 
+   int w, int h, DWORD *image_data, int alpha, int cspace);
+Direct3DImageHandler evas_direct3d_image_new_from_copied_data(Direct3DDeviceHandler d3d, 
+   int w, int h, DWORD *image_data, int alpha, int cspace);
 void evas_direct3d_image_free(Direct3DDeviceHandler d3d, Direct3DImageHandler image);
+void evas_direct3d_image_data_put(Direct3DDeviceHandler d3d, Direct3DImageHandler image,
+   DWORD *image_data);
+void evas_direct3d_image_data_get(Direct3DDeviceHandler d3d, Direct3DImageHandler image,
+   int to_write, DATA32 **image_data);
 void evas_direct3d_image_draw(Direct3DDeviceHandler d3d, Direct3DImageHandler image,
    int src_x, int src_y, int src_w, int src_h, 
    int dst_x, int dst_y, int dst_w, int dst_h, int smooth);
