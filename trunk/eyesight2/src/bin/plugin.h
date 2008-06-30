@@ -10,6 +10,12 @@
  * = STUFF FOR PLUGINS =
  */
 
+typedef struct _Controls_Resize_Cbdata
+{
+   void *data;
+   void (*func) (void *data, Evas *e, Evas_Object *controls, void *event_info);
+} Controls_Resize_Cbdata;
+ 
 /* 
  * _Plugin_Data struct:
  * this structure is passed to plugins to manipulate eyesight's GUI

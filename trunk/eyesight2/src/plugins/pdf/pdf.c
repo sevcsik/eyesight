@@ -18,6 +18,17 @@ typedef struct _Pdf_Plugin_Data
    Ecore_Hash *files;
 } Pdf_Plugin_Data;
 
+typedef struct _Pdf_Page_Resize_Cb_Data
+{
+   Evas_Object *page;
+   Evas_Object *border;
+   int top_margin;
+   int bottom_margin;
+   int left_margin;
+   int right_margin;
+   Ecore_Timer *render_timer;
+} Pdf_Page_Resize_Cb_Data;
+
 void 
 identify(char **name, char **version, char **email)
 {
@@ -53,6 +64,9 @@ open_file(void **_plugin_data, char *filename, Evas_Object *main_window,
    int ew, eh, nw, nh;
    double scale;
    int top_margin, bottom_margin, left_margin, right_margin;
+   Pdf_Page_Resize_Cb_Data *resize_cb_data;
+   Ecore_List *resize_callbacks;
+   Controls_Resize_Cbdata *cbdata;
    
    page = esmart_pdf_add(evas);
    esmart_pdf_init(page);
@@ -81,6 +95,28 @@ open_file(void **_plugin_data, char *filename, Evas_Object *main_window,
    bottom_margin = atoi(edje_file_data_get(themefile, "bottom_margin"));
    left_margin = atoi(edje_file_data_get(themefile, "left_margin"));
    right_margin = atoi(edje_file_data_get(themefile, "right_margin"));
+   
+   // Add callback to resize callback list
+   // TODO: pdf.c: Free resize_cb_data somewhere
+   resize_cb_data = malloc(sizeof(Pdf_Page_Resize_Cb_Data));
+   resize_cb_data->page = page;
+   resize_cb_data->border = border;
+   resize_cb_data->top_margin = top_margin;
+   resize_cb_data->bottom_margin = bottom_margin;
+   resize_cb_data->left_margin = left_margin;
+   resize_cb_data->right_margin = right_margin;
+   resize_cb_data->render_timer = NULL;
+   
+   cbdata = malloc(sizeof(Controls_Resize_Cbdata));
+   cbdata->data = resize_cb_data;
+   cbdata->func = page_resize_cb;
+   
+   resize_callbacks = evas_object_data_get(evas_object_name_find(evas, "controls"),
+                                           "resize_callbacks");
+   
+   ecore_list_append(resize_callbacks, cbdata);
+   
+   // Resize page
    
    if ((double) ew - (left_margin + right_margin) / ((double) nw) < 
        ((double) eh - (top_margin + bottom_margin) / ((double) nh)))
@@ -150,4 +186,44 @@ setup_toolbar(Evas_Object *controls)
    
    add_toolbar1_icon(PREV_PAGE, controls);
    add_toolbar1_icon(NEXT_PAGE, controls);
+}
+
+void
+page_resize_cb(void *_data, Evas *evas, Evas_Object *controls, void *event_info)
+{
+   Pdf_Page_Resize_Cb_Data *data = _data;
+   int ew, eh, nw, nh, h_margins, v_margins;
+   double scale;
+   
+   h_margins = data->left_margin + data->right_margin;
+   v_margins = data->top_margin + data->bottom_margin;
+   
+   evas_object_geometry_get(controls, NULL, NULL, &ew, &eh);
+   esmart_pdf_size_get(data->page, &nw, &nh);
+   
+   scale = (((double)eh - v_margins) / (double)nh <   \
+           ((double)ew - h_margins) / (double)nw) ?   \
+           (((double)eh - v_margins) / (double)nh) :  \
+           (((double)ew - h_margins) / (double)nw);
+   
+   
+   evas_object_resize(data->border, nw * scale, nh * scale);
+   if (scale == ((double)eh - v_margins) / (double)nh)
+      evas_object_move(data->border, ew / 2 - nw * scale / 2, data->top_margin);
+   else
+      evas_object_move(data->border, data->left_margin, eh / 2 - nh * scale / 2);
+
+   esmart_pdf_scale_set(data->page, scale, scale);
+
+   if (data->render_timer) // We're still resizing, delete timer set on prev resize
+      ecore_timer_del(data->render_timer);
+   
+   data->render_timer = ecore_timer_add(0.25, page_resize_cb_render_timer, 
+                                        data->page);
+}
+
+int page_resize_cb_render_timer(void *data)
+{
+   esmart_pdf_render((Evas_Object *) data);
+   return 0;
 }

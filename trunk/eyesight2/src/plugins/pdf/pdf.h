@@ -17,5 +17,7 @@ char open_file(void **_plugin_data, char *filename, Evas_Object *main_window,
               Evas *evas);
 void show(void **plugin_data, char *filename, Evas *evas);
 void setup_toolbar(Evas_Object *controls);
+void page_resize_cb(void *_data, Evas *evas, Evas_Object *controls, void *event_info);
+int page_resize_cb_render_timer(void *data);
 
 #endif /*PDF_H*/

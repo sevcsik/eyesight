@@ -47,9 +47,7 @@ page_next_animator(void *_data)
    evas_object_geometry_get(data->tmp_border, &x2, &y2, &w2, &h2);
    
    dy = 2 * ++(data->step);
-   
-   //printf("ANIMATE: %d, %d, delta: %d\n", x2, y2, dy);
-   
+
    // Move border1
    if (y1 - dy <= 0 - data->top_margin - h1)
       evas_object_move(data->border, x1, 0 - data->top_margin - h1);
@@ -90,8 +88,6 @@ page_prev_animator(void *_data)
    evas_object_geometry_get(data->tmp_border, &x2, &y2, &w2, &h2);
    
    dy = 2 * ++(data->step);
-   
-   printf("ANIMATE: %d, %d, delta: %d\n", x2, y2, dy);
    
    if (y1 + dy >= wh + data->bottom_margin)
       evas_object_move(data->border, x1, wh + data->bottom_margin);
