@@ -194,12 +194,16 @@ page_resize_cb(void *_data, Evas *evas, Evas_Object *controls, void *event_info)
    Pdf_Page_Resize_Cb_Data *data = _data;
    int ew, eh, nw, nh, h_margins, v_margins;
    double scale;
+   Evas_Object *page, *border;
+   
+   page = evas_object_name_find(evas, "page");
+   border = evas_object_name_find(evas, "border");
    
    h_margins = data->left_margin + data->right_margin;
    v_margins = data->top_margin + data->bottom_margin;
    
    evas_object_geometry_get(controls, NULL, NULL, &ew, &eh);
-   esmart_pdf_size_get(data->page, &nw, &nh);
+   esmart_pdf_size_get(page, &nw, &nh);
    
    scale = (((double)eh - v_margins) / (double)nh <   \
            ((double)ew - h_margins) / (double)nw) ?   \
@@ -207,19 +211,19 @@ page_resize_cb(void *_data, Evas *evas, Evas_Object *controls, void *event_info)
            (((double)ew - h_margins) / (double)nw);
    
    
-   evas_object_resize(data->border, nw * scale, nh * scale);
+   evas_object_resize(border, nw * scale, nh * scale);
    if (scale == ((double)eh - v_margins) / (double)nh)
-      evas_object_move(data->border, ew / 2 - nw * scale / 2, data->top_margin);
+      evas_object_move(border, ew / 2 - nw * scale / 2, data->top_margin);
    else
-      evas_object_move(data->border, data->left_margin, eh / 2 - nh * scale / 2);
+      evas_object_move(border, data->left_margin, eh / 2 - nh * scale / 2);
 
-   esmart_pdf_scale_set(data->page, scale, scale);
+   esmart_pdf_scale_set(page, scale, scale);
 
    if (data->render_timer) // We're still resizing, delete timer set on prev resize
       ecore_timer_del(data->render_timer);
    
    data->render_timer = ecore_timer_add(0.25, page_resize_cb_render_timer, 
-                                        data->page);
+                                        page);
 }
 
 int page_resize_cb_render_timer(void *data)
