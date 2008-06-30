@@ -47,13 +47,60 @@ main_window_create(Args *args, Evas_List **startup_errors)
    Main_Window *main_window = malloc(sizeof(Main_Window));
    Ecore_Evas *ee;
    char *theme;
+   Ecore_List *resize_callbacks;
 
-   ee = ecore_evas_software_x11_new(0, 0, 0, 0, 0, 0);
-   if (!ee)
+   printf("%d: %s\n", args->engine, args->engine);
+   
+   if (!(args->engine) || !strcmp(args->engine, "software_x11"))
    {
-      printf(_("Can't create X11 window. Is an X server running?\n"));
-      return 0;
+      ee = ecore_evas_software_x11_new(0, 0, 0, 0, 0, 0);
+      if (!ee)
+      {
+         printf(_("Can't create software_X11 window. Is there an X server running?\n"));
+         return 0;
+      }
    }
+   else if (!strcmp(args->engine, "software_ddraw"))
+   {
+      ee = ecore_evas_software_ddraw_new(NULL, 0, 0, 0, 0);
+      if (!ee)
+      {
+         printf(_("Can't create software_ddraw window.0\n"));
+         return 0;
+      }
+   }
+   else if (!strcmp(args->engine, "gl_x11"))
+   {
+      ee = ecore_evas_gl_x11_new(0, 0, 0, 0, 0, 0);
+      if (!ee)
+      {
+         printf(_("Can't create gl_X11 window. Is there an X server running?\n"));
+         return 0;
+      }
+   }
+   else if (!strcmp(args->engine, "xrender_x11"))
+   {
+      ee = ecore_evas_xrender_x11_new(0, 0, 0, 0, 0, 0);
+      if (!ee)
+      {
+         printf(_("Can't create xrender_X11 window. Is there an X server running?\n"));
+         return 0;
+      }
+   }
+   else if (!strcmp(args->engine, "fb"))
+   {
+      ee = ecore_evas_fb_new(0, 0, 0, 0);
+      if (!ee)
+      {
+         printf(_("Can't create framebuffer.\n"));
+         return 0;
+      }
+   }
+   else
+   {
+      printf(_("%s is an unknown engine. Valid engines are: software_x11 (default), software_ddraw, gl_x11, xrender_x11 and fb."), args->engine);
+   }
+   
    main_window->evas = ecore_evas_get(ee);
    main_window->main_window = edje_object_add(main_window->evas);
 
@@ -84,6 +131,12 @@ main_window_create(Args *args, Evas_List **startup_errors)
    edje_object_file_set(main_window->controls, theme, "eyesight/main_window/controls");
    evas_object_layer_set(main_window->controls, 99);
    evas_object_name_set(main_window->controls, "controls");
+   
+   // Each resize callback will be called on resize
+   resize_callbacks = ecore_list_new();
+   evas_object_data_set(main_window->controls, "resize_callbacks", resize_callbacks);
+   evas_object_event_callback_add(main_window->controls, EVAS_CALLBACK_RESIZE,
+                                  controls_resize_cb, resize_callbacks);
    
    int w, h;
    evas_object_name_set(main_window->main_window, "main_window");
@@ -119,4 +172,18 @@ main_window_load_cb(void *data, Evas_Object *o, const char *emission,
 {
      if (!evas_list_data(data)) return; // don't do anything if there's no errors
      edje_object_signal_emit(o, "error_show", "eyesight");
+}
+
+void controls_resize_cb(void *_data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Ecore_List *data = _data;
+   Controls_Resize_Cbdata *cbdata;
+   
+   cbdata = ecore_list_first(data);
+   do
+   {
+      if (!cbdata)
+         return;
+      cbdata->func(cbdata->data, e, obj, event_info);
+   } while (cbdata = ecore_list_next(data));
 }

@@ -7,6 +7,8 @@
 #include "error.h"
 #include "conf.h"
 
+#define OPTS "t:e:"
+
 Args *
 parse_args(int argc, char **argv, Evas_List **startup_errors)
 {
@@ -14,6 +16,7 @@ parse_args(int argc, char **argv, Evas_List **startup_errors)
    Args *args = malloc(sizeof(Args));
    args->theme_path = NULL;
    args->files = NULL;
+   args->engine = NULL;
    
    // Shut up getopt
    opterr = 0;
@@ -27,6 +30,9 @@ parse_args(int argc, char **argv, Evas_List **startup_errors)
       {
          case 't':
             args->theme_path = optarg;
+            break;
+         case 'e':
+            args->engine = optarg;
             break;
          case '?':
             append_startup_error(startup_errors, ERROR_ARG_UNKNOWN, (char *)&optopt);
@@ -43,6 +49,5 @@ parse_args(int argc, char **argv, Evas_List **startup_errors)
          ecore_list_append(args->files, argv[c]);
       }
    }
-
    return args;
 }

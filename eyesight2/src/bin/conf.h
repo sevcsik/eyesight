@@ -3,11 +3,10 @@
 
 #include <Ecore_Data.h>
 
-#define OPTS "t:"
-
 typedef struct _Args
 {
    char *theme_path;
+   char *engine;
    Ecore_List *files;
 }
 Args;
