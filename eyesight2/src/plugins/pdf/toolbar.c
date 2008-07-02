@@ -2,6 +2,7 @@
 #include "pdf.h"
 #include "stdlib.h"
 #include "animations.h"
+#include "plugin.h"
 #include <Evas.h>
 #include <Ecore.h>
 #include <Edje.h>
@@ -21,6 +22,12 @@ Edje_Signal_Callback toolbar1_callbacks[] = {
                                                0,
                                                page_next_clicked
                                             };
+                                            
+typedef struct _Pdf_Toolbar1_Button_Resize_Cb_Data
+{
+   Evas_Object *button;
+   Pdf_Toolbar1_Icon icon;
+} Pdf_Toolbar1_Button_Resize_Cb_Data;
 
 void 
 toolbar_icon_resize_cb(void *data, Evas *evas, Evas_Object *obj,
@@ -45,6 +52,8 @@ add_toolbar1_icon(Pdf_Toolbar1_Icon icon, Evas_Object *controls)
    char *theme_file;
    int x0, y0, w, h;
    enum {ICON_TYPE_GROUP, ICON_TYPE_IMAGE} type;
+   Controls_Resize_Cbdata *crcbdata;
+   Pdf_Toolbar1_Button_Resize_Cb_Data *ptbrcdata;
    
    // Get icon filename
    switch (icon)
@@ -126,6 +135,16 @@ add_toolbar1_icon(Pdf_Toolbar1_Icon icon, Evas_Object *controls)
    edje_object_signal_callback_add(icon_object, "clicked", "toolbar1_icon",
                                    toolbar1_callbacks[icon], NULL);
    
+   // TODO: pdf/toolbar.c: Free somewhere ptbrcdata and crcbdata
+   
+   ptbrcdata = malloc(sizeof(Pdf_Toolbar1_Button_Resize_Cb_Data));
+   crcbdata = malloc(sizeof(Controls_Resize_Cbdata));
+   ptbrcdata->button = icon_object;
+   ptbrcdata->icon = icon;
+   crcbdata->data = ptbrcdata;
+   crcbdata->func = toolbar_button_resize_cb;
+   ecore_list_append(evas_object_data_get(controls, "resize_callbacks"), crcbdata);
+   
    evas_object_show(icon_image);
    evas_object_show(icon_object);
 }
@@ -164,12 +183,10 @@ void page_next_clicked(void *_data, Evas_Object *icon, const char *emission,
    evas_object_name_set(tmp_border, "tmp_border");
    edje_object_file_set(tmp_border, theme_file, "eyesight/border_opaque");
    
-   // Render pdf
    esmart_pdf_file_set(tmp_page, esmart_pdf_file_get(page));
    esmart_pdf_page_set(tmp_page, esmart_pdf_page_get(page) + 1);
    esmart_pdf_scale_get(page, &hscale, &vscale);
    esmart_pdf_scale_set(tmp_page, hscale, vscale);
-   esmart_pdf_render(tmp_page);
    
    // Swallow tmp_page
    edje_object_part_swallow(tmp_border, "eyesight/border_opaque/content",
@@ -184,6 +201,8 @@ void page_next_clicked(void *_data, Evas_Object *icon, const char *emission,
    top_margin = atoi(edje_file_data_get(theme_file, "top_margin"));
    evas_object_move(tmp_border, (ww / 2 - (nw * hscale / 2)), 
                     wh + bottom_margin);
+   
+   esmart_pdf_render(tmp_page);
    
    // Show
    evas_object_show(tmp_page);
@@ -235,7 +254,6 @@ void page_prev_clicked(void *data, Evas_Object *icon, const char *emission,
    esmart_pdf_page_set(tmp_page, esmart_pdf_page_get(page) - 1);
    esmart_pdf_scale_get(page, &hscale, &vscale);
    esmart_pdf_scale_set(tmp_page, hscale, vscale);
-   esmart_pdf_render(tmp_page);
    
    // Swallow tmp_page
    edje_object_part_swallow(tmp_border, "eyesight/border_opaque/content",
@@ -250,6 +268,8 @@ void page_prev_clicked(void *data, Evas_Object *icon, const char *emission,
    top_margin = atoi(edje_file_data_get(theme_file, "top_margin"));
    evas_object_move(tmp_border, (ww / 2 - (nw * hscale / 2)), 
                     0 - bottom_margin - (double)nh * vscale);
+   
+   esmart_pdf_render(tmp_page);
    
    // Show
    evas_object_show(tmp_page);
@@ -266,3 +286,14 @@ void page_prev_clicked(void *data, Evas_Object *icon, const char *emission,
    ecore_animator_add(page_prev_animator, animdata);
 }
 
+void toolbar_button_resize_cb(void *_data, Evas *evas, Evas_Object *controls,
+                              void *event_info)
+{
+   Pdf_Toolbar1_Button_Resize_Cb_Data *data = _data;
+   int x, y, bw;
+   
+   edje_object_part_geometry_get(controls, "eyesight/main_window/controls/toolbar1_sw",
+                                 &x, &y, NULL, NULL);
+   evas_object_geometry_get(data->button, NULL, NULL, &bw, NULL);
+   evas_object_move(data->button, x + bw * data->icon, y);
+}

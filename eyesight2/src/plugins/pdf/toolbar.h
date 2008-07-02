@@ -21,4 +21,7 @@ void page_next_clicked(void *data, Evas_Object *o, const char *emission,
 void page_prev_clicked(void *data, Evas_Object *o, const char *emission, 
                        const char *source);
 
+void toolbar_button_resize_cb(void *_data, Evas *evas, Evas_Object *controls,
+                               void *event_info);
+
 #endif /* TOOLBAR_H_ */
