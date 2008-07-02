@@ -68,6 +68,7 @@ page_next_animator(void *_data)
       evas_object_name_set(edje_object_part_swallow_get(data->tmp_border,
                                               "eyesight/border_opaque/content"),
                                                "page");
+      evas_object_hide(data->border);
       return 0;   // Stop animation
    }
    else
