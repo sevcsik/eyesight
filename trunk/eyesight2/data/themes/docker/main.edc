@@ -27,16 +27,17 @@ images
    image: "img/nav.png" COMP;
    image: "img/nav_next.png" COMP;
    image: "img/nav_prev.png" COMP;
+   image: "img/show_button_bg.png" COMP;
    image: "go-up.png" COMP;
    image: "go-down.png" COMP;
 }
 
 fonts
 {
-   font: "FreeSans.ttf" "Normal";
-   font: "FreeSansBold.ttf" "Bold";
-   font: "FreeSansOblique.ttf" "Italic";
-   font: "FreeSansBoldOblique.ttf" "BoldItalic";
+   font: "DejaVuSans.ttf" "Normal";
+   font: "DejaVuSans-Bold.ttf" "Bold";
+   font: "DejaVuSans-Oblique.ttf" "Italic";
+   font: "DejaVuSans-BoldOblique.ttf" "BoldItalic";
 }
 
 spectra
