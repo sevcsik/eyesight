@@ -18,5 +18,6 @@ group
    programs
    {
    #include "controls/nav_programs.edc"
+   #include "controls/toolbar1_programs.edc"
    }
 }
