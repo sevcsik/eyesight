@@ -11,6 +11,7 @@ D3DImageCache::D3DImageCache()
 {
    _max_width = 512;
    _max_height = 512;
+   _margin = 0;
 }
 
 D3DImageCache::~D3DImageCache()
@@ -76,7 +77,7 @@ bool D3DImageCache::InsertImage(D3DDevice *d3d, DWORD *data, int w, int h, Cache
    int id = -1;
    for (int i = 0; i < _cache.Length(); i++)
    {
-      if (RequestInsert(_cache[i], w, h))
+      if (!_cache[i].locked && RequestInsert(_cache[i], w, h))
       {
          ce = &_cache[i];
          id = i;
@@ -124,30 +125,99 @@ bool D3DImageCache::InsertImage(D3DDevice *d3d, DWORD *data, int w, int h, Cache
    return true;
 }
 
+bool D3DImageCache::InsertImage(D3DDevice *d3d, int id, DWORD *data, int w, int h, CacheEntryInfo &info)
+{
+   if (id < 0 || id >= _cache.Length())
+      return false;
+   assert(_cache[id].texture != NULL);
+   CacheEntry *ce = &_cache[id];
+   if (!RequestInsert(*ce, w, h))
+      return false;
+   if (!InsertData(*ce, data, w, h))
+      return false;
+
+   info.id = id;
+   info.u = FLOAT(ce->cur_x) / FLOAT(ce->width);
+   info.v = FLOAT(ce->cur_y) / FLOAT(ce->height);
+   info.du = FLOAT(w) / FLOAT(ce->width);
+   info.dv = FLOAT(h) / FLOAT(ce->height);
+   info.width = w;
+   info.height = h;
+
+   UpdateInsert(*ce, w, h);
+   return true;
+}
+
+bool D3DImageCache::CreateImage(D3DDevice *d3d, int w, int h, bool locked, CacheEntryInfo &info)
+{
+   int id;
+   CacheEntry new_entry;
+   CacheEntry *ce = NULL;
+
+   if (!CreateEntry(d3d, new_entry, w, h, true))
+      return false;
+   for (id = 0; id < _cache.Length(); id++)
+   {
+      if (_cache[id].texture == NULL)
+         break;
+   }
+
+   if (id < _cache.Length())
+   {
+      _cache[id] = new_entry;
+      ce = &_cache[id];
+   }
+   else
+   {
+      _cache.Add(new_entry);
+      ce = _cache.Last();
+      id = _cache.Length() - 1;
+   }
+
+   assert(ce != NULL && ce->texture != NULL);
+
+   // Fill with zero
+   if (!InsertData(*ce, NULL, w, h))
+      return false;
+
+   info.id = id;
+   info.u = 0;
+   info.v = 0;
+   info.du = 1;
+   info.dv = 1;
+   info.width = w;
+   info.height = h;
+
+   UpdateInsert(*ce, 0, 0);
+   ce->locked = locked;
+   return true;
+}
+
 bool D3DImageCache::RequestInsert(CacheEntry &entry, int w, int h)
 {
    // If we already have large image entry
    if (entry.width > _max_width || entry.height > _max_height)
       return false;
    // If requested size does not fit into this entry at all
-   if (entry.height - entry.cur_h < h || entry.width < w)
+   if (entry.height - entry.cur_h < h + _margin * 2 || entry.width < w + _margin * 2)
       return false;
 
    // If requested size does not fit into the current line of the entry
-   if (entry.width - entry.cur_x < w)
+   if (entry.width - entry.cur_x < w + _margin * 2)
    {
-      entry.cur_y = entry.cur_h;
-      entry.cur_x = 0;
+      entry.cur_y = entry.cur_h + _margin;
+      entry.cur_x = _margin;
       return true;
    }
+   entry.cur_x += _margin;
    
    return true;
 }
 
-bool D3DImageCache::CreateEntry(D3DDevice *d3d, CacheEntry &entry, int w, int h)
+bool D3DImageCache::CreateEntry(D3DDevice *d3d, CacheEntry &entry, int w, int h, bool exact_size)
 {
-   int width = max(_max_width, w);
-   int height = max(_max_height, h);
+   int width = exact_size ? w : max(_max_width, w);
+   int height = exact_size ? h : max(_max_height, h);
    HRESULT hr;
    if (FAILED(hr = d3d->GetDevice()->CreateTexture(width, height, 0, 0, D3DFMT_A8R8G8B8, 
       D3DPOOL_MANAGED, &entry.texture, NULL)))
@@ -160,6 +230,7 @@ bool D3DImageCache::CreateEntry(D3DDevice *d3d, CacheEntry &entry, int w, int h)
    entry.width = width;
    entry.height = height;
    entry.users = 0;
+   entry.locked = false;
    return true;
 }
 
@@ -222,8 +293,8 @@ bool D3DImageCache::RetrieveData(CacheEntry &entry, DWORD *data, int w, int h)
 
 void D3DImageCache::UpdateInsert(CacheEntry &entry, int w, int h)
 {
-   entry.cur_h = max(entry.cur_h, entry.cur_y + h);
-   entry.cur_x += w;
+   entry.cur_h = max(entry.cur_h, entry.cur_y + h + _margin);
+   entry.cur_x += w + _margin;
    entry.users++;
 }
 

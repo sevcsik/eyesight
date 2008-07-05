@@ -11,62 +11,97 @@
 class D3DObjectFont : public D3DObject
 {
 public:
-   D3DObjectFont();
+
+   class Glyph : public Referenc
+   {
+   public:
+      Glyph(void *source)
+         : _source(source), _width(0), _height(0) {};
+
+      bool Compare(void *source)
+      {
+         return (_source == source);
+      }
+
+   private:
+      friend D3DObjectFont;
+      void *_source;
+      TArray<BYTE> _data;
+      int _width;
+      int _height;
+   };
+
+public:
+   D3DObjectFont(void *source, int image_id);
    ~D3DObjectFont();
 
-   inline bool Compare(const char *name, int size);
-   void CopyTo(D3DObjectFont *image);
+   inline bool Compare(void *source);
+   void CopyTo(D3DObjectFont *font);
 
-   static void BeginCache();
    virtual void Draw(D3DDevice *d3d);
    static void EndCache(D3DDevice *d3d);
 
-   bool Init(D3DDevice *d3d, const char *name, int size);
-   void Setup(FLOAT x, FLOAT y, FLOAT w, FLOAT h, FLOAT ow, FLOAT oh, const char *text);
+   inline void SetColor(DWORD color);
+
+   Glyph *GetGlyph(void *source);
+   Glyph *AddGlyph(D3DDevice *d3d, void *source, BYTE *data8, int width, int height, int pitch);
+   void PushForDraw(Glyph *glyph, int x, int y);
+
+protected:
+   static void BeginCache(int image_id);
 
 private:
    struct Vertex
    {
       FLOAT x, y;
       FLOAT u, v;
-      DWORD col;
    };
 
-   struct TextChar
+   struct Color
    {
-      D3DXVECTOR2 uv;
-      char ch;
+      union
+      {
+         struct
+         {
+            BYTE b, g, r, a;
+         };
+         DWORD color;
+      };
+
+      FLOAT Alpha() { return FLOAT(a) / 255.f; }
    };
 
-   struct GroupDesc
+   class Cache
    {
-      int num;
-      int id;
+   public:
+      Cache()
+         : enabled(false), image_id(-1), width(0), height(0) {};
+   public:
+      TArray<DWORD> data;
+      bool enabled;
+      int image_id;
+      int width;
+      int height;
    };
 
 private:
-   void MakeData(D3DDevice *d3d, TArray<Vertex> &data);
-
-private:
-   FLOAT _x, _y, _w, _h, _ow, _oh;
    DWORD _color;
-
-   char _name[128];
-   int _size;
-
+   void *_source;
    int _image_id;
-   FLOAT _u, _v, _du, _dv;
-   TArray<D3DXVECTOR2> _char_size;
 
-   TArray<TextChar> _text_uvs;
+   TArray<Ref<Glyph> > _glyphs;
 
-   static TArray<D3DObjectFont *> _cache;
-   static bool _cache_enabled;
+   static Cache _cache;
 };
 
-bool D3DObjectFont::Compare(const char *name, int size)
+bool D3DObjectFont::Compare(void *source)
 {
-   return (strcmp(name, _name) == 0) && (size == _size);
+   return (_source == source);
+}
+
+void D3DObjectFont::SetColor(DWORD color)
+{
+   _color = color;
 }
 
 #endif  // __EVAS_DIRECT3D_OBJECT_FONT_H__

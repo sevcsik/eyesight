@@ -18,23 +18,29 @@
 
 typedef void * Direct3DDeviceHandler;
 typedef void * Direct3DImageHandler;
-typedef void * Direct3DFontHandler;
+typedef void * Direct3DFontGlyphHandler;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+// Main engine functions
 
 Direct3DDeviceHandler evas_direct3d_init(HWND window, int depth);
 void         evas_direct3d_free(Direct3DDeviceHandler d3d);
+void         evas_direct3d_render_all(Direct3DDeviceHandler d3d);
+
+// Context manipulations
 
 void         evas_direct3d_context_color_set(Direct3DDeviceHandler d3d, int r, int g, int b, int a);
 void         evas_direct3d_context_set_multiplier(Direct3DDeviceHandler d3d, int r, int g, int b, int a);
 
-void         evas_direct3d_render_all(Direct3DDeviceHandler d3d);
+// Simple objects
 
 void         evas_direct3d_line_draw(Direct3DDeviceHandler d3d, int x1, int y1, int x2, int y2);
 void         evas_direct3d_rectangle_draw(Direct3DDeviceHandler d3d, int x, int y, int w, int h);
+
+// Images
 
 Direct3DImageHandler evas_direct3d_image_load(Direct3DDeviceHandler d3d, 
    const char *file, const char *key, int *error, Evas_Image_Load_Opts *lo);
@@ -56,11 +62,14 @@ void evas_direct3d_image_border_set(Direct3DDeviceHandler d3d, Direct3DImageHand
 void evas_direct3d_image_border_get(Direct3DDeviceHandler d3d, Direct3DImageHandler image, 
    int *l, int *r, int *t, int *b);
 
-Direct3DFontHandler evas_direct3d_font_load(Direct3DDeviceHandler d3d, 
-   const char *name, int size);
-void evas_direct3d_font_free(Direct3DDeviceHandler d3d, Direct3DFontHandler font);
-void evas_direct3d_font_draw(Direct3DDeviceHandler d3d, Direct3DFontHandler font,
-   int x, int y, int w, int h, int ow, int oh, const char *text);
+// Fonts
+
+Direct3DFontGlyphHandler evas_direct3d_font_texture_new(Direct3DDeviceHandler d3d, 
+   RGBA_Font_Glyph *fg);
+void evas_direct3d_font_texture_free(Direct3DFontGlyphHandler ft);
+void evas_direct3d_font_texture_draw(Direct3DDeviceHandler d3d, void *dest, void *context, 
+   RGBA_Font_Glyph *fg, int x, int y);
+void evas_direct3d_select_or_create_font(Direct3DDeviceHandler d3d, void *font);
 
 
 #ifdef __cplusplus

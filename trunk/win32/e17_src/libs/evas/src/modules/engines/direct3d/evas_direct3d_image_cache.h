@@ -26,14 +26,20 @@ public:
    static void SetCurrent(D3DImageCache *obj);
 
    inline void SetMaxSize(int w, int h);
+   inline void SetMargin(int margin);
 
    bool InsertImage(D3DDevice *d3d, DWORD *data, int w, int h, CacheEntryInfo &info);
+   bool InsertImage(D3DDevice *d3d, int id, DWORD *data, int w, int h, CacheEntryInfo &info);
+   bool CreateImage(D3DDevice *d3d, int w, int h, bool locked, CacheEntryInfo &info);
    bool SelectImageToDevice(D3DDevice *d3d, int id);
    void RemoveImageUser(int id);
    void AddImageUser(int id);
    bool UpdateImageData(CacheEntryInfo &info, DWORD *data);
    bool GetImageData(CacheEntryInfo &info, TArray<DWORD> &data);
    void Uninitialize();
+
+   inline int GetImageWidth(int image_id);
+   inline int GetImageHeight(int image_id);
 
 private:
    struct CacheEntry
@@ -45,13 +51,14 @@ private:
       int cur_y;
       int cur_h;
       int users;
+      bool locked;
    };
 
 private:
    D3DImageCache();
 
    bool RequestInsert(CacheEntry &entry, int w, int h);
-   bool CreateEntry(D3DDevice *d3d, CacheEntry &entry, int w, int h);
+   bool CreateEntry(D3DDevice *d3d, CacheEntry &entry, int w, int h, bool exact_size = false);
    bool InsertData(CacheEntry &entry, DWORD *data, int w, int h);
    bool RetrieveData(CacheEntry &entry, DWORD *data, int w, int h);
    void UpdateInsert(CacheEntry &entry, int w, int h);
@@ -61,6 +68,8 @@ private:
    int _max_width;
    int _max_height;
 
+   int _margin;
+
    static Ref<D3DImageCache> _this;
 };
 
@@ -68,6 +77,21 @@ void D3DImageCache::SetMaxSize(int w, int h)
 {
    _max_width = w;
    _max_height = h;
+}
+
+void D3DImageCache::SetMargin(int margin)
+{
+   _margin = margin;
+}
+
+int D3DImageCache::GetImageWidth(int image_id)
+{
+   return _cache[image_id].width;
+}
+
+int D3DImageCache::GetImageHeight(int image_id)
+{
+   return _cache[image_id].height;
 }
 
 #endif  // __EVAS_DIRECT3D_IMAGE_CACHE_H__
