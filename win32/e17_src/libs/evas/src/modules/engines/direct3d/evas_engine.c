@@ -8,6 +8,7 @@ typedef struct _Render_Engine Render_Engine;
 struct _Render_Engine
 {
    Direct3DDeviceHandler d3d;
+   int width, height;
    int end : 1;
    int in_redraw : 1;
 };
@@ -58,6 +59,9 @@ _output_setup(int width, int height, int rotation, HWND window, int depth)
      free(re);
      return NULL;
      }
+
+   re->width = width;
+   re->height = height;
 
    return re;
 }
@@ -155,6 +159,8 @@ static void
 eng_output_resize(void *data, int width, int height)
 {
    Render_Engine *re = (Render_Engine *)data;
+   re->width = width;
+   re->height = height;
 }
 
 static void
@@ -346,26 +352,23 @@ eng_image_border_get(void *data, void *image, int *l, int *r, int *t, int *b)
    evas_direct3d_image_border_get(re->d3d, image, l, t, r, b);
 }
 
-static void *
-eng_font_load(void *data, const char *name, int size)
-{
-   Render_Engine *re = (Render_Engine *)data;
-   return evas_direct3d_font_load(re->d3d, name, size);
-}
-
-static void
-eng_font_free(void *data, void *font)
-{
-   Render_Engine *re = (Render_Engine *)data;
-   evas_direct3d_font_free(re->d3d, (Direct3DFontHandler)font);
-}
-
 static void
 eng_font_draw(void *data, void *context, void *surface, void *font, int x, int y, int w, int h, int ow, int oh, const char *text)
 {
    Render_Engine *re = (Render_Engine *)data;
-//   evas_direct3d_font_draw(re->d3d, (Direct3DFontHandler)font,
-//      x, y, w, h, ow, oh, text);
+	RGBA_Image im;
+   im.image.data = NULL;
+   im.cache_entry.w = re->width;
+   im.cache_entry.h = re->height;
+
+   evas_direct3d_select_or_create_font(re->d3d, font);
+
+   evas_common_draw_context_font_ext_set(context, re->d3d,
+      evas_direct3d_font_texture_new, 
+      evas_direct3d_font_texture_free, 
+      evas_direct3d_font_texture_draw);
+   evas_common_font_draw(&im, context, font, x, y, text);
+   evas_common_draw_context_font_ext_set(context, NULL, NULL, NULL, NULL);
 }
 
 
@@ -411,8 +414,6 @@ module_open(Evas_Module *em)
    ORD(image_colorspace_get);
    ORD(image_border_set);
    ORD(image_border_get);
-   //ORD(font_load);
-   //ORD(font_free);
    ORD(font_draw);
    /* now advertise out own api */
    em->functions = (void *)(&func);

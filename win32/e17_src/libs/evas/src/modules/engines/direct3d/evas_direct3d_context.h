@@ -4,6 +4,7 @@
 #include "evas_engine.h"
 
 #include "ref.h"
+#include "evas_direct3d_object.h"
 
 class D3DContext : virtual public Referenc
 {
@@ -13,6 +14,8 @@ public:
 public:
    DWORD color;
    DWORD color_mul;
+
+   Ref<D3DObject> font;
 
 };
 

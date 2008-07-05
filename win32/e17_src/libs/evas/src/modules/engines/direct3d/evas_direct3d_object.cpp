@@ -10,6 +10,3 @@ D3DObject::~D3DObject()
 {
 }
 
-void D3DObject::Draw(D3DDevice *d3d)
-{
-}

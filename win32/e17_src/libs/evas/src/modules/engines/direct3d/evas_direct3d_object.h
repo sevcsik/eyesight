@@ -13,7 +13,7 @@ public:
    D3DObject();
    virtual ~D3DObject();
 
-   virtual void Draw(D3DDevice *d3d);
+   virtual void Draw(D3DDevice *d3d) = 0;
 
    inline bool IsFree();
    inline void SetFree(bool state);
