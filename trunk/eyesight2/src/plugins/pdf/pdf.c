@@ -6,6 +6,7 @@
 #include <esmart_pdf.h>
 #include <Ecore.h>
 #include <Ecore_Data.h>
+#include <Esmart/Esmart_Container.h>
 #include <Edje.h>
 #include <Efreet.h>
 #include <stdlib.h>
@@ -194,8 +195,27 @@ setup_toolbar(Evas_Object *controls)
    /* Populating toolbar1 (navigation) */
    // TODO: pdf.c: resize toolbar to fit icons
 
-   add_toolbar1_icon(PREV_PAGE, controls);
-   add_toolbar1_icon(NEXT_PAGE, controls);
+   Evas_Object *container1;
+   
+   container1 = esmart_container_new(evas_object_evas_get(controls));
+   
+   // TODO: pdf.c: get toolbar direction from theme
+   esmart_container_direction_set(container1, CONTAINER_DIRECTION_HORIZONTAL);
+   esmart_container_alignment_set(container1, CONTAINER_ALIGN_CENTER);
+   esmart_container_fill_policy_set(container1, CONTAINER_FILL_POLICY_KEEP_ASPECT);
+   esmart_container_spacing_set(container1, 5);
+   
+   // Swallow to toolbar1_sw
+   edje_object_part_swallow(controls, "eyesight/main_window/controls/toolbar1_sw", 
+                            container1);
+   /* TEST POSITON */
+  // evas_object_move(container1, 0, 0);
+   //evas_object_resize(container1, 50, 300);
+   // Fill with icons   
+   add_toolbar1_icon(PREV_PAGE, container1);
+   add_toolbar1_icon(NEXT_PAGE, container1);
+   
+   evas_object_show(container1);
 }
 
 void

@@ -68,7 +68,7 @@ part
 
 part
 {
-   name: "eyesight/main_window/controls/toolbar2_show_button_text";
+   name: "eyesight/text/toolbar2_show_button_text";
    type: TEXT;
    mouse_events: 0;
    description

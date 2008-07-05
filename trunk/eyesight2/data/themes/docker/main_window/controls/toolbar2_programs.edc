@@ -1,0 +1,27 @@
+program
+{
+   name: "eyesight/main_window/controls/top_bar_hide";
+   signal: "mouse,out";
+   source: "eyesight/main_window/controls/top_bar";
+   action: STATE_SET default 0.0;
+   target: "eyesight/main_window/controls/top_bar";
+   transition: ACCELERATE 0.3;
+}
+
+program
+{
+   name: "eyesight/main_window/controls/top_bar_show";
+   signal: "mouse,in";
+   source: "eyesight/main_window/controls/toolbar2_watcher";
+   action: STATE_SET shown 0.0;
+   target: "eyesight/main_window/controls/top_bar";
+   transition: ACCELERATE 0.3;
+}
+
+program
+{
+   name: "eyesight/main_window/controls/toolbar2_sw_move_warn";
+   signal: "move";
+   source: "eyesight/main_window/controls/toolbar2_sw";
+   action: SIGNAL_EMIT "move" "toolbar2_sw";
+}

@@ -29,7 +29,9 @@ PKG_CHECK_MODULES([EYESIGHT],
 		  ecore-evas
 		  edje
         efreet])
-PKG_CHECK_MODULES([EPDF], [epdf])
+PKG_CHECK_MODULES([EPDF], 
+        [epdf 
+        esmart_container])
 
 AC_OUTPUT([
 Makefile
