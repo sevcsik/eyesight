@@ -28,6 +28,7 @@ images
    image: "img/nav_next.png" COMP;
    image: "img/nav_prev.png" COMP;
    image: "img/show_button_bg.png" COMP;
+   image: "img/show_button_bg_down.png" COMP;
    image: "go-up.png" COMP;
    image: "go-down.png" COMP;
 }

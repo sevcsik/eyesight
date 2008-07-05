@@ -179,7 +179,7 @@ void controls_resize_cb(void *_data, Evas *e, Evas_Object *obj, void *event_info
    Ecore_List *data = _data;
    Controls_Resize_Cbdata *cbdata;
    
-   cbdata = ecore_list_goto(data, ecore_list_first(data)); // Reset list
+   cbdata = ecore_list_first_goto(data); // Reset list
    do
    {
       if (!cbdata)

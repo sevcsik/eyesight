@@ -8,6 +8,7 @@
 #include <Edje.h>
 #include <Efreet.h>
 #include <esmart_pdf.h>
+#include <Esmart/Esmart_Container.h>
 #include <Epdf.h>
 #include <stdio.h>
 
@@ -41,11 +42,11 @@ toolbar_icon_resize_cb(void *data, Evas *evas, Evas_Object *obj,
 
 
 void
-add_toolbar1_icon(Pdf_Toolbar1_Icon icon, Evas_Object *controls)
+add_toolbar1_icon(Pdf_Toolbar1_Icon icon, Evas_Object *container1)
 {
    Evas_Object *icon_object;
    Evas_Object *icon_image;
-   Evas *evas = evas_object_evas_get(controls);
+   Evas *evas = evas_object_evas_get(container1);
    char *icon_name;
    char *icon_path;
    char *icon_theme;
@@ -69,7 +70,8 @@ add_toolbar1_icon(Pdf_Toolbar1_Icon icon, Evas_Object *controls)
       icon_name = "dialog-error";
    }
 
-   edje_object_file_get(controls, (const char **)&theme_file, NULL);
+   edje_object_file_get(evas_object_name_find(evas, "controls"),
+                        (const char **)&theme_file, NULL);
 
    // Load toolbar1_icon from theme
 
@@ -91,7 +93,6 @@ add_toolbar1_icon(Pdf_Toolbar1_Icon icon, Evas_Object *controls)
    if (!edje_object_file_set(icon_image, theme_file, icon_name))
    {
       // Failed to get icon from edje
-      printf("ouadfsdf\n");
       evas_object_del(icon_image);
       type = ICON_TYPE_IMAGE;
       icon_image = evas_object_image_add(evas);
@@ -115,14 +116,15 @@ add_toolbar1_icon(Pdf_Toolbar1_Icon icon, Evas_Object *controls)
 
    edje_object_part_swallow(icon_object, "eyesight/toolbar1_icon/icon", icon_image);
 
+ 
    // Move and resize icon
-   edje_object_part_geometry_get(controls, "eyesight/main_window/controls/toolbar1_sw",
-                                 &x0, &y0, NULL, NULL);
    edje_object_size_min_get(icon_object, &w, &h);
-   evas_object_move(icon_object, x0 + w * icon, y0);
    evas_object_resize(icon_object, w, h);
    evas_object_image_fill_set(icon_image, 0, 0, w, h);
    evas_object_layer_set(icon_object, 100);
+
+
+   esmart_container_element_append(container1, icon_object);
 
    if (type == ICON_TYPE_IMAGE) // Set only if image is loded from file
       evas_object_event_callback_add(icon_image, EVAS_CALLBACK_RESIZE,
@@ -135,7 +137,7 @@ add_toolbar1_icon(Pdf_Toolbar1_Icon icon, Evas_Object *controls)
    // Set callback
    edje_object_signal_callback_add(icon_object, "clicked", "toolbar1_icon",
                                    toolbar1_callbacks[icon], NULL);
-
+/*
    // TODO: pdf/toolbar.c: Free somewhere ptbrcdata and crcbdata
 
    ptbrcdata = malloc(sizeof(Pdf_Toolbar1_Button_Resize_Cb_Data));
@@ -145,7 +147,7 @@ add_toolbar1_icon(Pdf_Toolbar1_Icon icon, Evas_Object *controls)
    crcbdata->data = ptbrcdata;
    crcbdata->func = toolbar_button_resize_cb;
    ecore_list_append(evas_object_data_get(controls, "resize_callbacks"), crcbdata);
-
+*/
    evas_object_show(icon_image);
    evas_object_show(icon_object);
 }
