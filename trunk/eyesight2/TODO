@@ -3,3 +3,12 @@
    // TODO: main.c: Cache next file in list
    // TODO: plugin.c: get path group from config file  
    // TODO: plugin.c: getenv("HOME"): Windows compatibility?
+   // TODO: pdf/animations.c: decelerating movement
+   // TODO: pdf/pdf.c: i18n
+   // TODO: pdf/pdf.c: Add more scaling options
+   // TODO: pdf.c: Free resize_cb_data somewhere
+   // TODO: pdf.c: resize toolbar to fit icons
+   // TODO: pdf.c: get toolbar direction from theme
+// TODO: toolbar.c: localize tooltips
+   // TODO: toolbar.c: prevent starting multiple animations at multiple clicks on navigation
+   // FIXME: pdf.c: EPDF api refresh to use return val of file_set
