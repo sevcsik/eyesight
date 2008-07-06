@@ -22,6 +22,10 @@ public:
       {
          return (_source == source);
       }
+      void *Source()
+      {
+         return _source;
+      }
 
    private:
       friend D3DObjectFont;
@@ -78,10 +82,12 @@ private:
          : enabled(false), image_id(-1), width(0), height(0) {};
    public:
       TArray<DWORD> data;
+      TArray<POINT> dirty;  // Start, End
       bool enabled;
       int image_id;
       int width;
       int height;
+      RECT valid_rect;
    };
 
 private:

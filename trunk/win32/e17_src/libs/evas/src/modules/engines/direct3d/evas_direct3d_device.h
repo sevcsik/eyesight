@@ -23,6 +23,8 @@ public:
    inline int GetWidth();
    inline int GetHeight();
 
+   HRESULT SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 tex);
+
 private:
    HRESULT RestoreDevice();
    HRESULT ResetDevice();
@@ -40,6 +42,8 @@ private:
    bool _scene_rendering;
    D3DPRESENT_PARAMETERS _d3dpp;
    D3DSURFACE_DESC _backbuffer_desc;
+
+   TArray<LPDIRECT3DTEXTURE9> _textures;
 };
 
 LPDIRECT3DDEVICE9 D3DDevice::GetDevice()

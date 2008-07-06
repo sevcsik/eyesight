@@ -221,3 +221,17 @@ bool D3DDevice::End()
    _device->Present(NULL, NULL, NULL, NULL);
    return true;
 }
+
+HRESULT D3DDevice::SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 tex)
+{
+   if (stage >= 8)
+      return E_FAIL;
+   if (_textures.Length() <= stage)
+      _textures.Allocate(stage + 1);
+   if (_textures[stage] != tex)
+   {
+      _textures[stage] = tex;
+      return _device->SetTexture(stage, tex);
+   }
+   return S_OK;
+}

@@ -371,6 +371,13 @@ eng_font_draw(void *data, void *context, void *surface, void *font, int x, int y
    evas_common_draw_context_font_ext_set(context, NULL, NULL, NULL, NULL);
 }
 
+static void
+eng_font_free(void *data, void *font)
+{
+   Render_Engine *re = (Render_Engine *)data;
+   evas_common_font_free(font);
+   evas_direct3d_font_free(re->d3d, font);
+}
 
 
 /* module advertising code */
@@ -415,6 +422,7 @@ module_open(Evas_Module *em)
    ORD(image_border_set);
    ORD(image_border_get);
    ORD(font_draw);
+   ORD(font_free);
    /* now advertise out own api */
    em->functions = (void *)(&func);
    return 1;

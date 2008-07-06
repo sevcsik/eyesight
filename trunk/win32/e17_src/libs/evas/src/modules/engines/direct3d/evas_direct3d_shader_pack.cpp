@@ -249,6 +249,19 @@ bool D3DShaderPack::InitPixelShaders(D3DDevice *d3d)
          return false;
    }
 
+   {
+      char buf[] = 
+         "sampler Texture : register(s1);\n"
+         "struct VsOutput { float4 pos : POSITION; float2 tex : TEXCOORD0; };\n"
+         "float4 main(VsOutput ps_in) : COLOR0 {\n"
+         "return tex2D(Texture, ps_in.tex);}";
+
+      _ps[PS_TEX_2] = (LPDIRECT3DPIXELSHADER9)
+         CompileShader(d3d, false, "Tex2", buf, sizeof(buf) - 1);
+      if (_ps[PS_TEX_2] == NULL)
+         return false;
+   }
+
    return true;
 }
 
