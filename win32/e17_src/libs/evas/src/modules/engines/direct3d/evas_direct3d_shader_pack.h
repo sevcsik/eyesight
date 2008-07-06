@@ -49,6 +49,7 @@ public:
       PS_COLOR = 0,
       PS_TEX,
       PS_TEX_COLOR_FILTER,
+      PS_TEX_2,
 
       PS_NUM
    };

@@ -47,7 +47,7 @@ bool D3DImageCache::SelectImageToDevice(D3DDevice *d3d, int id)
    if (id < 0 || id >= _cache.Length())
       return false;
    assert(_cache[id].texture != NULL);
-   return SUCCEEDED(d3d->GetDevice()->SetTexture(0, _cache[id].texture));
+   return SUCCEEDED(d3d->SetTexture(_cache[id].stage, _cache[id].texture));
 }
 
 void D3DImageCache::RemoveImageUser(int id)
@@ -231,6 +231,7 @@ bool D3DImageCache::CreateEntry(D3DDevice *d3d, CacheEntry &entry, int w, int h,
    entry.height = height;
    entry.users = 0;
    entry.locked = false;
+   entry.stage = 0;
    return true;
 }
 
@@ -307,6 +308,92 @@ bool D3DImageCache::UpdateImageData(CacheEntryInfo &info, DWORD *data)
    ce_copy.cur_x = int(info.u * FLOAT(ce_copy.width));
    ce_copy.cur_y = int(info.v * FLOAT(ce_copy.height));
    return InsertData(ce_copy, data, info.width, info.height);
+}
+
+bool D3DImageCache::UpdateImageDataWithDirtyInfo(CacheEntryInfo &info, DWORD *data, POINT *dirty)
+{
+   if (info.id < 0 || info.id >= _cache.Length())
+      return false;
+   CacheEntry &entry = _cache[info.id];
+   if (entry.texture == NULL)
+      return false;
+
+   RECT rc = {0, 0, entry.width, entry.height};
+   D3DLOCKED_RECT lr;
+   if (FAILED(entry.texture->LockRect(0, &lr, &rc, D3DLOCK_DISCARD)))
+   {
+      Log("Failed to lock texture");
+      return false;
+   }
+
+   if (data != NULL)
+   {
+      for (int i = 0; i < rc.bottom; i++)
+      {
+         if (dirty[i].x < 0 && dirty[i].y < 0)
+            continue;
+         if (dirty[i].x >= 0 && dirty[i].y >= 0)
+         {
+            CopyMemory(((BYTE *)lr.pBits) + i * lr.Pitch + dirty[i].x * 4, 
+               data + i * rc.right + dirty[i].x, sizeof(DWORD) * (dirty[i].y - dirty[i].x + 1));
+            dirty[i].y = -dirty[i].y;
+         }
+         else if (dirty[i].x >= 0 && dirty[i].y < 0)
+         {
+            ZeroMemory(((BYTE *)lr.pBits) + i * lr.Pitch + dirty[i].x * 4, 
+               sizeof(DWORD) * (-dirty[i].y - dirty[i].x + 1));
+            dirty[i].x = -dirty[i].x;
+         }
+      }
+   }
+   else
+   {
+      for (int i = 0; i < rc.bottom; i++)
+      {
+         if (dirty[i].x < 0 || dirty[i].y < 0)
+            continue;
+         ZeroMemory(((BYTE *)lr.pBits) + i * lr.Pitch + dirty[i].x * 4, 
+            sizeof(DWORD) * (dirty[i].y - dirty[i].x + 1));
+      }
+   }
+
+   if (FAILED(entry.texture->UnlockRect(0)))
+   {
+      Log("Failed to unlock texture");
+      return false;
+   }
+   return true;
+}
+
+bool D3DImageCache::UpdateImageDataDiscard(CacheEntryInfo &info, DWORD *data)
+{
+   assert(data != NULL);
+   if (info.id < 0 || info.id >= _cache.Length())
+      return false;
+   CacheEntry &entry = _cache[info.id];
+   if (entry.texture == NULL)
+      return false;
+
+   RECT rc = {0, 0, entry.width, entry.height};
+   D3DLOCKED_RECT lr;
+   if (FAILED(entry.texture->LockRect(0, &lr, &rc, D3DLOCK_DISCARD)))
+   {
+      Log("Failed to lock texture");
+      return false;
+   }
+
+   for (int i = 0; i < rc.bottom; i++)
+   {
+      CopyMemory(((BYTE *)lr.pBits) + i * lr.Pitch, 
+         data + i * rc.right, sizeof(DWORD) * rc.right);
+   }
+
+   if (FAILED(entry.texture->UnlockRect(0)))
+   {
+      Log("Failed to unlock texture");
+      return false;
+   }
+   return true;
 }
 
 bool D3DImageCache::GetImageData(CacheEntryInfo &info, TArray<DWORD> &data)

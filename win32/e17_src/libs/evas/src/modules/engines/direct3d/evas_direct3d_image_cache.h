@@ -35,11 +35,15 @@ public:
    void RemoveImageUser(int id);
    void AddImageUser(int id);
    bool UpdateImageData(CacheEntryInfo &info, DWORD *data);
+   bool UpdateImageDataWithDirtyInfo(CacheEntryInfo &info, DWORD *data, POINT *dirty);
+   bool UpdateImageDataDiscard(CacheEntryInfo &info, DWORD *data);
    bool GetImageData(CacheEntryInfo &info, TArray<DWORD> &data);
    void Uninitialize();
 
    inline int GetImageWidth(int image_id);
    inline int GetImageHeight(int image_id);
+
+   inline void SetImageStage(int image_id, int stage);
 
 private:
    struct CacheEntry
@@ -52,6 +56,7 @@ private:
       int cur_h;
       int users;
       bool locked;
+      int stage;
    };
 
 private:
@@ -92,6 +97,11 @@ int D3DImageCache::GetImageWidth(int image_id)
 int D3DImageCache::GetImageHeight(int image_id)
 {
    return _cache[image_id].height;
+}
+
+void D3DImageCache::SetImageStage(int image_id, int stage)
+{
+   _cache[image_id].stage = stage;
 }
 
 #endif  // __EVAS_DIRECT3D_IMAGE_CACHE_H__

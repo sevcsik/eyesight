@@ -78,6 +78,7 @@ Direct3DDeviceHandler evas_direct3d_init(HWND window, int depth)
       return NULL;
    }
    dev_ptr->fonts_buffer_image_id = info.id;
+   D3DImageCache::Current()->SetImageStage(info.id, 1);
 
    return (Direct3DDeviceHandler)dev_ptr;
 }
@@ -481,7 +482,9 @@ Direct3DFontGlyphHandler evas_direct3d_font_texture_new(Direct3DDeviceHandler d3
       return NULL;
 
    D3DObjectFont *font = (D3DObjectFont *)context->font.Addr();
-   D3DObjectFont::Glyph *glyph = (D3DObjectFont::Glyph *)fg->ext_dat;  //font->GetGlyph(fg);
+   // This is not reliable
+   //D3DObjectFont::Glyph *glyph = (D3DObjectFont::Glyph *)fg->ext_dat;
+   D3DObjectFont::Glyph *glyph = font->GetGlyph(fg);
    if (glyph != NULL)
    {
       assert(glyph->Compare(fg));
@@ -494,8 +497,11 @@ Direct3DFontGlyphHandler evas_direct3d_font_texture_new(Direct3DDeviceHandler d3
 
 void evas_direct3d_font_texture_free(Direct3DFontGlyphHandler ft)
 {
-   // Do nothing?
-   // Probably we should process font freeing event
+   if (ft == NULL)
+      return;
+   D3DObjectFont::Glyph *glyph = (D3DObjectFont::Glyph *)ft;
+   RGBA_Font_Glyph *fg = (RGBA_Font_Glyph *)glyph->Source();
+   fg->ext_dat = NULL;
 }
 
 void evas_direct3d_font_texture_draw(Direct3DDeviceHandler d3d, void *, void *, 
@@ -555,64 +561,31 @@ void evas_direct3d_select_or_create_font(Direct3DDeviceHandler d3d, void *font)
    context->font = new_font;
 }
 
-
-#if 0
-Direct3DFontHandler evas_direct3d_font_load(Direct3DDeviceHandler d3d, 
-   const char *name, int size)
+void evas_direct3d_font_free(Direct3DDeviceHandler d3d, void *font)
 {
    DevicePtr *dev_ptr = SelectDevice(d3d);
-   D3DDevice *device = dev_ptr->device;
+   D3DContext *context = dev_ptr->context;
    D3DScene *scene = dev_ptr->scene;
 
-   Ref<D3DObjectFont> font = new D3DObjectFont();
-   TArray<D3DObjectFont *> fonts;
-   scene->GetObjectsOfType<D3DObjectFont>(fonts);
-   bool found = false;
-   for (int i = 0; i < fonts.Length(); i++)
+   if (context->font.IsNull() || !((D3DObjectFont *)context->font.Addr())->Compare(font))
    {
-      if (fonts[i]->Compare(name, size))
+      D3DScene *scene = dev_ptr->scene;
+
+      static TArray<D3DObjectFont *> fonts;
+      scene->GetObjectsOfType<D3DObjectFont>(fonts);
+      for (int i = 0; i < fonts.Length(); i++)
       {
-         fonts[i]->CopyTo(font);
-         found = true;
-         Log("Font object info reused");
-         break;
-      }
-   }
-   if (!found)
-   {
-      if (!font->Init(device, name, size))
-      {
-         Log("Failed to build font");
-         return NULL;
+         if (fonts[i]->Compare(font))
+         {
+            context->font = fonts[i];
+            break;
+         }
       }
    }
 
-   scene->AddObject(font);
-   return (Direct3DFontHandler)font.Addr();
+   scene->DeleteObject(context->font);
+   context->font = NULL;
 }
 
-void evas_direct3d_font_free(Direct3DDeviceHandler d3d, Direct3DFontHandler font)
-{
-   DevicePtr *dev_ptr = SelectDevice(d3d);
-   dev_ptr->scene->DeleteObject((D3DObjectFont *)font);
-}
-
-void evas_direct3d_font_draw(Direct3DDeviceHandler d3d, Direct3DFontHandler font,
-   int x, int y, int w, int h, int ow, int oh, const char *text)
-{
-   DevicePtr *dev_ptr = SelectDevice(d3d);
-   D3DDevice *device = dev_ptr->device;
-   D3DObjectFont *font_ptr = (D3DObjectFont *)font;
-   font_ptr->Setup(
-      2.f * float(x) / float(device->GetWidth()), 
-      -2.f * float(y) / float(device->GetHeight()),
-      2.f * float(w) / float(device->GetWidth()), 
-      2.f * float(h) / float(device->GetHeight()),
-      2.f * float(ow) / float(device->GetWidth()), 
-      2.f * float(oh) / float(device->GetHeight()),
-      text);
-   font_ptr->SetFree(false);
-}
-#endif
 
 }  // extern "C"

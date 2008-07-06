@@ -70,7 +70,7 @@ void evas_direct3d_font_texture_free(Direct3DFontGlyphHandler ft);
 void evas_direct3d_font_texture_draw(Direct3DDeviceHandler d3d, void *dest, void *context, 
    RGBA_Font_Glyph *fg, int x, int y);
 void evas_direct3d_select_or_create_font(Direct3DDeviceHandler d3d, void *font);
-
+void evas_direct3d_font_free(Direct3DDeviceHandler d3d, void *font);
 
 #ifdef __cplusplus
 }
