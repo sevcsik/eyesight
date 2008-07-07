@@ -366,7 +366,7 @@ void page_next_clicked(void *_data, Evas_Object *icon, const char *emission,
    sprintf(pageno_text, "%d / %d", esmart_pdf_page_get(tmp_page) + 1, 
            epdf_document_page_count_get(esmart_pdf_pdf_document_get(tmp_page)));
    esmart_text_entry_text_set(pageno, pageno_text);
-   
+   free(pageno_text);
 }
 
 void page_prev_clicked(void *data, Evas_Object *icon, const char *emission,
@@ -383,6 +383,8 @@ void page_prev_clicked(void *data, Evas_Object *icon, const char *emission,
    Evas_Object *page = evas_object_name_find(evas_object_evas_get(icon), "page");
    Evas_Object *tmp_border;
    Evas_Object *tmp_page;
+   Evas_Object *pageno;
+   char *pageno_text;
 
    double hscale, vscale;
    char *theme_file;
@@ -435,6 +437,14 @@ void page_prev_clicked(void *data, Evas_Object *icon, const char *emission,
    animdata->bottom_margin = bottom_margin;
 
    ecore_animator_add(page_prev_animator, animdata);
+   
+   // Update page number display
+   pageno = evas_object_name_find(evas_object_evas_get(tmp_page), "page_no_display");
+   pageno_text = malloc(strlen("xxxx / xxxx") + 1);
+   sprintf(pageno_text, "%d / %d", esmart_pdf_page_get(tmp_page) + 1, 
+           epdf_document_page_count_get(esmart_pdf_pdf_document_get(tmp_page)));
+   esmart_text_entry_text_set(pageno, pageno_text);
+   free(pageno_text);
 }
 
 void
@@ -477,4 +487,5 @@ add_toolbar1_text_entry(Evas_Object *controls, Evas_Object *container)
    sprintf(text, "%d / %d", esmart_pdf_page_get(page) + 1,
            epdf_document_page_count_get(doc));
    esmart_text_entry_text_set(entry, text);
+   free(text);
 }
