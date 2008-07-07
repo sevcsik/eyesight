@@ -29,6 +29,7 @@ images
    image: "img/nav_prev.png" COMP;
    image: "img/show_button_bg.png" COMP;
    image: "img/show_button_bg_down.png" COMP;
+   image: "img/text_entry_bg.png" COMP;
    image: "go-up.png" COMP;
    image: "go-down.png" COMP;
    image: "view-fullscreen.png" COMP;
@@ -79,4 +80,5 @@ collections
 	#include "toolbar1_icon.edc"
 	#include "toolbar2_icon.edc"
    #include "icons.edc"
+   #include "text_entry.edc"
 }
