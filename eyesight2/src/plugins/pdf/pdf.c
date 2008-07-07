@@ -187,6 +187,24 @@ show(void **_plugin_data, char *filename, Evas *evas)
    evas_object_show(border);
    evas_object_show(page);
    ecore_animator_add(show_anim, show_anim_data);
+   
+   evas_object_event_callback_add(evas_object_name_find(evas, "controls"), 
+      EVAS_CALLBACK_MOUSE_WHEEL, mousewheel_cb, NULL);
+}
+
+void
+mousewheel_cb(void *_data, Evas *evas, Evas_Object *controls, void *event_info)
+{
+   printf("wheeeeeeeeeel\n");
+   Evas_Event_Mouse_Wheel *event = event_info;
+   if (event->z > 0)
+   {
+      page_next_clicked(NULL, controls, NULL, NULL);
+   }
+   else if (event->z < 0)
+   {
+      page_prev_clicked(NULL, controls, NULL, NULL);
+   }
 }
 
 void

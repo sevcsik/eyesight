@@ -19,5 +19,6 @@ char open_file(void **_plugin_data, char *filename, Evas_Object *main_window,
 void show(void **plugin_data, char *filename, Evas *evas);
 void page_resize_cb(void *_data, Evas *evas, Evas_Object *controls, void *event_info);
 int page_resize_cb_render_timer(void *data);
+void mousewheel_cb(void *_data, Evas *evas, Evas_Object *controls, void *event_info);
 
 #endif /*PDF_H*/

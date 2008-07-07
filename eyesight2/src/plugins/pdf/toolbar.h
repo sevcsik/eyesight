@@ -19,6 +19,8 @@ Pdf_Toolbar2_Icon;
 
 void add_toolbar1_icon(Pdf_Toolbar1_Icon icon, Evas_Object *controls);
 
+void add_toolbar1_text_entry(Evas_Object *controls, Evas_Object *container);
+
 void add_toolbar2_icon(Pdf_Toolbar2_Icon icon, Evas_Object *controls);
 
 void toolbar_icon_resize_cb(void *data, Evas *evas, Evas_Object *obj,

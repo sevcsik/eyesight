@@ -31,7 +31,9 @@ PKG_CHECK_MODULES([EYESIGHT],
         efreet])
 PKG_CHECK_MODULES([EPDF], 
         [epdf 
-        esmart_container])
+        esmart_container
+        esmart_text_entry
+        ])
 
 AC_OUTPUT([
 Makefile

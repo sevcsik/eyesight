@@ -9,8 +9,11 @@
 #include <Efreet.h>
 #include <esmart_pdf.h>
 #include <Esmart/Esmart_Container.h>
+#include <Esmart/Esmart_Text_Entry.h>
 #include <Epdf.h>
+#include <Ecore_Evas.h>
 #include <stdio.h>
+#include <string.h>
 
 typedef void (*Edje_Signal_Callback) (void *data, Evas_Object *o,
                                       const char *emission, const char *source);
@@ -55,8 +58,9 @@ setup_toolbar(Evas_Object *controls)
    edje_object_part_swallow(controls, "eyesight/main_window/controls/toolbar1_sw",
                             container1);
 
-   // Fill with icons
+   // Fill with items
    add_toolbar1_icon(PREV_PAGE, container1);
+   add_toolbar1_text_entry(controls, container1);
    add_toolbar1_icon(NEXT_PAGE, container1);
 
    evas_object_show(container1);
@@ -78,7 +82,7 @@ setup_toolbar(Evas_Object *controls)
 
    evas_object_repeat_events_set(container2, 1);
 
-   // Fill with icons
+   // Fill with items
    add_toolbar2_icon(FULLSCREEN, container2);
 
    evas_object_show(container1);
@@ -303,6 +307,8 @@ void page_next_clicked(void *_data, Evas_Object *icon, const char *emission,
    Evas_Object *tmp_page;
    double hscale, vscale;
    char *theme_file;
+   char *pageno_text;
+   Evas_Object *pageno;
 
    // Check if it's the last page
    if (esmart_pdf_page_get(page) + 1 >= epdf_document_page_count_get(
@@ -353,6 +359,14 @@ void page_next_clicked(void *_data, Evas_Object *icon, const char *emission,
    animdata->bottom_margin = bottom_margin;
 
    ecore_animator_add(page_next_animator, animdata);
+   
+   // Update page number display
+   pageno = evas_object_name_find(evas_object_evas_get(tmp_page), "page_no_display");
+   pageno_text = malloc(strlen("xxxx / xxxx") + 1);
+   sprintf(pageno_text, "%d / %d", esmart_pdf_page_get(tmp_page) + 1, 
+           epdf_document_page_count_get(esmart_pdf_pdf_document_get(tmp_page)));
+   esmart_text_entry_text_set(pageno, pageno_text);
+   
 }
 
 void page_prev_clicked(void *data, Evas_Object *icon, const char *emission,
@@ -427,17 +441,40 @@ void
 fullscreen_clicked(void *data, Evas_Object *icon, const char *emission,
                    const char *source)
 {
-   printf("Hey, i'm clicked!\n");
+   Ecore_Evas *ee = ecore_evas_ecore_evas_get(evas_object_evas_get(icon));
+   ecore_evas_fullscreen_set(ee, !ecore_evas_fullscreen_get(ee));
+   // TODO: pdf/toolbar.c: change icon to view-restore when fullscreen
 }
 
-/*void toolbar_button_resize_cb(void *_data, Evas *evas, Evas_Object *controls,
-                              void *event_info)
+void
+add_toolbar1_text_entry(Evas_Object *controls, Evas_Object *container)
 {
-   Pdf_Toolbar1_Button_Resize_Cb_Data *data = _data;
-   int x, y, bw;
- 
-   edje_object_part_geometry_get(controls, "eyesight/main_window/controls/toolbar1_sw",
-                                 &x, &y, NULL, NULL);
-   evas_object_geometry_get(data->button, NULL, NULL, &bw, NULL);
-   evas_object_move(data->button, x + bw * data->icon, y);
-}*/
+   char *themefile, *text;
+   Evas_Object *edje = edje_object_add(evas_object_evas_get(controls));
+   Evas_Object *entry = esmart_text_entry_new(evas_object_evas_get(controls));
+   Evas_Object *page = evas_object_name_find(evas_object_evas_get(controls),
+                       "page");
+   Epdf_Document *doc = esmart_pdf_pdf_document_get(page);
+
+   edje_object_file_get(controls, (const char **)&themefile, NULL);
+   edje_object_file_set(edje, themefile, "text_entry");
+   
+   evas_object_name_set(entry, "page_no_display");
+
+   esmart_text_entry_is_password_set(entry, 0);
+   esmart_text_entry_edje_part_set(entry, edje, "text");
+
+   esmart_container_element_append(container, edje);
+
+   evas_object_show(edje);
+   evas_object_show(entry);
+
+   evas_object_resize(edje, 100, 40);
+
+   // Fill with text (current page / number of pages)
+
+   text = malloc(strlen("xxxx / xxxx") + 1);
+   sprintf(text, "%d / %d", esmart_pdf_page_get(page) + 1,
+           epdf_document_page_count_get(doc));
+   esmart_text_entry_text_set(entry, text);
+}
