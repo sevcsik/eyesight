@@ -90,18 +90,20 @@ void D3DObjectFont::EndCache(D3DDevice *d3d)
    D3DShaderPack::Current()->SetPS(d3d, D3DShaderPack::PS_TEX_2);  // This image is in s1
    D3DImageCache::Current()->SelectImageToDevice(d3d, _cache.image_id);
 
+   const FLOAT half_x = 0.5f / FLOAT(_cache.width);
+   const FLOAT half_y = 0.5f / FLOAT(_cache.height);
    FLOAT left = FLOAT(_cache.valid_rect.left - 5) / FLOAT(_cache.width), 
       top = FLOAT(_cache.valid_rect.top - 5) / FLOAT(_cache.height), 
       right = FLOAT(_cache.valid_rect.right + 5) / FLOAT(_cache.width), 
       bottom = FLOAT(_cache.valid_rect.bottom + 5) / FLOAT(_cache.height);
 
    const Vertex data[6] = {
-      {left * 2 - 1, 2 * (1 - bottom) - 1,      left, bottom}, 
-      {left * 2 - 1, 2 * (1 - top) - 1,         left, top},
-      {right * 2 - 1, 2 * (1 - bottom) - 1,     right, bottom}, 
-      {right * 2 - 1, 2 * (1 - bottom) - 1,     right, bottom}, 
-      {left * 2 - 1, 2 * (1 - top) - 1,         left, top}, 
-      {right * 2 - 1, 2 * (1 - top) - 1,        right, top}};
+      {left * 2 - 1, 2 * (1 - bottom) - 1,      left + half_x, bottom + half_y}, 
+      {left * 2 - 1, 2 * (1 - top) - 1,         left + half_x, top + half_y},
+      {right * 2 - 1, 2 * (1 - bottom) - 1,     right + half_x, bottom + half_y}, 
+      {right * 2 - 1, 2 * (1 - bottom) - 1,     right + half_x, bottom + half_y}, 
+      {left * 2 - 1, 2 * (1 - top) - 1,         left + half_x, top + half_y}, 
+      {right * 2 - 1, 2 * (1 - top) - 1,        right + half_x, top + half_y}};
 
    d3d->GetDevice()->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 2, data, sizeof(Vertex));
 
@@ -211,9 +213,7 @@ void D3DObjectFont::PushForDraw(Glyph *glyph, int x, int y)
             *dst = sc.color;
             continue;
          }
-         sc.a = glyph_pix;
-         
-         a = FLOAT(sc.a) * color_alpha / 255.f;
+         a = FLOAT(glyph_pix) * color_alpha / 255.f;
          if (*dst == 0)
          {
             *dst = (BYTE(255.f * a) << 24) | (0x00ffffff & sc.color);
@@ -225,7 +225,7 @@ void D3DObjectFont::PushForDraw(Glyph *glyph, int x, int y)
          dc.r = LERP(dc.r, sc.r, 1 - a, a);
          dc.g = LERP(dc.g, sc.g, 1 - a, a);
          dc.b = LERP(dc.b, sc.b, 1 - a, a);
-         dc.a = max(dc.a, sc.a);
+         dc.a = max(dc.a, BYTE(255.f * a));
          *dst = dc.color;
       }
    }

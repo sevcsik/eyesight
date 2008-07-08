@@ -28,7 +28,7 @@ public:
       }
 
    private:
-      friend D3DObjectFont;
+      friend class D3DObjectFont;
       void *_source;
       TArray<BYTE> _data;
       int _width;
