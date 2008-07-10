@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="engine_direct3d"
 	ProjectGUID="{689B4F2B-666D-439F-9BF3-1203D813DE3F}"
 	RootNamespace="engine_direct3d"
@@ -193,11 +193,63 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath="..\..\src\modules\engines\direct3d\array.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\modules\engines\direct3d\evas_direct3d_context.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\modules\engines\direct3d\evas_direct3d_device.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\modules\engines\direct3d\evas_direct3d_image_cache.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\modules\engines\direct3d\evas_direct3d_object.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\modules\engines\direct3d\evas_direct3d_object_font.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\modules\engines\direct3d\evas_direct3d_object_image.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\modules\engines\direct3d\evas_direct3d_object_line.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\modules\engines\direct3d\evas_direct3d_object_rect.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\modules\engines\direct3d\evas_direct3d_scene.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\modules\engines\direct3d\evas_direct3d_shader_pack.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\modules\engines\direct3d\evas_direct3d_vertex_buffer_cache.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\modules\engines\direct3d\evas_engine.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\modules\engines\direct3d\Evas_Engine_Direct3D.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\modules\engines\direct3d\ref.h"
 				>
 			</File>
 		</Filter>
@@ -213,7 +265,51 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\..\src\modules\engines\direct3d\evas_direct3d_context.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\modules\engines\direct3d\evas_direct3d_device.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\modules\engines\direct3d\evas_direct3d_image_cache.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\modules\engines\direct3d\evas_direct3d_main.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\modules\engines\direct3d\evas_direct3d_object.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\modules\engines\direct3d\evas_direct3d_object_font.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\modules\engines\direct3d\evas_direct3d_object_image.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\modules\engines\direct3d\evas_direct3d_object_line.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\modules\engines\direct3d\evas_direct3d_object_rect.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\modules\engines\direct3d\evas_direct3d_scene.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\modules\engines\direct3d\evas_direct3d_shader_pack.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\modules\engines\direct3d\evas_direct3d_vertex_buffer_cache.cpp"
 				>
 			</File>
 			<File
