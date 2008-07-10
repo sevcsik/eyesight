@@ -14,3 +14,9 @@ Auxiliary version of corresponding macro
 Also: A lot of fixes of variable declarations - C rule.
 
 Also: EAPI conflicts
+
+line 3410
+
+   //TODO this will not work on windows
+
+!!! really, it is not linked
