@@ -6,8 +6,16 @@
 #include <d3d9.h>
 #include <d3dx9.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "evas_common.h"
 #include "evas_private.h"
+
+#ifdef __cplusplus
+}
+#endif
 
 //#define ENABLE_LOG_PRINTF
 #ifdef ENABLE_LOG_PRINTF

@@ -3,6 +3,9 @@
 #include "evas_private.h"
 #include "Evas_Engine_Direct3D.h"
 
+#undef EAPI
+#define EAPI __declspec(dllexport)
+
 /* engine struct data */
 typedef struct _Render_Engine Render_Engine;
 struct _Render_Engine
