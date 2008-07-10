@@ -1,0 +1,12 @@
+line 13
+
+- 	_add_rect = realloc(rects->array, sizeof(Evas_Rectangle) * _tmp_total);
++ 	_add_rect = (Evas_Rectangle *)realloc(rects->array, sizeof(Evas_Rectangle) * _tmp_total);
+
+
+line 35
+
+- 	rects->rects = realloc(rects->rects, sizeof(Cutout_Rect) * rects->max);
++	rects->rects = (Cutout_Rect* )realloc(rects->rects, sizeof(Cutout_Rect) * rects->max);
+
+void* to type* error for C++
