@@ -1,0 +1,4 @@
+* font rendering is slow
+* image slower than gl
+* shift of 1 (?) pixel of the background in expedite
+* have to implement gradients, polygons

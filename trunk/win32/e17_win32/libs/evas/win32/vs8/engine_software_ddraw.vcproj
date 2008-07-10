@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="engine_software_ddraw"
 	ProjectGUID="{C71D20DF-3BAB-4BFF-80D4-508E7548358B}"
 	RootNamespace="engine_software_ddraw"
@@ -65,7 +65,7 @@
 				IgnoreImportLibrary="false"
 				LinkLibraryDependencies="true"
 				UseLibraryDependencyInputs="false"
-				AdditionalDependencies="libevas.lib"
+				AdditionalDependencies="libevas.lib ddraw.lib"
 				OutputFile="$(OutDir)\engines\software_ddraw\module.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(LIB); $(DebugLibraryDirectory)"
@@ -147,7 +147,7 @@
 				IgnoreImportLibrary="false"
 				LinkLibraryDependencies="true"
 				UseLibraryDependencyInputs="false"
-				AdditionalDependencies="libevas.lib"
+				AdditionalDependencies="libevas.lib ddraw.lib"
 				OutputFile="$(OutDir)\engines\software_ddraw\module.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(LIB); $(ReleaseLibraryDirectory)"
