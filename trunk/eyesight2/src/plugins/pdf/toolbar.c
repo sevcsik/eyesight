@@ -57,7 +57,7 @@ setup_toolbar(Evas_Object *controls)
    // Swallow to toolbar1_sw
    edje_object_part_swallow(controls, "eyesight/main_window/controls/toolbar1_sw",
                             container1);
-   
+
    evas_object_repeat_events_set(container1, 1);
 
    // Fill with items
@@ -66,7 +66,6 @@ setup_toolbar(Evas_Object *controls)
    add_toolbar1_icon(NEXT_PAGE, container1);
 
    evas_object_show(container1);
-
 
    /* Populating toolbar2 (view) */
    Evas_Object *container2;
@@ -182,8 +181,11 @@ add_toolbar1_icon(Pdf_Toolbar1_Icon icon, Evas_Object *container1)
    esmart_container_element_append(container1, icon_object);
 
    if (type == ICON_TYPE_IMAGE) // Set only if image is loded from file
+   {
       evas_object_event_callback_add(icon_image, EVAS_CALLBACK_RESIZE,
                                      toolbar_icon_resize_cb, NULL);
+      evas_object_repeat_events_set(icon_image, 1);
+   }
 
    // Set tooltip text
    edje_object_part_text_set(icon_object, "eyesight/toolbar1_icon/tooltip",
@@ -270,8 +272,11 @@ add_toolbar2_icon(Pdf_Toolbar2_Icon icon, Evas_Object *container2)
    evas_object_resize(icon_object, w, h);
 
    if (type == ICON_TYPE_IMAGE) // Set only if image is loded from file
+   {
       evas_object_event_callback_add(icon_image, EVAS_CALLBACK_RESIZE,
                                      toolbar_icon_resize_cb, NULL);
+      evas_object_repeat_events_set(icon_image, 1);
+   }
 
    // Set tooltip text
    edje_object_part_text_set(icon_object, "eyesight/toolbar2_icon/tooltip",
@@ -280,9 +285,9 @@ add_toolbar2_icon(Pdf_Toolbar2_Icon icon, Evas_Object *container2)
    // Set click icallback
    edje_object_signal_callback_add(icon_object, "clicked", "toolbar2_icon",
                                    toolbar2_callbacks[icon], NULL);
-   
+
    esmart_container_element_append(container2, icon_object);
-   
+
    evas_object_show(icon_image);
    evas_object_show(icon_object);
 }
@@ -309,7 +314,7 @@ void page_next_clicked(void *_data, Evas_Object *icon, const char *emission,
 
    // Check if it's the last page
    if (esmart_pdf_page_get(page) + 1 >= epdf_document_page_count_get(
-            esmart_pdf_pdf_document_get(page)))
+              esmart_pdf_pdf_document_get(page)))
       return;
 
    edje_object_file_get(controls, (const char **)&theme_file, NULL);
@@ -356,11 +361,11 @@ void page_next_clicked(void *_data, Evas_Object *icon, const char *emission,
    animdata->bottom_margin = bottom_margin;
 
    ecore_animator_add(page_next_animator, animdata);
-   
+
    // Update page number display
    pageno = evas_object_name_find(evas_object_evas_get(tmp_page), "page_no_display");
    pageno_text = malloc(strlen("xxxx / xxxx") + 1);
-   sprintf(pageno_text, "%d / %d", esmart_pdf_page_get(tmp_page) + 1, 
+   sprintf(pageno_text, "%d / %d", esmart_pdf_page_get(tmp_page) + 1,
            epdf_document_page_count_get(esmart_pdf_pdf_document_get(tmp_page)));
    esmart_text_entry_text_set(pageno, pageno_text);
    free(pageno_text);
@@ -434,11 +439,11 @@ void page_prev_clicked(void *data, Evas_Object *icon, const char *emission,
    animdata->bottom_margin = bottom_margin;
 
    ecore_animator_add(page_prev_animator, animdata);
-   
+
    // Update page number display
    pageno = evas_object_name_find(evas_object_evas_get(tmp_page), "page_no_display");
    pageno_text = malloc(strlen("xxxx / xxxx") + 1);
-   sprintf(pageno_text, "%d / %d", esmart_pdf_page_get(tmp_page) + 1, 
+   sprintf(pageno_text, "%d / %d", esmart_pdf_page_get(tmp_page) + 1,
            epdf_document_page_count_get(esmart_pdf_pdf_document_get(tmp_page)));
    esmart_text_entry_text_set(pageno, pageno_text);
    free(pageno_text);
@@ -465,7 +470,7 @@ add_toolbar1_text_entry(Evas_Object *controls, Evas_Object *container)
 
    edje_object_file_get(controls, (const char **)&themefile, NULL);
    edje_object_file_set(edje, themefile, "text_entry");
-   
+
    evas_object_name_set(entry, "page_no_display");
 
    esmart_text_entry_is_password_set(entry, 0);
