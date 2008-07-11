@@ -157,6 +157,8 @@ main_window_create(Args *args, Evas_List **startup_errors)
    ecore_evas_callback_delete_request_set(ee, main_window_delete_request_cb);
    edje_object_signal_callback_add(main_window->controls, "load", "*",
                                    main_window_load_cb, startup_errors);
+   edje_object_signal_callback_add(main_window->controls, "clicked", "exit_button",
+                                   exit_clicked_cb, NULL);
 
    ecore_animator_frametime_set(FRAMETIME);
    evas_object_show(main_window->main_window);
@@ -189,4 +191,10 @@ void controls_resize_cb(void *_data, Evas *e, Evas_Object *obj, void *event_info
       cbdata->func(cbdata->data, e, obj, event_info);
    }
    while (cbdata = ecore_list_next(data));
+}
+
+void
+exit_clicked_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+{
+   main_window_delete_request_cb(ecore_evas_ecore_evas_get(evas_object_evas_get(o)));
 }

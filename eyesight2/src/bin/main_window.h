@@ -19,8 +19,10 @@ Main_Window;
 
 Main_Window *main_window_create(Args *args, Evas_List **startup_errors);
 void main_window_resize_cb(Ecore_Evas *ee);
-void main_window_load_cb(void *data, Evas_Object *o, const char *emission, 
-                    const char *source);
+void main_window_load_cb(void *data, Evas_Object *o, const char *emission,
+                         const char *source);
 void controls_resize_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
+void exit_clicked_cb(void *data, Evas_Object *o, const char *emission,
+                     const char *source);
 
 #endif /*MAIN_WINDOW_H_*/
