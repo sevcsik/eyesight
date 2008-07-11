@@ -11,14 +11,15 @@ group
    #include "controls/toolbar1_sw.edc"
    #include "controls/toolbar2_sw.edc"
    #include "controls/toolbar3_sw.edc"
-   
    // Built-in buttons
    #include "controls/nav.edc"
+   #include "controls/toolbar3.edc"
    }
    programs
    {
    #include "controls/nav_programs.edc"
    #include "controls/toolbar1_programs.edc"
    #include "controls/toolbar2_programs.edc"
+   #include "controls/toolbar3_programs.edc"
    }
 }

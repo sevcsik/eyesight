@@ -1,0 +1,109 @@
+part
+{
+   name: "eyesight/controls/exit_icon";
+   type: IMAGE;
+   mouse_events: 1;
+   repeat_events: 1;
+   description
+   {
+      state: "default" 0.0;
+      rel1
+      {
+         relative: 0.0 0.0;
+         to_y: "eyesight/main_window/controls/top_bar";
+         offset: 5 5;
+      }
+      rel2
+      {
+         relative: 0.0 0.0;
+         to_y: "eyesight/main_window/controls/top_bar";
+         offset: 50 50;
+      }
+      image
+      {
+         normal: "application-exit.png";
+      }
+   }
+   description
+   {
+      state: "mouseover" 0.0;
+      inherit: "default" 0.0;
+      rel1
+      {
+         relative: 0.0 0.0;
+         offset: 0 0;
+      }
+      rel2
+      {
+         relative: 0.0 0.0;
+         offset: 55 55;
+      }
+   }
+}
+part
+{
+   name: "eyesight/controls/exit_icon_tooltip";
+   type: TEXT;
+   effect: SOFT_SHADOW;
+   description
+   {
+      state: "default" 0.0;
+      color: 255 255 255 0;
+      color3: 0 0 0 0;
+      rel1
+      {
+         relative: 0.5 0.5;
+         to: "eyesight/controls/exit_icon";
+         offset: -72 72;
+      }
+      rel2
+      {
+         relative: 0.5 0.5;
+         to: "eyesight/controls/exit_icon";
+         offset: 128 92;
+      }
+      text
+      {
+         font: "BoldItalic";
+         size: 15;
+         text: "Exit Eyesight";
+         align: 0.0 0.5;
+      }
+   }
+   description
+   {
+      state: "mouseover" 0.0;
+      inherit: "default" 0.0;
+      color: 255 255 255 255;
+      color3: 0 0 0 255;
+      rel1
+      {
+         relative: 0.5 0.5;
+         to: "eyesight/controls/exit_icon";
+         offset: -22 72;
+      }
+      rel2
+      {
+         relative: 0.5 0.5;
+         to: "eyesight/controls/exit_icon";
+         offset: 178 92;
+      }
+   }
+   description
+   {
+      state: "hidden_right" 0.0;
+      inherit: "default" 0.0;
+      rel1
+      {
+         relative: 0.5 0.5;
+         to: "eyesight/controls/exit_icon";
+         offset: 28 72;
+      }
+      rel2
+      {
+         relative: 0.5 0.5;
+         to: "eyesight/controls/exit_icon";
+         offset: 228 92;
+      }
+   }
+}
