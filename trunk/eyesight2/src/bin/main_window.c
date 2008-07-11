@@ -33,7 +33,8 @@ main_window_delete_request_cb(Ecore_Evas *ee)
    Main_Window *main_window = (Main_Window *)ecore_evas_data_get(ee, "main_window");
    Args *args = (Args *)ecore_evas_data_get(ee, "args");
    free(args->theme_path);
-   if (args->files) ecore_list_destroy(args->files);
+   if (args->files)
+      ecore_list_destroy(args->files);
    evas_object_free(main_window->main_window);
    evas_free(main_window->evas);
    free(main_window);
@@ -50,7 +51,7 @@ main_window_create(Args *args, Evas_List **startup_errors)
    Ecore_List *resize_callbacks;
 
    printf("%d: %s\n", args->engine, args->engine);
-   
+
    if (!(args->engine) || !strcmp(args->engine, "software_x11"))
    {
       ee = ecore_evas_software_x11_new(0, 0, 0, 0, 0, 0);
@@ -100,7 +101,7 @@ main_window_create(Args *args, Evas_List **startup_errors)
    {
       printf(_("%s is an unknown engine. Valid engines are: software_x11 (default), software_ddraw, gl_x11, xrender_x11 and fb."), args->engine);
    }
-   
+
    main_window->evas = ecore_evas_get(ee);
    main_window->main_window = edje_object_add(main_window->evas);
 
@@ -124,20 +125,20 @@ main_window_create(Args *args, Evas_List **startup_errors)
                            PACKAGE_DATA_DIR"/themes/docker/docker.edj",
                            "eyesight/main_window/background");
    evas_object_layer_set(main_window->main_window, 0);
-   
+
    // Setting up foreground parts
    main_window->controls = edje_object_add(main_window->evas);
    edje_object_file_get(main_window->main_window, (const char **)&theme, NULL);
    edje_object_file_set(main_window->controls, theme, "eyesight/main_window/controls");
-   evas_object_layer_set(main_window->controls, 99);
+   evas_object_layer_set(main_window->controls, 9999);
    evas_object_name_set(main_window->controls, "controls");
-   
+
    // Each resize callback will be called on resize
    resize_callbacks = ecore_list_new();
    evas_object_data_set(main_window->controls, "resize_callbacks", resize_callbacks);
    evas_object_event_callback_add(main_window->controls, EVAS_CALLBACK_RESIZE,
                                   controls_resize_cb, resize_callbacks);
-   
+
    int w, h;
    evas_object_name_set(main_window->main_window, "main_window");
    edje_object_size_min_get(main_window->main_window, &w, &h);
@@ -156,34 +157,36 @@ main_window_create(Args *args, Evas_List **startup_errors)
    ecore_evas_callback_delete_request_set(ee, main_window_delete_request_cb);
    edje_object_signal_callback_add(main_window->controls, "load", "*",
                                    main_window_load_cb, startup_errors);
-   
+
    ecore_animator_frametime_set(FRAMETIME);
    evas_object_show(main_window->main_window);
    evas_object_show(main_window->controls);
    ecore_evas_show(ee);
-   
+
    display_startup_error_dialog(ee, *startup_errors);
    return main_window;
 }
 
 void
-main_window_load_cb(void *data, Evas_Object *o, const char *emission, 
+main_window_load_cb(void *data, Evas_Object *o, const char *emission,
                     const char *source)
 {
-     if (!evas_list_data(data)) return; // don't do anything if there's no errors
-     edje_object_signal_emit(o, "error_show", "eyesight");
+   if (!evas_list_data(data))
+      return; // don't do anything if there's no errors
+   edje_object_signal_emit(o, "error_show", "eyesight");
 }
 
 void controls_resize_cb(void *_data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Ecore_List *data = _data;
    Controls_Resize_Cbdata *cbdata;
-   
+
    cbdata = ecore_list_first_goto(data); // Reset list
    do
    {
       if (!cbdata)
          return;
       cbdata->func(cbdata->data, e, obj, event_info);
-   } while (cbdata = ecore_list_next(data));
+   }
+   while (cbdata = ecore_list_next(data));
 }

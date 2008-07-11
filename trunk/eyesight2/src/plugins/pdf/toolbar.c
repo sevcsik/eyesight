@@ -57,6 +57,8 @@ setup_toolbar(Evas_Object *controls)
    // Swallow to toolbar1_sw
    edje_object_part_swallow(controls, "eyesight/main_window/controls/toolbar1_sw",
                             container1);
+   
+   evas_object_repeat_events_set(container1, 1);
 
    // Fill with items
    add_toolbar1_icon(PREV_PAGE, container1);
@@ -263,14 +265,9 @@ add_toolbar2_icon(Pdf_Toolbar2_Icon icon, Evas_Object *container2)
 
    edje_object_part_swallow(icon_object, "eyesight/toolbar2_icon/icon", icon_image);
 
-
    // Move and resize icon
    edje_object_size_min_get(icon_object, &w, &h);
    evas_object_resize(icon_object, w, h);
-   evas_object_layer_set(icon_object, 100);
-
-
-   esmart_container_element_append(container2, icon_object);
 
    if (type == ICON_TYPE_IMAGE) // Set only if image is loded from file
       evas_object_event_callback_add(icon_image, EVAS_CALLBACK_RESIZE,
@@ -283,12 +280,12 @@ add_toolbar2_icon(Pdf_Toolbar2_Icon icon, Evas_Object *container2)
    // Set click icallback
    edje_object_signal_callback_add(icon_object, "clicked", "toolbar2_icon",
                                    toolbar2_callbacks[icon], NULL);
-
+   
+   esmart_container_element_append(container2, icon_object);
+   
    evas_object_show(icon_image);
    evas_object_show(icon_object);
 }
-
-
 
 void page_next_clicked(void *_data, Evas_Object *icon, const char *emission,
                        const char *source)
