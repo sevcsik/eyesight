@@ -104,6 +104,23 @@ evas_direct3d_free(Direct3DDeviceHandler d3d)
    Log("uninitialized");
 }
 
+void
+evas_direct3d_resize(Direct3DDeviceHandler d3d, int width, int height)
+{
+   DevicePtr *dev_ptr = SelectDevice(d3d);
+   D3DDevice *device = dev_ptr->device;
+   if (!device->Reset(width, height, -1))
+   {
+      Log("Failed to resize");
+      return;
+   }
+   if (!D3DImageCache::Current()->ResizeImage(device, width, height, 
+      dev_ptr->fonts_buffer_image_id))
+   {
+      Log("Failed to resize fonts image buffer");
+   }
+}
+
 void         
 evas_direct3d_context_color_set(Direct3DDeviceHandler d3d, int r, int g, int b, int a)
 {
@@ -138,7 +155,6 @@ evas_direct3d_render_all(Direct3DDeviceHandler d3d)
 
    //device->GetDevice()->SetSamplerState(1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
    //device->GetDevice()->SetSamplerState(1, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-
 
    D3DObjectLine::BeginCache();
    D3DObjectRect::BeginCache();

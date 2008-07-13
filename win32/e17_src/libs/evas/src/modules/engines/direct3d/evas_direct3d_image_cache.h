@@ -31,6 +31,7 @@ public:
    bool InsertImage(D3DDevice *d3d, DWORD *data, int w, int h, CacheEntryInfo &info);
    bool InsertImage(D3DDevice *d3d, int id, DWORD *data, int w, int h, CacheEntryInfo &info);
    bool CreateImage(D3DDevice *d3d, int w, int h, bool locked, CacheEntryInfo &info);
+   bool ResizeImage(D3DDevice *d3d, int nw, int nh, int id);
    bool SelectImageToDevice(D3DDevice *d3d, int id);
    void RemoveImageUser(int id);
    void AddImageUser(int id);

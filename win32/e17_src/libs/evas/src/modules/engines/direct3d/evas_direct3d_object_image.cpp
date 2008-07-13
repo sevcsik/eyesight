@@ -125,9 +125,13 @@ void D3DObjectImage::EndCache(D3DDevice *d3d)
    }
    D3DVertexBufferCache::Current()->SelectBufferToDevice(d3d, ce_info.id, sizeof(Vertex));
 
+   HRESULT hr;
    for (int i = 0, cur = 0; i < groups.Length(); i++)
    {
-      D3DImageCache::Current()->SelectImageToDevice(d3d, groups[i].id);
+      if (FAILED(hr = D3DImageCache::Current()->SelectImageToDevice(d3d, groups[i].id)))
+      {
+         Log("Failed to select texture: %X", (DWORD)hr);
+      }
 //      d3d->GetDevice()->DrawPrimitiveUP(D3DPT_TRIANGLELIST, groups[i].num * 2, 
 //         &sorted[cur], sizeof(Vertex));
       d3d->GetDevice()->DrawPrimitive(D3DPT_TRIANGLELIST, cur, groups[i].num * 2);

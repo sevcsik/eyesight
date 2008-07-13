@@ -164,6 +164,7 @@ eng_output_resize(void *data, int width, int height)
    Render_Engine *re = (Render_Engine *)data;
    re->width = width;
    re->height = height;
+   evas_direct3d_resize(re->d3d, width, height);
 }
 
 static void

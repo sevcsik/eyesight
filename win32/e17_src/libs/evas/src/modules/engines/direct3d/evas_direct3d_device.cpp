@@ -1,12 +1,16 @@
 
+#define ENABLE_LOG_PRINTF
+
 #include "evas_direct3d_device.h"
+
+#include "evas_direct3d_vertex_buffer_cache.h"
 
 D3DDevice::D3DDevice()
 {
-   Reset();
+   ResetParams();
 }
 
-bool D3DDevice::Init(HWND window, int depth)
+bool D3DDevice::Init(HWND window, int depth, bool fullscreen)
 {
    D3DPRESENT_PARAMETERS pp;
    D3DDISPLAYMODE dm;
@@ -56,15 +60,23 @@ bool D3DDevice::Init(HWND window, int depth)
      D3DCREATE_SOFTWARE_VERTEXPROCESSING;
 
    ZeroMemory(&pp, sizeof(pp));
-   pp.BackBufferWidth = rect.right - rect.left;
-   pp.BackBufferHeight = rect.bottom - rect.top;
+   if (!fullscreen)
+   {
+      pp.BackBufferWidth = rect.right - rect.left;
+      pp.BackBufferHeight = rect.bottom - rect.top;
+   }
+   else
+   {
+      pp.BackBufferWidth = ::GetSystemMetrics(SM_CXSCREEN);
+      pp.BackBufferHeight = ::GetSystemMetrics(SM_CYSCREEN);
+   }
    pp.BackBufferFormat = dm.Format;
    pp.BackBufferCount = 1;
    pp.MultiSampleType = D3DMULTISAMPLE_NONE;
    pp.MultiSampleQuality = 0;
    pp.SwapEffect = D3DSWAPEFFECT_DISCARD;
    pp.hDeviceWindow = window;
-   pp.Windowed  = TRUE;
+   pp.Windowed  = fullscreen ? FALSE : TRUE;
    //pp.EnableAutoDepthStencil = TRUE;
    //pp.AutoDepthStencilFormat = D3DFMT_D16;
    pp.FullScreen_RefreshRateInHz = 0;
@@ -107,18 +119,38 @@ bool D3DDevice::Init(HWND window, int depth)
    return true;
 }
 
+bool D3DDevice::Reset(int width, int height, int fullscreen)
+{
+   D3DPRESENT_PARAMETERS pp = _d3dpp;
+   _d3dpp.BackBufferWidth = (width > 0) ? width : _d3dpp.BackBufferWidth;
+   _d3dpp.BackBufferHeight = (height > 0) ? height : _d3dpp.BackBufferHeight;
+   _d3dpp.Windowed = (fullscreen == 1) ? FALSE : ((fullscreen == 0) ? TRUE : _d3dpp.Windowed);
+   if (FAILED(RestoreDevice()))
+   {
+      Log("Couldnt restore device");
+      _d3dpp = pp;
+      return SUCCEEDED(RestoreDevice());
+   }
+   _width = _d3dpp.BackBufferWidth;
+   _height = _d3dpp.BackBufferHeight;
+   return S_OK;
+}
+
 void D3DDevice::Destroy()
 {
    if (_device != NULL)
-      _device->Release();
+   {
+      int num = _device->Release();
+      assert(num == 0);
+   }
    if (_object != NULL)
       _object->Release();
-   Reset();
+   ResetParams();
 
    Log("uninitialized");
 }
 
-void D3DDevice::Reset()
+void D3DDevice::ResetParams()
 {
    _window = NULL;
    _object = NULL;
@@ -150,7 +182,7 @@ HRESULT D3DDevice::RestoreDevice()
 
    // If the device was lost, do not render until we get it back
    if (hr == D3DERR_DEVICELOST)
-      return S_OK;
+      return E_FAIL;
 
    // Check if the device needs to be reset.
    if (hr == D3DERR_DEVICENOTRESET)
@@ -169,12 +201,13 @@ HRESULT D3DDevice::ResetDevice()
    _scene_rendering = FALSE;
 
    // Release all video memory objects
+   // Bad to call such, make better
+   D3DVertexBufferCache::Current()->Uninitialize();
 
-   // Reset the device
+   // ResetParams the device
    if (FAILED(hr = _device->Reset(&_d3dpp)))
    {
-      //TrError(Strf::Printf("D3DDevice: Reset of the device failed! Error (%X) \"%s\"", 
-      //   (DWORD)hr, DXGetErrorStringA(hr)));
+      Log("D3DDevice: ResetParams of the device failed! Error (%X)", (DWORD)hr);
       return hr;
    }
 
@@ -195,6 +228,7 @@ HRESULT D3DDevice::ResetDevice()
    }
 
    Log("Device objects were successfuly restored");
+   _textures.Set(NULL);
    
    //_device_objects_restored = true;
    return S_OK;
@@ -202,16 +236,21 @@ HRESULT D3DDevice::ResetDevice()
 
 bool D3DDevice::Begin()
 {
-   RestoreDevice();
-   
-   if (FAILED(_device->BeginScene()))
+   if (FAILED(RestoreDevice()))
       return false;
+   
+   HRESULT hr;
+   if (FAILED(hr = _device->BeginScene()))
+   {
+      Log("Cannot begine scene: %X", (DWORD)hr);    
+      return false;
+   }
 
    //static const D3DVIEWPORT9 vp = {0, 0, _width, _height, 0.f, 1.f};
    //_device->SetViewport(&vp);
    //_device->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
 
-   //_device->Clear(0, NULL, D3DCLEAR_TARGET /*| D3DCLEAR_ZBUFFER*/, 0xffdddddd, 1.f, 0);
+   //_device->Clear(0, NULL, D3DCLEAR_TARGET /*| D3DCLEAR_ZBUFFER*/, 0xffdd00dd, 1.f, 0);
    return true;
 }
 
