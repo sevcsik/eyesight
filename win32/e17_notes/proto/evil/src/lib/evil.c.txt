@@ -1,6 +1,18 @@
-line 38
+line 45
 
 + #undef MB_CUR_MAX
 + #define MB_CUR_MAX PATH_MAX
 
 MB_CUR_MAX is undefined to use in Evil.c.
+
+If to comment those lines:
+
+Error	3	error C2057: expected constant expression	f:\enlightenment\e17\e17\proto\evil\src\lib\evil.c	169
+Error	6	error C2057: expected constant expression	f:\enlightenment\e17\e17\proto\evil\src\lib\evil.c	225
+Error	9	error C2057: expected constant expression	f:\enlightenment\e17\e17\proto\evil\src\lib\evil.c	226
+Error	5	error C2133: 'new_path' : unknown size	f:\enlightenment\e17\e17\proto\evil\src\lib\evil.c	169
+Error	11	error C2133: 'new_path' : unknown size	f:\enlightenment\e17\e17\proto\evil\src\lib\evil.c	226
+Error	8	error C2133: 'old_path' : unknown size	f:\enlightenment\e17\e17\proto\evil\src\lib\evil.c	225
+Error	4	error C2466: cannot allocate an array of constant size 0	f:\enlightenment\e17\e17\proto\evil\src\lib\evil.c	169
+Error	7	error C2466: cannot allocate an array of constant size 0	f:\enlightenment\e17\e17\proto\evil\src\lib\evil.c	225
+Error	10	error C2466: cannot allocate an array of constant size 0	f:\enlightenment\e17\e17\proto\evil\src\lib\evil.c	226
