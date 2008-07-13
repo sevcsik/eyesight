@@ -37,6 +37,7 @@ extern "C" {
 Direct3DDeviceHandler evas_direct3d_init(HWND window, int depth);
 void         evas_direct3d_free(Direct3DDeviceHandler d3d);
 void         evas_direct3d_render_all(Direct3DDeviceHandler d3d);
+void         evas_direct3d_resize(Direct3DDeviceHandler d3d, int width, int height);
 
 // Context manipulations
 

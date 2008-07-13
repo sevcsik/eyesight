@@ -14,7 +14,8 @@ class D3DDevice : virtual public Referenc
 public:
    D3DDevice();
 
-   bool Init(HWND window, int depth);
+   bool Init(HWND window, int depth, bool fullscreen = false);
+   bool Reset(int width, int height, int fullscreen);
    void Destroy();
    bool Begin();
    bool End();
@@ -28,7 +29,7 @@ public:
 private:
    HRESULT RestoreDevice();
    HRESULT ResetDevice();
-   void Reset();
+   void ResetParams();
 
 private:
    HWND _window;

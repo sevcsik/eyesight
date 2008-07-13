@@ -193,6 +193,34 @@ bool D3DImageCache::CreateImage(D3DDevice *d3d, int w, int h, bool locked, Cache
    return true;
 }
 
+bool D3DImageCache::ResizeImage(D3DDevice *d3d, int nw, int nh, int id)
+{
+   if (id < 0 || id >= _cache.Length())
+      return false;
+   assert(_cache[id].texture != NULL);
+   CacheEntry *ce = &_cache[id];
+
+   if (ce->width == nw && ce->height == nh)
+      return true;
+   
+   LPDIRECT3DTEXTURE9 tex = NULL;
+
+   HRESULT hr;
+   if (FAILED(hr = d3d->GetDevice()->CreateTexture(nw, nh, 0, 0, D3DFMT_A8R8G8B8, 
+      D3DPOOL_MANAGED, &tex, NULL)))
+   {
+      Log("Failed to create texture: %X", hr);
+      return false;
+   }
+   assert(tex != NULL);
+
+   ce->texture->Release();
+   ce->texture = tex;
+   ce->width = nw;
+   ce->height = nh;
+   return true;
+}
+
 bool D3DImageCache::RequestInsert(CacheEntry &entry, int w, int h)
 {
    // If we already have large image entry
@@ -320,7 +348,7 @@ bool D3DImageCache::UpdateImageDataWithDirtyInfo(CacheEntryInfo &info, DWORD *da
 
    RECT rc = {0, 0, entry.width, entry.height};
    D3DLOCKED_RECT lr;
-   if (FAILED(entry.texture->LockRect(0, &lr, &rc, D3DLOCK_DISCARD)))
+   if (FAILED(entry.texture->LockRect(0, &lr, &rc, 0)))
    {
       Log("Failed to lock texture");
       return false;
@@ -376,7 +404,7 @@ bool D3DImageCache::UpdateImageDataDiscard(CacheEntryInfo &info, DWORD *data)
 
    RECT rc = {0, 0, entry.width, entry.height};
    D3DLOCKED_RECT lr;
-   if (FAILED(entry.texture->LockRect(0, &lr, &rc, D3DLOCK_DISCARD)))
+   if (FAILED(entry.texture->LockRect(0, &lr, &rc, 0)))
    {
       Log("Failed to lock texture");
       return false;
