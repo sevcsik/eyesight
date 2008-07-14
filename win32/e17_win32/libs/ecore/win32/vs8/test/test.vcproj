@@ -195,8 +195,15 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\ecore_evas_test2.c"
+				RelativePath=".\ecore_evas_test2.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
@@ -204,6 +211,14 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\array.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ref.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
