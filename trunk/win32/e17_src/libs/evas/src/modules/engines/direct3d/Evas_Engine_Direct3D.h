@@ -16,6 +16,7 @@ struct _Evas_Engine_Info_Direct3D
       HWND window;
       int rotation;
       int depth;
+      int fullscreen;
    } info;
 };
 

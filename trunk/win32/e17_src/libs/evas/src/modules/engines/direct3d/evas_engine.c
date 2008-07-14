@@ -34,7 +34,7 @@ static void  eng_output_resize(void *data, int width, int height);
 //
 
 static void *
-_output_setup(int width, int height, int rotation, HWND window, int depth)
+_output_setup(int width, int height, int rotation, HWND window, int depth, int fullscreen)
 {
    Render_Engine *re;
 
@@ -57,7 +57,7 @@ _output_setup(int width, int height, int rotation, HWND window, int depth)
    evas_common_draw_init();
    evas_common_tilebuf_init();
 
-   if ((re->d3d = evas_direct3d_init(window, depth)) == 0)
+   if ((re->d3d = evas_direct3d_init(window, depth, fullscreen)) == 0)
      {
      free(re);
      return NULL;
@@ -76,6 +76,7 @@ eng_info(Evas *e)
    info = (Evas_Engine_Info_Direct3D *)calloc(1, sizeof(Evas_Engine_Info_Direct3D));
    if (!info) return NULL;
    info->magic.magic = rand();
+   memset(&info->info, 0, sizeof(info->info));
    return info;
    e = NULL;
 }
@@ -93,20 +94,28 @@ eng_setup(Evas *e, void *info)
 {
    Render_Engine *re;
    Evas_Engine_Info_Direct3D *in;
+   re = (Render_Engine *)e->engine.data.output;
 
    in = (Evas_Engine_Info_Direct3D *)info;
-   if (!e->engine.data.output)
+   if (e->engine.data.output == NULL)
      {
      e->engine.data.output = _output_setup(e->output.w, e->output.h,
-		   in->info.rotation, in->info.window, in->info.depth);
+        in->info.rotation, in->info.window, in->info.depth, in->info.fullscreen);
      }
+   else if (in->info.fullscreen != 0)
+   {
+      evas_direct3d_set_fullscreen(re->d3d, -1, -1, 1);
+   }
+   else if (in->info.fullscreen == 0)
+   {
+      evas_direct3d_set_fullscreen(re->d3d, re->width, re->height, 0);
+   }
 
    if (e->engine.data.output == NULL) 
      return;
    if (e->engine.data.context == NULL)
      e->engine.data.context = e->engine.func->context_new(e->engine.data.output);
 
-   re = (Render_Engine *)e->engine.data.output;
 }
 
 static void
