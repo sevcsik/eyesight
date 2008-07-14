@@ -44,10 +44,10 @@ DevicePtr *SelectDevice(Direct3DDeviceHandler d3d)
 
 extern "C" {
 
-Direct3DDeviceHandler evas_direct3d_init(HWND window, int depth)
+Direct3DDeviceHandler evas_direct3d_init(HWND window, int depth, int fullscreen)
 {
    Ref<D3DDevice> device = new D3DDevice();
-   if (!device->Init(window, depth))
+   if (!device->Init(window, depth, fullscreen == 1))
       return NULL;
 
    D3DImageCache::SetCurrent(NULL);
@@ -119,6 +119,32 @@ evas_direct3d_resize(Direct3DDeviceHandler d3d, int width, int height)
    {
       Log("Failed to resize fonts image buffer");
    }
+}
+
+void         
+evas_direct3d_set_fullscreen(Direct3DDeviceHandler d3d, int width, int height, int fullscreen)
+{
+   DevicePtr *dev_ptr = SelectDevice(d3d);
+   D3DDevice *device = dev_ptr->device;
+
+   if (width < 0)
+      width = ::GetSystemMetrics(SM_CXSCREEN);
+   if (height < 0)
+      height = ::GetSystemMetrics(SM_CYSCREEN);
+
+   if (!device->Reset(width, height, fullscreen))
+   {
+      Log("Failed to resize");
+      return;
+   }
+   if (!D3DImageCache::Current()->ResizeImage(device, width, height, 
+      dev_ptr->fonts_buffer_image_id))
+   {
+      Log("Failed to resize fonts image buffer");
+   }
+
+   if (fullscreen == 0)
+      InvalidateRect(HWND_DESKTOP, NULL, TRUE);
 }
 
 void         

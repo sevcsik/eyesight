@@ -125,11 +125,11 @@ bool D3DDevice::Reset(int width, int height, int fullscreen)
    _d3dpp.BackBufferWidth = (width > 0) ? width : _d3dpp.BackBufferWidth;
    _d3dpp.BackBufferHeight = (height > 0) ? height : _d3dpp.BackBufferHeight;
    _d3dpp.Windowed = (fullscreen == 1) ? FALSE : ((fullscreen == 0) ? TRUE : _d3dpp.Windowed);
-   if (FAILED(RestoreDevice()))
+   if (FAILED(ResetDevice()))
    {
       Log("Couldnt restore device");
       _d3dpp = pp;
-      return SUCCEEDED(RestoreDevice());
+      return SUCCEEDED(ResetDevice());
    }
    _width = _d3dpp.BackBufferWidth;
    _height = _d3dpp.BackBufferHeight;
@@ -204,10 +204,10 @@ HRESULT D3DDevice::ResetDevice()
    // Bad to call such, make better
    D3DVertexBufferCache::Current()->Uninitialize();
 
-   // ResetParams the device
+   // Reset the device
    if (FAILED(hr = _device->Reset(&_d3dpp)))
    {
-      Log("D3DDevice: ResetParams of the device failed! Error (%X)", (DWORD)hr);
+      Log("D3DDevice: Reset of the device failed! Error (%X)", (DWORD)hr);
       return hr;
    }
 
@@ -242,7 +242,7 @@ bool D3DDevice::Begin()
    HRESULT hr;
    if (FAILED(hr = _device->BeginScene()))
    {
-      Log("Cannot begine scene: %X", (DWORD)hr);    
+      Log("Cannot begin scene: %X", (DWORD)hr);    
       return false;
    }
 
