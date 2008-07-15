@@ -22,6 +22,9 @@ define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
 AM_PROG_LIBTOOL
 
 AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl)
+AC_CHECK_LIB(intl, libintl_gettext, intl_libs=-lintl)
+AC_SUBST(dlopen_libs)
+AC_SUBST(intl_libs)
 
 PKG_CHECK_MODULES([EYESIGHT],
 		  [evas
@@ -29,8 +32,15 @@ PKG_CHECK_MODULES([EYESIGHT],
 		  ecore-evas
 		  edje
         efreet])
+        
 PKG_CHECK_MODULES([EPDF], 
         [epdf 
+        esmart_container
+        esmart_text_entry
+        ])
+        
+PKG_CHECK_MODULES([EDVI],
+        [edvi
         esmart_container
         esmart_text_entry
         ])
@@ -40,7 +50,7 @@ Makefile
 src/Makefile
 src/bin/Makefile
 src/plugins/Makefile
-src/plugins/pdf/Makefile
+src/plugins/document/Makefile
 data/Makefile
 data/other/Makefile
 data/themes/Makefile

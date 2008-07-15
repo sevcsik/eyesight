@@ -80,7 +80,7 @@ main(int argc, char **argv)
 
    return EXIT_SUCCESS;
 
-_edje_shutdown:
+//_edje_shutdown:
    edje_shutdown();
    
 _ecore_evas_shutdown:

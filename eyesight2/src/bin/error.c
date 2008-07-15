@@ -3,6 +3,7 @@
 
 #include <Evas.h>
 #include <Ecore_Evas.h>
+#include <Edje.h>
 
 #include "main_window.h"
 
@@ -48,7 +49,7 @@ display_startup_error_dialog(Ecore_Evas *ee, Evas_List *startup_errors)
    do
    {
       len += strlen("<i>> ") + strlen((char *)evas_list_data(tmp)) + strlen("<br>");
-   } while (tmp = evas_list_next(tmp));
+   } while ((tmp = evas_list_next(tmp)));
    
    str = calloc(sizeof(char), len);
    
@@ -62,7 +63,7 @@ display_startup_error_dialog(Ecore_Evas *ee, Evas_List *startup_errors)
       strncat(str, "<i>> ", len);
       strncat(str, evas_list_data(tmp), len);
       strncat(str, "<br>", len);
-   } while (tmp = evas_list_next(tmp));
+   } while ((tmp = evas_list_next(tmp)));
    
    // Display error dialog (error_show signal will be emitted later)
    // TODO: error.c: Resize dialog to fit text

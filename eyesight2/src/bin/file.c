@@ -9,7 +9,7 @@ file_open(Evas *evas, Evas_Object *main_window, Ecore_List *plugins, char *file)
 {
    // Check plugins in the list if they can open it, break on success
    Plugin *plugin = NULL;
-   Plugin_Open_File_Func open_file;
+   Plugin_Open_File_Func open_file = NULL;
 
    // TEMP
    Plugin_Show_Func show;
@@ -25,7 +25,8 @@ file_open(Evas *evas, Evas_Object *main_window, Ecore_List *plugins, char *file)
       open_file = ecore_plugin_symbol_get(plugin->plugin, "open_file");
       if (!open_file)
          break;
-      if (open_file(&(plugin->plugin_data), file, main_window, evas));
+      if (!open_file(&(plugin->plugin_data), file, main_window, evas))
+         continue;
 
       // TEMP
       show = ecore_plugin_symbol_get(plugin->plugin, "show");
