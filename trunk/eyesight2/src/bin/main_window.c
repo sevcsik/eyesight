@@ -35,7 +35,7 @@ main_window_delete_request_cb(Ecore_Evas *ee)
    free(args->theme_path);
    if (args->files)
       ecore_list_destroy(args->files);
-   evas_object_free(main_window->main_window);
+   evas_object_del(main_window->main_window);
    evas_free(main_window->evas);
    free(main_window);
    ecore_evas_free(ee);
@@ -49,8 +49,6 @@ main_window_create(Args *args, Evas_List **startup_errors)
    Ecore_Evas *ee;
    char *theme;
    Ecore_List *resize_callbacks;
-
-   printf("%d: %s\n", args->engine, args->engine);
 
    if (!(args->engine) || !strcmp(args->engine, "software_x11"))
    {
@@ -100,7 +98,11 @@ main_window_create(Args *args, Evas_List **startup_errors)
    else
    {
       printf(_("%s is an unknown engine. Valid engines are: software_x11 (default), software_ddraw, gl_x11, xrender_x11 and fb."), args->engine);
+      return 0;
    }
+
+   if (!ee)
+      return 0;
 
    main_window->evas = ecore_evas_get(ee);
    main_window->main_window = edje_object_add(main_window->evas);
@@ -190,7 +192,7 @@ void controls_resize_cb(void *_data, Evas *e, Evas_Object *obj, void *event_info
          return;
       cbdata->func(cbdata->data, e, obj, event_info);
    }
-   while (cbdata = ecore_list_next(data));
+   while ((cbdata = ecore_list_next(data)));
 }
 
 void

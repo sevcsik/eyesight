@@ -22,7 +22,7 @@ parse_args(int argc, char **argv, Evas_List **startup_errors)
    opterr = 0;
 
    // Check getopt switches
-   while (c = getopt(argc, argv, OPTS))
+   while ((c = getopt(argc, argv, OPTS)))
    {
       if (c == -1)
          break;
