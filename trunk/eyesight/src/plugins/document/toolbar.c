@@ -62,6 +62,7 @@ setup_toolbar(Evas_Object *controls)
    esmart_container_direction_set(container1, CONTAINER_DIRECTION_HORIZONTAL);
    esmart_container_alignment_set(container1, CONTAINER_ALIGN_CENTER);
    esmart_container_fill_policy_set(container1, CONTAINER_FILL_POLICY_KEEP_ASPECT);
+   esmart_container_clip_elements_set(container1, 0);
 
    // Swallow to toolbar1_sw
    edje_object_part_swallow(controls, "eyesight/main_window/controls/toolbar1_sw",
@@ -85,6 +86,7 @@ setup_toolbar(Evas_Object *controls)
    esmart_container_direction_set(container2, CONTAINER_DIRECTION_HORIZONTAL);
    esmart_container_alignment_set(container2, CONTAINER_ALIGN_CENTER);
    esmart_container_fill_policy_set(container2, CONTAINER_FILL_POLICY_KEEP_ASPECT);
+   esmart_container_clip_elements_set(container1, 0);
 
    // Swallow to toolbar2_sw
    edje_object_part_swallow(controls, "eyesight/main_window/controls/toolbar2_sw",
