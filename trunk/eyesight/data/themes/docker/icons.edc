@@ -1,0 +1,119 @@
+group
+{
+   name: "go-up";
+   parts
+   {
+      part
+      {
+         name: "icon";
+         type: IMAGE;
+         repeat_events: 1;
+         description
+         {
+            state: "default" 0.0;
+            rel1
+            {
+               relative: 0.0 0.0;
+            }
+            rel2
+            {
+               relative: 1.0 1.0;
+            }
+            image
+            {
+               normal: "go-up.png";
+            }
+         }
+      }
+   }
+}
+
+group
+{
+   name: "go-down";
+   parts
+   {
+      part
+      {
+         name: "icon";
+         type: IMAGE;
+         repeat_events: 1;
+         description
+         {
+            state: "default" 0.0;
+            rel1
+            {
+               relative: 0.0 0.0;
+            }
+            rel2
+            {
+               relative: 1.0 1.0;
+            }
+            image
+            {
+               normal: "go-down.png";
+            }
+         }
+      }
+   }
+}
+
+group
+{
+   name: "view-fullscreen";
+   parts
+   {
+      part
+      {
+         name: "icon";
+         type: IMAGE;
+         repeat_events: 1;
+         description
+         {
+            state: "default" 0.0;
+            rel1
+            {
+               relative: 0.0 0.0;
+            }
+            rel2
+            {
+               relative: 1.0 1.0;
+            }
+            image
+            {
+               normal: "view-fullscreen.png";
+            }
+         }
+      }
+   }
+}
+
+group
+{
+   name: "view-restore";
+   parts
+   {
+      part
+      {
+         name: "icon";
+         type: IMAGE;
+         repeat_events: 1;
+         description
+         {
+            state: "default" 0.0;
+            rel1
+            {
+               relative: 0.0 0.0;
+            }
+            rel2
+            {
+               relative: 1.0 1.0;
+            }
+            image
+            {
+               normal: "view-restore.png";
+            }
+         }
+      }
+   }
+}
