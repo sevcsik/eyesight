@@ -95,7 +95,8 @@ open_file(void **_plugin_data, char *filename, Evas_Object *main_window,
    char *tmp;
 
    page = doc_add(evas);
-   doc_init(page);
+   if (!doc_init(page))
+      return 0;
 
 #if defined DVI
 

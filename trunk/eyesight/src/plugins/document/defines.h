@@ -10,15 +10,12 @@
 #define doc_page_set(X, Y)       esmart_pdf_page_set(X, Y)
 #define doc_page_get(X)          esmart_pdf_page_get(X)
 #define doc_size_get(X, Y, Z)    esmart_pdf_size_get(X, Y, Z)
-#define doc_page_size_get(X)     epdf_page_size_get(X)
 #define doc_scale_set(X, Y, Z)   esmart_pdf_scale_set(X, Y, Z)
 #define doc_scale_get(X, Y, Z)   esmart_pdf_scale_get(X, Y, Z)
 #define doc_document_get(X)      esmart_pdf_pdf_document_get(X)
 #define doc_page_obj_get(X)      esmart_pdf_pdf_page_get(X)
 #define doc_page_count_get(X)    epdf_document_page_count_get(X)
 #define doc_render(X)            esmart_pdf_render(X)
-#define doc_page_width_get(X)    epdf_page_width_get(X)
-#define doc_page_height_get(X)   epdf_page_height_get(X)
 
 // Types
 typedef Epdf_Document         Doc_Document;
@@ -36,15 +33,12 @@ typedef Epdf_Page             Doc_Page;
 #define doc_page_set(X, Y)       esmart_dvi_page_set(X, Y)
 #define doc_page_get(X)          esmart_dvi_page_get(X)
 #define doc_size_get(X, Y, Z)    esmart_dvi_size_get(X, Y, Z)
-#define doc_page_size_get(X)     edvi_page_size_get(X)
 #define doc_mag_set(X, Y)        esmart_dvi_mag_set(X, Y)
 #define doc_mag_get(X)           esmart_dvi_mag_get(X)
 #define doc_document_get(X)      esmart_dvi_dvi_document_get(X)
 #define doc_page_obj_get(X)      esmart_dvi_dvi_page_get(X)
 #define doc_page_count_get(X)    edvi_document_page_count_get(X)
 #define doc_render(X)            esmart_dvi_render(X)
-#define doc_page_width_get(X)    edvi_page_width_get(X)
-#define doc_page_height_get(X)   edvi_page_height_get(X)
 
 // Types
 typedef Edvi_Document         Doc_Document;
