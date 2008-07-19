@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="libecore_evas"
 	ProjectGUID="{DE0016EC-1096-42FF-A2BA-BDCFD3A95E50}"
 	RootNamespace="libecore_evas"
@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(INCLUDE)"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;EFL_ECORE_EVAS_BUILD;DLL_EXPORT;__CRT_INLINE=__inline;inline=__inline;snprintf=_snprintf_c;strcasecmp=stricmp;HAVE_CONFIG_H;HAVE_EVIL"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;EFL_ECORE_EVAS_BUILD;DLL_EXPORT;__CRT_INLINE=__inline;inline=__inline;snprintf=_snprintf_c;strcasecmp=stricmp;HAVE_CONFIG_H;HAVE_EVIL;BUILD_ECORE_WIN32"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -125,7 +125,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="$(INCLUDE)"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;EFL_ECORE_EVAS_BUILD;DLL_EXPORT;__CRT_INLINE=__inline;inline=__inline;snprintf=_snprintf_c;strcasecmp=stricmp;HAVE_CONFIG_H;HAVE_EVIL"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;EFL_ECORE_EVAS_BUILD;DLL_EXPORT;__CRT_INLINE=__inline;inline=__inline;snprintf=_snprintf_c;strcasecmp=stricmp;HAVE_CONFIG_H;HAVE_EVIL;BUILD_ECORE_WIN32"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"

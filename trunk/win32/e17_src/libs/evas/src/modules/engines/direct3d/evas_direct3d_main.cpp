@@ -1,4 +1,8 @@
 
+
+// Force the layered windows APIs to be visible.
+#define _WIN32_WINNT 0x0500
+
 #include "evas_engine.h"
 #include <assert.h>
 
@@ -30,6 +34,29 @@ struct DevicePtr
    Ref<D3DVertexBufferCache> vb_cache;
 
    int fonts_buffer_image_id;
+
+   // Layered windows cannot render D3D in the normal way
+   bool layered;
+
+   // Window shape mask
+   struct
+   {
+      // Width and height may be different from target size
+      int width;
+      int height;
+      // Pointer to external memory location, dont do anything with it
+      unsigned char *mask;
+   } shape;
+   
+   // GDI output target
+   struct
+   {
+      HBITMAP image;
+      HDC hdc;
+      BITMAPINFO info;
+      BYTE *data;
+   } dib;
+
 };
 
 DevicePtr *SelectDevice(Direct3DDeviceHandler d3d)
@@ -40,6 +67,44 @@ DevicePtr *SelectDevice(Direct3DDeviceHandler d3d)
    D3DVertexBufferCache::SetCurrent(dev_ptr->vb_cache);
    return dev_ptr;
 }
+
+void DeleteDIBObjects(DevicePtr *dev_ptr)
+{
+   assert(dev_ptr != NULL);
+   if (dev_ptr->dib.image != NULL)
+      DeleteObject(dev_ptr->dib.image);
+   if (dev_ptr->dib.hdc != NULL)
+      DeleteDC(dev_ptr->dib.hdc);
+   ZeroMemory(&dev_ptr->dib, sizeof(dev_ptr->dib));
+}
+
+bool CreateDIBObjects(DevicePtr *dev_ptr)
+{
+   assert(dev_ptr != NULL);
+   if ((dev_ptr->dib.hdc = CreateCompatibleDC(NULL)) == NULL)
+   {
+      Log("Failed to create compatible DC");
+      return false;
+   }
+   ZeroMemory(&dev_ptr->dib.info, sizeof(dev_ptr->dib.info));
+   dev_ptr->dib.info.bmiHeader.biSize = sizeof(dev_ptr->dib.info.bmiHeader);
+   dev_ptr->dib.info.bmiHeader.biBitCount = 32;
+   dev_ptr->dib.info.bmiHeader.biWidth = dev_ptr->device->GetWidth();
+   dev_ptr->dib.info.bmiHeader.biHeight = -dev_ptr->device->GetHeight();
+   dev_ptr->dib.info.bmiHeader.biCompression = BI_RGB;
+   dev_ptr->dib.info.bmiHeader.biPlanes = 1;
+   if ((dev_ptr->dib.image = CreateDIBSection(dev_ptr->dib.hdc, &dev_ptr->dib.info,
+      DIB_RGB_COLORS, (void **)&dev_ptr->dib.data, NULL, 0)) == NULL)
+   {
+      Log("Failed to create dib section");
+      DeleteDIBObjects(dev_ptr);
+      return false;
+   }
+   assert(dev_ptr->dib.data != NULL);
+   return true;
+}
+
+
 
 
 extern "C" {
@@ -62,6 +127,7 @@ Direct3DDeviceHandler evas_direct3d_init(HWND window, int depth, int fullscreen)
    }
 
    DevicePtr *dev_ptr = new DevicePtr;
+   ZeroMemory(dev_ptr, sizeof(DevicePtr));
    dev_ptr->device = device;
    dev_ptr->scene = new D3DScene();
    dev_ptr->context = new D3DContext();
@@ -87,6 +153,9 @@ void
 evas_direct3d_free(Direct3DDeviceHandler d3d)
 {
    DevicePtr *dev_ptr = SelectDevice(d3d);
+
+   DeleteDIBObjects(dev_ptr);
+
    dev_ptr->context = NULL;
    dev_ptr->scene = NULL;
    dev_ptr->image_cache = NULL;
@@ -119,6 +188,12 @@ evas_direct3d_resize(Direct3DDeviceHandler d3d, int width, int height)
    {
       Log("Failed to resize fonts image buffer");
    }
+   if (dev_ptr->layered)
+   {
+      DeleteDIBObjects(dev_ptr);
+      if (!CreateDIBObjects(dev_ptr))
+         Log("Failed to create dib objects");
+   }
 }
 
 void         
@@ -145,6 +220,22 @@ evas_direct3d_set_fullscreen(Direct3DDeviceHandler d3d, int width, int height, i
 
    if (fullscreen == 0)
       InvalidateRect(HWND_DESKTOP, NULL, TRUE);
+}
+
+void
+evas_direct3d_set_layered(Direct3DDeviceHandler d3d, int layered,
+   int mask_width, int mask_height, unsigned char *mask)
+{
+   DevicePtr *dev_ptr = SelectDevice(d3d);
+   dev_ptr->layered = (layered != 0);
+   dev_ptr->shape.width = mask_width;
+   dev_ptr->shape.height = mask_height;
+   dev_ptr->shape.mask = mask;
+
+   if (dev_ptr->layered && dev_ptr->dib.data == NULL)
+      CreateDIBObjects(dev_ptr);
+   else if (!dev_ptr->layered)
+      DeleteDIBObjects(dev_ptr);
 }
 
 void         
@@ -192,6 +283,53 @@ evas_direct3d_render_all(Direct3DDeviceHandler d3d)
    D3DObjectFont::EndCache(device);
 
    device->End();
+
+   if (dev_ptr->layered && !device->GetFullscreen() && dev_ptr->dib.data != NULL)
+   {
+      HDC hdc = GetDC(NULL);  //device->GetWindow());
+      if (hdc != NULL)
+      {
+         POINT dest = {0, 0};
+         POINT src = {0, 0};
+         SIZE client = {device->GetWidth(), device->GetHeight()};
+         BLENDFUNCTION blend_func = {AC_SRC_OVER, 0, 255, AC_SRC_ALPHA};
+
+         CopyMemory(dev_ptr->dib.data, device->GetRenderData().Data(), 
+            sizeof(DWORD) * client.cx * client.cy);
+         for (int i = 0; i < client.cy; i++)
+         {
+            for (int j = 0; j < client.cx; j++)
+            {
+               int mask_i = int(dev_ptr->shape.height * float(i) / float(client.cy));
+               int mask_j = int(dev_ptr->shape.width * float(j) / float(client.cx));
+               if (mask_i < 0)
+                  mask_i = 0;
+               else if (mask_i >= dev_ptr->shape.height)
+                  mask_i = dev_ptr->shape.height - 1;
+               if (mask_j < 0)
+                  mask_j = 0;
+               else if (mask_j >= dev_ptr->shape.width)
+                  mask_j = dev_ptr->shape.width - 1;
+               BYTE mask_b = dev_ptr->shape.mask[mask_i * dev_ptr->shape.width + mask_j];
+               float alpha = float(mask_b) / 255.f;
+
+               dev_ptr->dib.data[j * 4 + 0 + i * 4 * client.cx] = BYTE(float(dev_ptr->dib.data[j * 4 + 0 + i * 4 * client.cx]) * alpha);
+               dev_ptr->dib.data[j * 4 + 1 + i * 4 * client.cx] = BYTE(float(dev_ptr->dib.data[j * 4 + 1 + i * 4 * client.cx]) * alpha);
+               dev_ptr->dib.data[j * 4 + 2 + i * 4 * client.cx] = BYTE(float(dev_ptr->dib.data[j * 4 + 2 + i * 4 * client.cx]) * alpha);
+               dev_ptr->dib.data[j * 4 + 3 + i * 4 * client.cx] = mask_b;
+            }
+         }
+
+         HGDIOBJ prev_obj = SelectObject(dev_ptr->dib.hdc, dev_ptr->dib.image);
+         ClientToScreen(device->GetWindow(), &dest);
+
+         UpdateLayeredWindow(device->GetWindow(), hdc, &dest, &client,
+            dev_ptr->dib.hdc, &src, 0, &blend_func, ULW_ALPHA);
+
+         SelectObject(dev_ptr->dib.hdc, prev_obj);
+         ReleaseDC(device->GetWindow(), hdc);
+      }
+   }
 
    scene->FreeObjects();
 }

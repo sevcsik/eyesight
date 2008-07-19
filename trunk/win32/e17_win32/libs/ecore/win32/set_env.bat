@@ -38,11 +38,11 @@ set EetInclude=%cd%\..\..\eet\src\lib
 set EetOut=%cd%\..\..\eet\win32\%PROJECT_TYPE%\out
 
 rem Add Evas lib path
-set EvasInclude=%cd%\..\..\evas\src\lib
+set EvasInclude=%cd%\..\..\evas\src\lib;%cd%\..\..\evas\src\modules\engines\software_ddraw;%cd%\..\..\evas\src\modules\engines\direct3d
 set EvasOut=%cd%\..\..\evas\win32\%PROJECT_TYPE%\out
 
 rem Add Ecore lib path
-set EcoreInclude=%cd%\..\..\ecore\src\lib\ecore
+set EcoreInclude=%cd%\..\..\ecore\src\lib\ecore;%cd%\..\..\ecore\src\lib\ecore
 set EcoreOut=%cd%\..\..\ecore\win32\%PROJECT_TYPE%\out
 
 

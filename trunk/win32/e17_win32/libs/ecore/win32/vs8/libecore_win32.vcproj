@@ -20,7 +20,7 @@
 			OutputDirectory="$(DebugOutputDirectory)"
 			IntermediateDirectory="$(TemporaryDirectory)\$(TargetName)\$(ConfigurationName)"
 			ConfigurationType="2"
-			CharacterSet="1"
+			CharacterSet="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -104,7 +104,7 @@
 			OutputDirectory="$(ReleaseOutputDirectory)"
 			IntermediateDirectory="$(TemporaryDirectory)\$(TargetName)\$(ConfigurationName)"
 			ConfigurationType="2"
-			CharacterSet="1"
+			CharacterSet="0"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -218,10 +218,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\lib\ecore_win32\ecore_win32_cursor.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\lib\ecore_win32\ecore_win32_ddraw.cpp"
 				>
 			</File>
 			<File
