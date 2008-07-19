@@ -103,12 +103,16 @@ eng_setup(Evas *e, void *info)
         in->info.rotation, in->info.window, in->info.depth, in->info.fullscreen);
      }
    else if (in->info.fullscreen != 0)
-   {
       evas_direct3d_set_fullscreen(re->d3d, -1, -1, 1);
-   }
    else if (in->info.fullscreen == 0)
-   {
       evas_direct3d_set_fullscreen(re->d3d, re->width, re->height, 0);
+
+   if (re != NULL)
+   {
+      if (in->info.layered != 0 && in->shape != NULL)
+         evas_direct3d_set_layered(re->d3d, 1, in->shape->width, in->shape->height, in->shape->mask);
+      else
+         evas_direct3d_set_layered(re->d3d, 0, 0, 0, NULL);
    }
 
    if (e->engine.data.output == NULL) 

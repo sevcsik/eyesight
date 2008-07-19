@@ -40,6 +40,9 @@ void         evas_direct3d_render_all(Direct3DDeviceHandler d3d);
 void         evas_direct3d_resize(Direct3DDeviceHandler d3d, int width, int height);
 void         evas_direct3d_set_fullscreen(Direct3DDeviceHandler d3d, 
    int width, int height, int fullscreen);
+void         evas_direct3d_set_layered(Direct3DDeviceHandler d3d, int layered,
+   int mask_width, int mask_height, unsigned char *mask);
+
 
 // Context manipulations
 

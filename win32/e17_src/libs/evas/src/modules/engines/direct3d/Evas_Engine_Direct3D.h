@@ -16,8 +16,15 @@ struct _Evas_Engine_Info_Direct3D
       HWND window;
       int rotation;
       int depth;
-      int fullscreen;
+      int fullscreen : 1;
+      int layered : 1;
    } info;
+
+   struct {
+      unsigned short width;
+      unsigned short height;
+      unsigned char *mask;
+   } *shape;
 };
 
 

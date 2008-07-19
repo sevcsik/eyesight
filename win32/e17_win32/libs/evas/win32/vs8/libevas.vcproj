@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="libevas"
 	ProjectGUID="{689B4F2B-666D-439F-9BF3-1203D813DE3F}"
 	RootNamespace="libevas"
@@ -397,6 +397,10 @@
 			<Filter
 				Name="Header Files"
 				>
+				<File
+					RelativePath="..\..\src\lib\data\evas_mempool.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Source Files"
@@ -406,11 +410,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\lib\data\evas_array_hash.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\lib\data\evas_hash.c"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\lib\data\evas_list.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\lib\data\evas_mempool.c"
 					>
 				</File>
 				<File
@@ -465,10 +477,6 @@
 			<Filter
 				Name="common"
 				>
-				<File
-					RelativePath="..\..\src\lib\engines\common\evas_array_hash.c"
-					>
-				</File>
 				<File
 					RelativePath="..\..\src\lib\engines\common\evas_blend_main.c"
 					>

@@ -109,11 +109,21 @@ bool D3DDevice::Init(HWND window, int depth, bool fullscreen)
      return false;
    }
 
+   //_render_to_texture = false;
+
    _d3dpp = pp;
    _device_lost = FALSE;
    _scene_rendering = FALSE;
    _width = rect.right - rect.left;
    _height = rect.bottom - rect.top;
+   _window = window;
+
+   if (FAILED(CreateRenderTarget()))
+   {
+      Log("Failed to create render target");
+      Destroy();
+      return false;
+   }
 
    Log("initialized");
    return true;
@@ -138,6 +148,16 @@ bool D3DDevice::Reset(int width, int height, int fullscreen)
 
 void D3DDevice::Destroy()
 {
+   //if (_render_target != NULL)
+   //{
+   //   _render_target->Release();
+   //   _render_target = NULL;
+   //}
+   if (_render_target_data != NULL)
+   {
+      _render_target_data->Release();
+      _render_target_data = NULL;
+   }
    if (_device != NULL)
    {
       int num = _device->Release();
@@ -163,6 +183,12 @@ void D3DDevice::ResetParams()
    _scene_rendering = false;
    ZeroMemory(&_d3dpp, sizeof(_d3dpp));
    ZeroMemory(&_backbuffer_desc, sizeof(_backbuffer_desc));
+   //_render_target = NULL;
+   _render_target_data = NULL;
+   _render_data_updated = false;
+   _render_data.Resize();
+   //_original_render_target = NULL;
+   //_render_to_texture = false;
 }
 
 HRESULT D3DDevice::RestoreDevice()
@@ -204,6 +230,17 @@ HRESULT D3DDevice::ResetDevice()
    // Bad to call such, make better
    D3DVertexBufferCache::Current()->Uninitialize();
 
+   //if (_render_target != NULL)
+   //{
+   //   _render_target->Release();
+   //   _render_target = NULL;
+   //}
+   if (_render_target_data != NULL)
+   {
+      _render_target_data->Release();
+      _render_target_data = NULL;
+   }
+
    // Reset the device
    if (FAILED(hr = _device->Reset(&_d3dpp)))
    {
@@ -218,6 +255,7 @@ HRESULT D3DDevice::ResetDevice()
    backbuffer->Release();
 
    // Initialize the app's device-dependent objects
+   hr = CreateRenderTarget();
 
    if (FAILED(hr))
    {
@@ -238,6 +276,14 @@ bool D3DDevice::Begin()
 {
    if (FAILED(RestoreDevice()))
       return false;
+
+   //if (_render_to_texture && _render_target != NULL)
+   //{
+   //   if (FAILED(_device->GetRenderTarget(0, &_original_render_target)))
+   //      return false;
+   //   if (FAILED(_device->SetRenderTarget(0, _render_target)))
+   //      return false;
+   //}
    
    HRESULT hr;
    if (FAILED(hr = _device->BeginScene()))
@@ -245,7 +291,7 @@ bool D3DDevice::Begin()
       Log("Cannot begin scene: %X", (DWORD)hr);    
       return false;
    }
-
+   
    //static const D3DVIEWPORT9 vp = {0, 0, _width, _height, 0.f, 1.f};
    //_device->SetViewport(&vp);
    //_device->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
@@ -258,19 +304,78 @@ bool D3DDevice::End()
 {
    _device->EndScene();
    _device->Present(NULL, NULL, NULL, NULL);
+
+   _render_data_updated = false;
+
+   //if (_render_to_texture && _render_target != NULL && _original_render_target != NULL)
+   //{
+   //   if (FAILED(_device->SetRenderTarget(0, _original_render_target)))
+   //      return false;
+   //}
+
    return true;
+}
+
+TArray<DWORD> &D3DDevice::GetRenderData()
+{
+   if (_render_data_updated)
+      return _render_data;
+   _render_data.Allocate(0);
+   if (_render_target_data == NULL)
+      return _render_data;
+
+   LPDIRECT3DSURFACE9 surf = NULL;
+   if (FAILED(_device->GetRenderTarget(0, &surf)))
+      return _render_data;
+   if (FAILED(_device->GetRenderTargetData(surf, _render_target_data)))
+      return _render_data;
+   D3DLOCKED_RECT lr;
+   if (FAILED(_render_target_data->LockRect(&lr, NULL, D3DLOCK_READONLY)))
+      return _render_data;
+   _render_data.Allocate(_width * _height);
+
+   for (int i = 0; i < _height; i++)
+   {
+      CopyMemory(&_render_data[i * _width], (BYTE *)lr.pBits + i * lr.Pitch,
+         _width * sizeof(DWORD));
+   }
+
+   _render_target_data->UnlockRect();
+   _render_data_updated = true;
+   return _render_data;
 }
 
 HRESULT D3DDevice::SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 tex)
 {
    if (stage >= 8)
       return E_FAIL;
-   if (_textures.Length() <= stage)
+   if (_textures.Length() <= (int)stage)
       _textures.Allocate(stage + 1);
    if (_textures[stage] != tex)
    {
       _textures[stage] = tex;
       return _device->SetTexture(stage, tex);
+   }
+   return S_OK;
+}
+
+HRESULT D3DDevice::CreateRenderTarget()
+{
+   if (_device == NULL)
+      return E_FAIL;
+   //if (_render_target != NULL && 
+   if (_render_target_data != NULL)
+      return S_OK;
+
+   //if (FAILED(_device->CreateRenderTarget(_width, _height, _backbuffer_desc.Format,
+   //   D3DMULTISAMPLE_NONE, 0, FALSE, &_render_target, NULL)))
+   //{
+   //   return E_FAIL;
+   //}
+   if (FAILED(_device->CreateOffscreenPlainSurface(_width, _height, 
+      _backbuffer_desc.Format, D3DPOOL_SYSTEMMEM, &_render_target_data, NULL)))
+   {
+      return E_FAIL;
    }
    return S_OK;
 }
