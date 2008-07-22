@@ -237,7 +237,7 @@ HRESULT D3DDevice::ResetDevice()
    //}
    if (_render_target_data != NULL)
    {
-      Log("_render_target_data->Release() = %d", _render_target_data->Release());
+      _render_target_data->Release();
       _render_target_data = NULL;
    }
 
