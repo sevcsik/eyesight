@@ -610,6 +610,7 @@ ecore_win32_window_shape_set(Ecore_Win32_Window *window,
    struct _Ecore_Win32_Window *wnd = window;
    HRGN rgn;
    int x, y;
+   OSVERSIONINFO version_info;
 
    if (wnd == NULL)
       return;
@@ -623,6 +624,8 @@ ecore_win32_window_shape_set(Ecore_Win32_Window *window,
 #if defined(WS_EX_LAYERED)
          SetWindowLong(wnd->window, GWL_EXSTYLE, 
             GetWindowLong(wnd->window, GWL_EXSTYLE) & (~WS_EX_LAYERED));
+         RedrawWindow(wnd->window, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_FRAME |
+            RDW_ALLCHILDREN);
 #endif
       }
       else
@@ -649,12 +652,15 @@ ecore_win32_window_shape_set(Ecore_Win32_Window *window,
    wnd->shape.layered = 0;
 
 #if defined(WS_EX_LAYERED)
-
-   SetWindowLong(wnd->window, GWL_EXSTYLE, 
-       GetWindowLong(wnd->window, GWL_EXSTYLE) | WS_EX_LAYERED);
-   wnd->shape.layered = 1;
-
-#else
+   version_info.dwOSVersionInfoSize = sizeof(version_info);
+   if (GetVersionEx(&version_info) == TRUE && version_info.dwMajorVersion == 5)
+   {
+      SetWindowLong(wnd->window, GWL_EXSTYLE, 
+          GetWindowLong(wnd->window, GWL_EXSTYLE) | WS_EX_LAYERED);
+      wnd->shape.layered = 1;
+      return;
+   }
+#endif
 
    rgn = CreateRectRgn(0, 0, 0, 0);
 	for (y = 0; y < height; y++)
@@ -673,8 +679,6 @@ ecore_win32_window_shape_set(Ecore_Win32_Window *window,
 		DeleteObject(rgnLine);
 	}
    SetWindowRgn(wnd->window, rgn, TRUE);
-#endif
-
 }
 
 void

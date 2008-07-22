@@ -41,20 +41,27 @@ void setup_objects_sizes(int nx, int ny);
 static void
 mouse_button_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-   Evas_Engine_Info_Direct3D *einfo = (Evas_Engine_Info_Direct3D *)
-      evas_engine_info_get(ecore_evas_get(ee));
-   if (einfo == NULL)
-      return;
-   einfo->info.fullscreen = einfo->info.fullscreen ? 0 : 1;
-   evas_engine_info_set(ecore_evas_get(ee), (Evas_Engine_Info *)einfo);
-   //if (einfo->info.fullscreen == 0)
-   //{
-   //   ecore_win32_window_resize(ecore_evas_direct3d_window_get(ee), 512, 512);
-   //   setup_objects_sizes(512, 512);
-   //}
-   //else
-   //   setup_objects_sizes(1280, 1024);
-   ecore_evas_fullscreen_set(ee, einfo->info.fullscreen);
+   //ecore_evas_win32_window_shape_set(ee, 0, 0, NULL);
+   //ecore_win32_window_resize(ecore_evas_window_get(ee), 720, 720);
+
+#if 0
+   unsigned char mask[720 * 720];
+   memset(mask, 0, sizeof(mask));
+
+   for (int i = 0; i < 720; i++)
+   {
+      for (int j = 0; j < 720; j++)
+      {
+         if (j - i < 50 && j - i > -50)
+            mask[i * 720 + j] = 255;
+      }
+   }
+
+   ecore_evas_win32_window_shape_set(ee, 720, 720, mask);
+#endif
+
+   ecore_evas_fullscreen_set(ee, (ecore_evas_fullscreen_get(ee) != 0) ? 0 : 1);
+
    int w, h;
    ecore_win32_window_geometry_get(ecore_evas_window_get(ee), NULL, NULL, &w, &h);
    setup_objects_sizes(w, h);

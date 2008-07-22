@@ -101,6 +101,7 @@ bool CreateDIBObjects(DevicePtr *dev_ptr)
       return false;
    }
    assert(dev_ptr->dib.data != NULL);
+   GdiFlush();
    return true;
 }
 
@@ -286,7 +287,7 @@ evas_direct3d_render_all(Direct3DDeviceHandler d3d)
 
    if (dev_ptr->layered && !device->GetFullscreen() && dev_ptr->dib.data != NULL)
    {
-      HDC hdc = GetDC(NULL);  //device->GetWindow());
+      HDC hdc = GetDC(device->GetWindow());
       if (hdc != NULL)
       {
          POINT dest = {0, 0};
@@ -294,8 +295,12 @@ evas_direct3d_render_all(Direct3DDeviceHandler d3d)
          SIZE client = {device->GetWidth(), device->GetHeight()};
          BLENDFUNCTION blend_func = {AC_SRC_OVER, 0, 255, AC_SRC_ALPHA};
 
-         CopyMemory(dev_ptr->dib.data, device->GetRenderData().Data(), 
-            sizeof(DWORD) * client.cx * client.cy);
+         if (device->GetRenderData().Length() == client.cx * client.cy)
+         {
+            CopyMemory(dev_ptr->dib.data, device->GetRenderData().Data(), 
+               sizeof(DWORD) * client.cx * client.cy);
+         }
+
          for (int i = 0; i < client.cy; i++)
          {
             for (int j = 0; j < client.cx; j++)
@@ -319,7 +324,6 @@ evas_direct3d_render_all(Direct3DDeviceHandler d3d)
                dev_ptr->dib.data[j * 4 + 3 + i * 4 * client.cx] = mask_b;
             }
          }
-
          HGDIOBJ prev_obj = SelectObject(dev_ptr->dib.hdc, dev_ptr->dib.image);
          ClientToScreen(device->GetWindow(), &dest);
 
@@ -330,7 +334,6 @@ evas_direct3d_render_all(Direct3DDeviceHandler d3d)
          ReleaseDC(device->GetWindow(), hdc);
       }
    }
-
    scene->FreeObjects();
 }
 
