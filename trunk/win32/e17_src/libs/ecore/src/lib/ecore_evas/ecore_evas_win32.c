@@ -909,29 +909,52 @@ _ecore_evas_win32_borderless_set(Ecore_Evas *ee, int on)
 static void
 _ecore_evas_win32_fullscreen_set(Ecore_Evas *ee, int on)
 {
-   //if ((ee->prop.fullscreen && on) ||
-   //   (!ee->prop.fullscreen && !on)) return;
    if ((ee->engine.win32.state.fullscreen && on) ||
-      (!ee->engine.win32.state.fullscreen && !on)) return;
+      (!ee->engine.win32.state.fullscreen && !on)) 
+   {
+      return;
+   }
 
    ee->engine.win32.state.fullscreen = on;
-   ecore_win32_window_fullscreen_set(ee->engine.win32.window, ee->prop.borderless);
+   ee->prop.fullscreen = on;
 
    if (on != 0)
+   {
       ecore_win32_window_shape_set(ee->engine.win32.window, 0, 0, NULL);
+      ecore_win32_window_fullscreen_set(ee->engine.win32.window, on);
+      if (strcmp(ee->driver, "direct3d") == 0)
+      {
+         Evas_Engine_Info_Direct3D *einfo = (Evas_Engine_Info_Direct3D *)
+            evas_engine_info_get(ecore_evas_get(ee));
+         if (einfo != NULL)
+         {
+            einfo->info.fullscreen = 1;
+            einfo->info.layered = 
+               ((struct _Ecore_Win32_Window *)ee->engine.win32.window)->shape.layered;
+            evas_engine_info_set(ecore_evas_get(ee), (Evas_Engine_Info *)einfo);
+         }
+      }
+   }
    else
    {
       struct _Ecore_Win32_Window *wnd = ee->engine.win32.window;
+      ecore_win32_window_fullscreen_set(ee->engine.win32.window, on);
       ecore_win32_window_shape_set(wnd, 
          wnd->shape.width, wnd->shape.height, wnd->shape.mask);
+      if (strcmp(ee->driver, "direct3d") == 0)
+      {
+         Evas_Engine_Info_Direct3D *einfo = (Evas_Engine_Info_Direct3D *)
+            evas_engine_info_get(ecore_evas_get(ee));
+         if (einfo != NULL)
+         {
+            einfo->info.fullscreen = 0;
+            einfo->info.layered = 
+               ((struct _Ecore_Win32_Window *)ee->engine.win32.window)->shape.layered;
+            evas_engine_info_set(ecore_evas_get(ee), (Evas_Engine_Info *)einfo);
+         }
+      }
    }
 
-   /* FIXME: what to do with that code ?? */
-/*    if (ee->should_be_visible) */
-/*      ecore_x_netwm_state_request_send(ee->engine.x.win, ee->engine.x.win_root, */
-/* 				      ECORE_X_WINDOW_STATE_FULLSCREEN, -1, on); */
-/*    else */
-/*      _ecore_evas_win32_state_update(ee); */
 }
 #endif
 

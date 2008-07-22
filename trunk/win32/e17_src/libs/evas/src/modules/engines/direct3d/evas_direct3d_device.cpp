@@ -143,7 +143,7 @@ bool D3DDevice::Reset(int width, int height, int fullscreen)
    }
    _width = _d3dpp.BackBufferWidth;
    _height = _d3dpp.BackBufferHeight;
-   return S_OK;
+   return true;
 }
 
 void D3DDevice::Destroy()
@@ -237,7 +237,7 @@ HRESULT D3DDevice::ResetDevice()
    //}
    if (_render_target_data != NULL)
    {
-      _render_target_data->Release();
+      Log("_render_target_data->Release() = %d", _render_target_data->Release());
       _render_target_data = NULL;
    }
 
@@ -249,10 +249,13 @@ HRESULT D3DDevice::ResetDevice()
    }
 
    // Store render target surface desc
-   LPDIRECT3DSURFACE9 backbuffer;
+   LPDIRECT3DSURFACE9 backbuffer = NULL;
    _device->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &backbuffer);
-   backbuffer->GetDesc(&_backbuffer_desc);
-   backbuffer->Release();
+   if (backbuffer != NULL)
+   {
+      backbuffer->GetDesc(&_backbuffer_desc);
+      backbuffer->Release();
+   }
 
    // Initialize the app's device-dependent objects
    hr = CreateRenderTarget();
@@ -296,7 +299,7 @@ bool D3DDevice::Begin()
    //_device->SetViewport(&vp);
    //_device->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
 
-   //_device->Clear(0, NULL, D3DCLEAR_TARGET /*| D3DCLEAR_ZBUFFER*/, 0xffdd00dd, 1.f, 0);
+   //_device->Clear(0, NULL, D3DCLEAR_TARGET /*| D3DCLEAR_ZBUFFER*/, 0xff8080ff, 1.f, 0);
    return true;
 }
 
@@ -325,13 +328,21 @@ TArray<DWORD> &D3DDevice::GetRenderData()
       return _render_data;
 
    LPDIRECT3DSURFACE9 surf = NULL;
+   HRESULT hr;
    if (FAILED(_device->GetRenderTarget(0, &surf)))
       return _render_data;
-   if (FAILED(_device->GetRenderTargetData(surf, _render_target_data)))
+   if (FAILED(hr = _device->GetRenderTargetData(surf, _render_target_data)))
+   {
+      Log("Failed to get render target data (%X)", (DWORD)hr);
+      surf->Release();
       return _render_data;
+   }
    D3DLOCKED_RECT lr;
    if (FAILED(_render_target_data->LockRect(&lr, NULL, D3DLOCK_READONLY)))
+   {
+      surf->Release();
       return _render_data;
+   }
    _render_data.Allocate(_width * _height);
 
    for (int i = 0; i < _height; i++)
@@ -342,6 +353,7 @@ TArray<DWORD> &D3DDevice::GetRenderData()
 
    _render_target_data->UnlockRect();
    _render_data_updated = true;
+   surf->Release();
    return _render_data;
 }
 
@@ -372,8 +384,9 @@ HRESULT D3DDevice::CreateRenderTarget()
    //{
    //   return E_FAIL;
    //}
-   if (FAILED(_device->CreateOffscreenPlainSurface(_width, _height, 
-      _backbuffer_desc.Format, D3DPOOL_SYSTEMMEM, &_render_target_data, NULL)))
+   if (FAILED(_device->CreateOffscreenPlainSurface(_backbuffer_desc.Width, 
+      _backbuffer_desc.Height, _backbuffer_desc.Format, D3DPOOL_SYSTEMMEM, 
+      &_render_target_data, NULL)))
    {
       return E_FAIL;
    }
