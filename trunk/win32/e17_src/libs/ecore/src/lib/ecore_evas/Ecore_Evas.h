@@ -68,19 +68,21 @@ extern "C" {
 
 typedef enum _Ecore_Evas_Engine_Type
 {
-   ECORE_EVAS_ENGINE_SOFTWARE_X11,
-   ECORE_EVAS_ENGINE_SOFTWARE_FB,
-   ECORE_EVAS_ENGINE_GL_X11,
    ECORE_EVAS_ENGINE_SOFTWARE_BUFFER,
+   ECORE_EVAS_ENGINE_SOFTWARE_X11,
    ECORE_EVAS_ENGINE_XRENDER_X11,
-   ECORE_EVAS_ENGINE_DIRECTFB,
-   ECORE_EVAS_ENGINE_SOFTWARE_X11_16,
+   ECORE_EVAS_ENGINE_OPENGL_X11,
+   ECORE_EVAS_ENGINE_SOFTWARE_XCB,
+   ECORE_EVAS_ENGINE_XRENDER_XCB,
    ECORE_EVAS_ENGINE_SOFTWARE_DDRAW,
-   ECORE_EVAS_ENGINE_SOFTWARE_DDRAW_16,
    ECORE_EVAS_ENGINE_DIRECT3D,
-   ECORE_EVAS_ENGINE_GL_GLEW,
+   ECORE_EVAS_ENGINE_OPENGL_GLEW,
    ECORE_EVAS_ENGINE_SDL,
-   ECORE_EVAS_ENGINE_SOFTWARE_WINCE,
+   ECORE_EVAS_ENGINE_DIRECTFB,
+   ECORE_EVAS_ENGINE_SOFTWARE_FB,
+   ECORE_EVAS_ENGINE_SOFTWARE_16_X11,
+   ECORE_EVAS_ENGINE_SOFTWARE_16_DDRAW,
+   ECORE_EVAS_ENGINE_SOFTWARE_16_WINCE,
 } Ecore_Evas_Engine_Type;
 
 typedef enum _Ecore_Evas_Avoid_Damage_Type
@@ -89,7 +91,7 @@ typedef enum _Ecore_Evas_Avoid_Damage_Type
    ECORE_EVAS_AVOID_DAMAGE_EXPOSE = 1,
    ECORE_EVAS_AVOID_DAMAGE_BUILT_IN = 2
 } Ecore_Evas_Avoid_Damage_Type;
-   
+
 #ifndef _ECORE_X_H
 #define _ECORE_X_WINDOW_PREDEF
 typedef unsigned int Ecore_X_Window;
@@ -167,15 +169,11 @@ EAPI Ecore_Evas     *ecore_evas_software_ddraw_new(Ecore_Win32_Window *parent,
                                                    int                 width,
                                                    int                 height);
 
-EAPI Ecore_Win32_Window *ecore_evas_software_ddraw_window_get(Ecore_Evas *ee);
-
 EAPI Ecore_Evas     *ecore_evas_software_ddraw_16_new(Ecore_Win32_Window *parent,
                                                       int                 x,
                                                       int                 y,
                                                       int                 width,
                                                       int                 height);
-
-EAPI Ecore_Win32_Window *ecore_evas_software_ddraw_16_window_get(Ecore_Evas *ee);
 
 EAPI Ecore_Evas     *ecore_evas_direct3d_new(Ecore_Win32_Window *parent,
                                              int                 x,
@@ -183,13 +181,13 @@ EAPI Ecore_Evas     *ecore_evas_direct3d_new(Ecore_Win32_Window *parent,
                                              int                 width,
                                              int                 height);
 
-EAPI Ecore_Win32_Window *ecore_evas_direct3d_window_get(Ecore_Evas *ee);
-
 EAPI Ecore_Evas *ecore_evas_gl_glew_new(Ecore_Win32_Window *parent,
                                         int                 x,
                                         int                 y,
                                         int                 width,
                                         int                 height);
+
+EAPI Ecore_Win32_Window *ecore_evas_win32_window_get(Ecore_Evas *ee);
 
 EAPI Ecore_Evas     *ecore_evas_sdl_new(const char* name, int w, int h, int fullscreen, int hwsurface, int noframe, int alpha);
 
