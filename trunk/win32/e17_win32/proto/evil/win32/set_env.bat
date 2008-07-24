@@ -14,6 +14,6 @@ rem Add installation directory pathes.
 set INCLUDE=%EXT_DIR%\include;%INCLUDE%
 set LIB=%EXT_DIR%\lib;%LIB%
 
-set INCLUDE=%cd%\common;%INCLUDE%
+set INCLUDE=%cd%\common;%cd%\..\src\lib;%INCLUDE%
 
 :END
