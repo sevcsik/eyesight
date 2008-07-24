@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="libmman"
 	ProjectGUID="{799E26AA-26BC-4C21-B65F-0DF8F02E8F5F}"
 	RootNamespace="libmman"
@@ -20,7 +20,7 @@
 			OutputDirectory="$(DebugOutputDirectory)"
 			IntermediateDirectory="$(TemporaryDirectory)\$(TargetName)\$(ConfigurationName)"
 			ConfigurationType="2"
-			CharacterSet="1"
+			CharacterSet="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -96,7 +96,7 @@
 			OutputDirectory="$(ReleaseOutputDirectory)"
 			IntermediateDirectory="$(TemporaryDirectory)\$(TargetName)\$(ConfigurationName)"
 			ConfigurationType="2"
-			CharacterSet="1"
+			CharacterSet="0"
 			WholeProgramOptimization="1"
 			>
 			<Tool
