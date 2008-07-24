@@ -10,6 +10,8 @@
 extern "C" {
 #endif
 
+#define EVAS_INLINE_ARRAY_H  // We dont need that and it is buggy
+
 #include "evas_common.h"
 #include "evas_private.h"
 
