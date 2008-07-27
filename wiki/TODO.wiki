@@ -21,7 +21,7 @@
     * Zoom (in progress - 20%)
     * Text selecting
     * Export to pixmap
-  * PostScript plugin
+  * Postscript plugin
   * Image plugin
 
 = Core =
