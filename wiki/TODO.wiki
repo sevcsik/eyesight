@@ -8,6 +8,7 @@
   * Native-looking themes (E17, Vista, Aqua (?))
   * Localization
   * Exchange support
+  * File selector
 
 = Plugins =
 
@@ -23,6 +24,9 @@
     * Export to pixmap
   * Postscript plugin
   * Image plugin
+  * Video plugin
+  * Sound plugin
+  * Edje plugin
 
 = Core =
 
