@@ -12,6 +12,18 @@ data
    item: "bottom_margin" "15";
    item: "left_margin" "15";
    item: "right_margin" "15";
+   
+   /* Toolbar 1 options */
+   item: "t1_direction" "horizontal";
+   item: "t1_drawer_direction" "up";
+   item: "t1_drawer_spacing" "20";
+   item: "t1_spacing" "20";
+   
+   /* Toolbar 2 options */
+   item: "t2_direction" "horizontal";
+   item: "t2_drawer_direction" "down";
+   item: "t2_drawer_spacing" "20";
+   item: "t2_spacing" "20";
 }
 
 
@@ -35,6 +47,13 @@ images
    image: "view-fullscreen.png" COMP;
    image: "view-restore.png" COMP;
    image: "application-exit.png" COMP;
+   image: "fit-image-in-window-horizontal.png" COMP;
+   image: "fit-image-in-window-vertical.png" COMP;
+   image: "zoom-best-fit.png" COMP;
+   image: "zoom-in.png" COMP;
+   image: "zoom-original.png" COMP;
+   image: "zoom-out.png" COMP;
+   image: "zoom.png" COMP;
 }
 
 fonts
@@ -80,6 +99,8 @@ collections
 	#include "border_opaque.edc"
 	#include "toolbar1_icon.edc"
 	#include "toolbar2_icon.edc"
+   #include "toolbar2_drawer.edc"
+   #include "toolbar2_drawer_icon.edc"
    #include "icons.edc"
    #include "text_entry.edc"
 }

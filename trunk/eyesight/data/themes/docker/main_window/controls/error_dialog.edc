@@ -8,6 +8,7 @@ part
 	{
 		state: "default" 0.0;
 		color: 255 255 255 0;
+                visible: 0;
 		rel1
 		{
 			relative: 0.0 0.0;
@@ -29,6 +30,7 @@ part
 		state: "shown" 0.0;
 		inherit: "default" 0.0;
 		color: 255 255 255 255;
+                visible: 1;
 	}
 }
 part
