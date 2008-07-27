@@ -11,7 +11,7 @@ part
       {
          relative: 1.0 0.5;
          to: "eyesight/main_window/controls/top_bar";
-         offset: -55 -23;
+         offset: -140 -23;
       }
       rel2
       {
