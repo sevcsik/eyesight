@@ -1,0 +1,30 @@
+#summary List of things that need to be done.
+#labels todo
+
+= User interface =
+
+  * Configuration dialogs
+  * About screen
+  * Native-looking themes (E17, Vista, Aqua (?))
+  * Localization
+  * Exchange support
+
+= Plugins =
+
+  * PDF/DVI plugin
+    * Loading PDF (done)
+    * Loading DVI (done - buggy)
+    * Navigating (in progress - 80%)
+    * Table of contents
+    * Bookmarks
+    * Fullscreen view (done)
+    * Zoom (in progress - 20%)
+    * Text selecting
+    * Export to pixmap
+  * PostScript plugin
+  * Image plugin
+
+= Core =
+
+  * Windows port
+  * OSX port (only when the EFL are available on OSX natively)
