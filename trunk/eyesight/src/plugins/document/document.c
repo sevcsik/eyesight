@@ -1,5 +1,6 @@
-#include "document.h"
 #include "defines.h"
+
+#include "document.h"
 #include "toolbar.h"
 #include "plugin.h"
 #include "animations.h"
@@ -11,22 +12,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#if defined PDF
-#include <esmart_pdf.h>
-#elif defined DVI
-#include <esmart_dvi.h>
-#include <Edvi.h>
-#endif /* PDF & DVI */
-
 #define API_VERSION_REQ 1
 
-typedef struct _Pdf_Plugin_Data
+typedef struct _Document_Plugin_Data
 {
    Ecore_Hash *files;
 }
-Pdf_Plugin_Data;
+Document_Plugin_Data;
 
-typedef struct _Pdf_Page_Resize_Cb_Data
+typedef struct _Document_Page_Resize_Cb_Data
 {
    Evas_Object *page;
    Evas_Object *border;
@@ -36,7 +30,7 @@ typedef struct _Pdf_Page_Resize_Cb_Data
    int right_margin;
    Ecore_Timer *render_timer;
 }
-Pdf_Page_Resize_Cb_Data;
+Document_Page_Resize_Cb_Data;
 
 void
 identify(char **name, char **version, char **email)
@@ -62,14 +56,14 @@ init(void **plugin_data)
    if (PLUGIN_API_VERSION != API_VERSION_REQ)
       return PLUGIN_INIT_API_MISMATCH;
 
-   *plugin_data = malloc(sizeof(Pdf_Plugin_Data));
-   ((Pdf_Plugin_Data *)*plugin_data)->files = ecore_hash_new(NULL, NULL);
-   if (!((Pdf_Plugin_Data *)*plugin_data)->files)
+   *plugin_data = malloc(sizeof(Document_Plugin_Data));
+   ((Document_Plugin_Data *)*plugin_data)->files = ecore_hash_new(NULL, NULL);
+   if (!((Document_Plugin_Data *)*plugin_data)->files)
       return PLUGIN_INIT_FAIL;
 
 #if defined DVI
 
-   edvi_init(300, "cx", 0, 0, 0, 255, 255, 255, 255, 0, 0, 0);
+   edvi_init(300, "cx", 4, 1.0, 1.0, 255, 255, 255, 255, 0, 0, 0);
 #endif
 
    efreet_init();
@@ -77,19 +71,32 @@ init(void **plugin_data)
    return PLUGIN_INIT_SUCCESS;
 }
 
+void
+shutdown(void **plugin_data, Evas *evas)
+{
+   evas_object_del(evas_data_get("page"));
+   evas_object_del(evas_data_get("border"));
+   evas_object_del(evas_data_get("tmp_page"));
+   evas_object_del(evas_data_get("tmp_border"));
+
+#if defined DVI
+   edvi_shutdown();
+#endif
+}
+
 char
 open_file(void **_plugin_data, char *filename, Evas_Object *main_window,
           Evas *evas)
 {
-   Pdf_Plugin_Data *plugin_data = *_plugin_data;
-   Pdf_File_Data *file_data = NULL;
+   Document_Plugin_Data *plugin_data = *_plugin_data;
+   Document_File_Data *file_data = NULL;
    Evas_Object *page;
    Evas_Object *border;
    char *themefile;
    int ew, eh, nw, nh;
    double scale;
    int top_margin, bottom_margin, left_margin, right_margin;
-   Pdf_Page_Resize_Cb_Data *resize_cb_data;
+   Document_Page_Resize_Cb_Data *resize_cb_data;
    Ecore_List *resize_callbacks;
    Controls_Resize_Cbdata *cbdata;
    char *tmp;
@@ -141,7 +148,7 @@ open_file(void **_plugin_data, char *filename, Evas_Object *main_window,
 
    // Add callback to resize callback list
    // TODO: pdf.c: Free resize_cb_data somewhere
-   resize_cb_data = malloc(sizeof(Pdf_Page_Resize_Cb_Data));
+   resize_cb_data = malloc(sizeof(Document_Page_Resize_Cb_Data));
    resize_cb_data->page = page;
    resize_cb_data->border = border;
    resize_cb_data->top_margin = top_margin;
@@ -171,12 +178,7 @@ open_file(void **_plugin_data, char *filename, Evas_Object *main_window,
       scale = (double) (eh - (top_margin + bottom_margin)) / (double) nh;
    }
 
-#if defined PDF
-   doc_scale_set(page, scale, scale);
-#elif defined DVI
-
-   doc_mag_set(page, scale);
-#endif
+   doc_scale_set(page, scale);
 
    doc_page_set(page, 0);
    evas_object_resize(border, nw * scale, nh * scale);
@@ -188,7 +190,7 @@ open_file(void **_plugin_data, char *filename, Evas_Object *main_window,
    doc_render(page);
 
    // Save work
-   file_data = malloc(sizeof(Pdf_File_Data));
+   file_data = malloc(sizeof(Document_File_Data));
    file_data->page = page;
    file_data->border = border;
    file_data->tmp_page = NULL;
@@ -201,18 +203,18 @@ open_file(void **_plugin_data, char *filename, Evas_Object *main_window,
 void
 show(void **_plugin_data, char *filename, Evas *evas)
 {
-   Pdf_Plugin_Data *plugin_data = *_plugin_data;
-   Pdf_File_Data *file_data = NULL;
+   Document_Plugin_Data *plugin_data = *_plugin_data;
+   Document_File_Data *file_data = NULL;
    Ecore_Hash *hash = NULL;
    Evas_Object *border = NULL;
    Evas_Object *page = NULL;
-   Pdf_Show_Anim_Data *show_anim_data = NULL;
+   Document_Show_Anim_Data *show_anim_data = NULL;
 
    hash = plugin_data->files;
    file_data = ecore_hash_get(hash, filename);
    border = file_data->border;
    page = file_data->page;
-   show_anim_data = malloc(sizeof(Pdf_Show_Anim_Data));
+   show_anim_data = malloc(sizeof(Document_Show_Anim_Data));
    show_anim_data->evas = evas;
    show_anim_data->object = border;
 
@@ -248,7 +250,7 @@ mousewheel_cb(void *_data, Evas *evas, Evas_Object *controls, void *event_info)
 void
 page_resize_cb(void *_data, Evas *evas, Evas_Object *controls, void *event_info)
 {
-   Pdf_Page_Resize_Cb_Data *data = _data;
+   Document_Page_Resize_Cb_Data *data = _data;
    int ew, eh, nw, nh, h_margins, v_margins;
    double scale;
    Evas_Object *page, *border;
@@ -272,15 +274,9 @@ page_resize_cb(void *_data, Evas *evas, Evas_Object *controls, void *event_info)
       evas_object_move(border, ew / 2 - nw * scale / 2, data->top_margin);
    else
       evas_object_move(border, data->left_margin, eh / 2 - nh * scale / 2);
-
-#if defined PDF
-
-   doc_scale_set(page, scale, scale);
-#elif defined DVI
-
-   doc_mag_set(page, scale);
-#endif
-
+   
+   doc_scale_set(page, scale);
+   
    printf("Scale: %f, Native w: %d, h: %d\n", scale, nw, nh);
 
    if (data->render_timer) // We're still resizing, delete timer set on prev resize

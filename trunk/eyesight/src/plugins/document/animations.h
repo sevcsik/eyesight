@@ -3,15 +3,15 @@
 
 #include <Evas.h>
 
-typedef struct _Pdf_Show_Anim_Data
+typedef struct _Document_Show_Anim_Data
 {
    Evas *evas;
    Evas_Object *object;
    int start_x;
    int ew;
-} Pdf_Show_Anim_Data;
+} Document_Show_Anim_Data;
 
-typedef struct _Pdf_Nav_Animator_Data
+typedef struct _Document_Nav_Animator_Data
 {
    Evas_Object *controls;
    Evas_Object *border;
@@ -19,7 +19,7 @@ typedef struct _Pdf_Nav_Animator_Data
    int step;
    int top_margin;
    int bottom_margin;
-} Pdf_Nav_Animator_Data;
+} Document_Nav_Animator_Data;
 
 int show_anim(void *data);
 

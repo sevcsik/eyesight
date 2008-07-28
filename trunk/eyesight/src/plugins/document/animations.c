@@ -12,7 +12,7 @@ show_anim(void *_data)
 {
    // TODO: pdf/animations.c: decelerating movement
 
-   Pdf_Show_Anim_Data *data = _data;
+   Document_Show_Anim_Data *data = _data;
    Evas_Object *object = data->object;
    //Evas *evas = data->evas;
    int start_x = data->start_x;
@@ -36,7 +36,7 @@ show_anim(void *_data)
 int
 page_next_animator(void *_data)
 {
-   Pdf_Nav_Animator_Data *data = _data;
+   Document_Nav_Animator_Data *data = _data;
    int x1, y1, w1, h1;
    int x2, y2, w2, h2;
    int ww, wh;
@@ -78,7 +78,7 @@ page_next_animator(void *_data)
 int
 page_prev_animator(void *_data)
 {
-   Pdf_Nav_Animator_Data *data = _data;
+   Document_Nav_Animator_Data *data = _data;
    int x1, y1, w1, h1;
    int x2, y2, w2, h2;
    int ww, wh;
