@@ -8,7 +8,6 @@
 #include "plugin.h"
 #include "plugin_private.h"
 #include "error.h"
-#include "config.h"
 
 #define PLUGIN_ERROR    0
 #define PLUGIN_OK       1
