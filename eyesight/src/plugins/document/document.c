@@ -74,10 +74,10 @@ init(void **plugin_data)
 void
 shutdown(void **plugin_data, Evas *evas)
 {
-   evas_object_del(evas_data_get("page"));
-   evas_object_del(evas_data_get("border"));
-   evas_object_del(evas_data_get("tmp_page"));
-   evas_object_del(evas_data_get("tmp_border"));
+   evas_object_del(evas_object_name_find("page"));
+   evas_object_del(evas_object_name_find("border"));
+   evas_object_del(evas_object_name_find("tmp_page"));
+   evas_object_del(evas_object_name_find("tmp_border"));
 
 #if defined DVI
    edvi_shutdown();
