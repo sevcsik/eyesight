@@ -183,6 +183,22 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\data_object.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\dnd.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\drop_source.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\drop_target.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ecore_evas_test.c"
 				>
 				<FileConfiguration
@@ -199,11 +215,24 @@
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
+					ExcludedFromBuild="true"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ecore_win32_test.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ee_object.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ee_window.cpp"
+				>
 			</File>
 		</Filter>
 		<Filter
@@ -213,6 +242,18 @@
 			>
 			<File
 				RelativePath=".\array.h"
+				>
+			</File>
+			<File
+				RelativePath=".\dnd.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ee_object.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ee_window.h"
 				>
 			</File>
 			<File
