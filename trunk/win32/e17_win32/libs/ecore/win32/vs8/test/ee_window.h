@@ -24,6 +24,7 @@ public:
    void Destroy();
    void MoveTo(int x, int y);
    EEObject *Object() { return _ee_object.Addr(); }
+   void Update();
 
 private:
    static void mouse_left_down(void *data, Evas *e, Evas_Object *obj, void *event_info);

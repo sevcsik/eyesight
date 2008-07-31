@@ -169,7 +169,13 @@ main (int argc, char *argv[])
    ecore_evas_show(ee1);
    ecore_evas_show(ee2);
 */
-   ecore_main_loop_begin();
+   //ecore_main_loop_begin();
+   while (true)
+   {
+      ecore_main_loop_iterate();
+      win1->Update();
+      win2->Update();
+   }
 
    win1->Destroy();
    win2->Destroy();
