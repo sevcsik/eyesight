@@ -75,6 +75,16 @@ void EEWindow::MoveTo(int x, int y)
    ecore_win32_window_move(ecore_evas_window_get(_ee), x, y);
 }
 
+void EEWindow::Update()
+{
+   if (_dragging)
+   {
+      POINT pnt;
+      GetCursorPos(&pnt);
+      _ee_object->MoveWindow(pnt.x + 5, pnt.y + 5);
+   }
+}
+
 void EEWindow::mouse_left_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    EEWindow *_this = (EEWindow *)data;
@@ -113,7 +123,10 @@ void EEWindow::mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_inf
             (HWND)ecore_win32_window_hwnd_get(ecore_evas_win32_window_get(_this->_ee)),
             &pnt);
          _this->_ee_object->MakeWindow(pnt.x, pnt.y);
-         BeginDnd("dragging dragging");
+         char buf[256];
+         sprintf(buf, "%d,%d", _this->_drag_dx, _this->_drag_dy);
+         BeginDnd(buf);
+         _this->_ee_object->MoveWindow(0, 2000);
       }
       _this->_dragging = false;
    }
@@ -142,5 +155,14 @@ void EEWindow::drop_callback(void *data, const char *str)
    _this->_ee_object->Show(true);
    _this->_lbdown = false;
    printf("I HAVE GOT: %s!!!\n", str);
+   sscanf(str, "%d,%d", &_this->_drag_dx, &_this->_drag_dy);
+   POINT pos, scr = {0, 0};
+   GetCursorPos(&pos);
+   ClientToScreen(
+      (HWND)ecore_win32_window_hwnd_get(ecore_evas_win32_window_get(_this->_ee)),
+      &scr);
+   _this->_ee_object->MoveTo(
+      pos.x - scr.x + _this->_drag_dx, 
+      pos.y - scr.y + _this->_drag_dy);
 }
 

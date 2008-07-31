@@ -34,6 +34,11 @@ public:
       return evas_object_visible_get(_obj);
    }
    void MakeWindow(int x, int y);
+   void MoveWindow(int x, int y);
+
+private:
+   static void mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info);
+   static DWORD ThreadFunc(LPVOID ptr);
 
 private:
    Ecore_Evas *_ee;
@@ -41,5 +46,7 @@ private:
    unsigned char *_mask;
    int _width, _height, _x, _y;
    bool _dragging;
+
+   HANDLE _thread;
 
 };
