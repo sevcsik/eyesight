@@ -22,4 +22,4 @@ void page_resize_cb(void *_data, Evas *evas, Evas_Object *controls, void *event_
 int page_resize_cb_render_timer(void *data);
 void mousewheel_cb(void *_data, Evas *evas, Evas_Object *controls, void *event_info);
 
-#endif /*DOCUMENT_H*/
+#endif /*DOCUMENT_H_*/

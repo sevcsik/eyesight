@@ -46,7 +46,7 @@ program
 {
    name: "top_bar_lock";
    signal: "top_bar_lock";
-   source: "t2_drawer";
+   source: "t2_drawer@eyesight/toolbar2_drawer";
    script
    {
       set_int(top_bar_locked, 1);
@@ -58,7 +58,7 @@ program
 {
    name: "top_bar_unlock";
    signal: "top_bar_unlock";
-   source: "t2_drawer";
+   source: "t2_drawer@eyesight/toolbar2_drawer";
    script
    {
       set_int(top_bar_locked, 0);

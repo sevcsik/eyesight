@@ -10,7 +10,6 @@
 #include "plugin.h"
 #include "plugin_private.h"
 #include "main_window.h"
-#include "config.h"
 #include "file.h"
 
 #define _(STRING) gettext(STRING)
@@ -28,7 +27,6 @@ main(int argc, char **argv)
    setlocale(LC_ALL, "");
    bindtextdomain(PACKAGE, LOCALEDIR);
    textdomain(PACKAGE);
-	
    // Initialization
 
    if (!ecore_init())

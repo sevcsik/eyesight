@@ -6,10 +6,11 @@ AM_CPPFLAGS =\
  -I$(top_srcdir) \
  -I$(top_srcdir)/src \
  -I$(top_srcdir)/src/bin \
+ -DPACKAGE=\"eyesight\" \
  -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
  -DPACKAGE_PLUGIN_DIR=\"$(libdir)/$(PACKAGE)/plugins\" \
  -DLOCALEDIR=\"$(localedir)\" \
- -Wall \
+ -Wall -Werror -g\
  @EYESIGHT_CFLAGS@
 
 bin_PROGRAMS = eyesight
