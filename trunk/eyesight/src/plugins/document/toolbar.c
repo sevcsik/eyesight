@@ -17,22 +17,22 @@
 #include <string.h>
 
 typedef void (*Edje_Signal_Callback) (void *data, Evas_Object *o,
-                                      const char *emission, const char *source);
+        const char *emission, const char *source);
 
 // TODO: toolbar.c: localize tooltips
 char *toolbar1_tooltips[] = {"Previous page", 0, 0, "Next page"};
 char *toolbar2_tooltips[] = {"Go fullscreen"};
 
 Edje_Signal_Callback toolbar1_callbacks[] = {
-         page_prev_clicked,
-         0,
-         0,
-         page_next_clicked
-      };
+   page_prev_clicked,
+   0,
+   0,
+   page_next_clicked
+};
 
 Edje_Signal_Callback toolbar2_callbacks[] = {
-         fullscreen_clicked
-      };
+   fullscreen_clicked
+};
 
 typedef struct _Document_Toolbar1_Button_Resize_Cb_Data
 {
@@ -53,7 +53,7 @@ setup_toolbar(Evas_Object *controls)
 
    container1 = esmart_container_new(evas_object_evas_get(controls));
 
-   edje_object_file_get(controls, (const char **)&file, NULL);
+   edje_object_file_get(controls, (const char **) & file, NULL);
    data = edje_file_data_get(file, "t1_direction");
 
    if (!strcmp(data, "horizontal"))
@@ -61,7 +61,7 @@ setup_toolbar(Evas_Object *controls)
    else
       esmart_container_direction_set(container1, CONTAINER_DIRECTION_VERTICAL);
    free(data);
-   
+
    data = edje_file_data_get(file, "t1_spacing");
    if (!data)
    {
@@ -98,7 +98,7 @@ setup_toolbar(Evas_Object *controls)
    else
       esmart_container_direction_set(container2, CONTAINER_DIRECTION_VERTICAL);
    free(data);
-   
+
    data = edje_file_data_get(file, "t2_spacing");
    if (!data)
    {
@@ -147,7 +147,11 @@ add_toolbar1_icon(Document_Toolbar1_Icon icon, Evas_Object *container1)
    char *icon_theme = NULL;
    char *icon_size = NULL;
    char *theme_file = NULL;
-   enum {ICON_TYPE_GROUP, ICON_TYPE_IMAGE} type;
+
+   enum
+   {
+      ICON_TYPE_GROUP, ICON_TYPE_IMAGE
+   } type;
    int w, h;
 
    // Get icon filename
@@ -164,7 +168,7 @@ add_toolbar1_icon(Document_Toolbar1_Icon icon, Evas_Object *container1)
    }
 
    edje_object_file_get(evas_object_name_find(evas, "controls"),
-                        (const char **)&theme_file, NULL);
+                        (const char **) & theme_file, NULL);
 
    // Load toolbar1_icon from theme
 
@@ -207,7 +211,7 @@ add_toolbar1_icon(Document_Toolbar1_Icon icon, Evas_Object *container1)
       fprintf(stderr, "Failed to load icon %s\n", icon_name);
    }
 
-   edje_object_part_swallow(icon_object, "eyesight/toolbar1_icon/icon", 
+   edje_object_part_swallow(icon_object, "eyesight/toolbar1_icon/icon",
                             icon_image);
 
    // Move and resize icon
@@ -253,7 +257,11 @@ add_toolbar2_icon(Document_Toolbar2_Icon icon, Evas_Object *container2)
    char *icon_theme;
    char *icon_size;
    char *theme_file;
-   enum {ICON_TYPE_GROUP, ICON_TYPE_IMAGE} type;
+
+   enum
+   {
+      ICON_TYPE_GROUP, ICON_TYPE_IMAGE
+   } type;
    int w, h;
 
    // Get icon filename
@@ -265,7 +273,7 @@ add_toolbar2_icon(Document_Toolbar2_Icon icon, Evas_Object *container2)
    }
 
    edje_object_file_get(evas_object_name_find(evas, "controls"),
-                        (const char **)&theme_file, NULL);
+                        (const char **) & theme_file, NULL);
 
    // Load toolbar2_icon from theme
 
@@ -335,19 +343,22 @@ add_toolbar2_icon(Document_Toolbar2_Icon icon, Evas_Object *container2)
    evas_object_show(icon_object);
 }
 
-void page_next_clicked(void *_data, Evas_Object *icon, const char *emission,
-                       const char *source)
+void
+page_next_clicked(void *_data, Evas_Object *icon, const char *emission,
+                  const char *source)
 {
    // TODO: toolbar.c: prevent starting multiple animations at multiple clicks on navigation
    Evas_Object *controls = evas_object_name_find(evas_object_evas_get(icon),
-                           "controls");
+                                                 "controls");
    int ww, wh; // window size
    int nw, nh; // page native size
    int top_margin;
    int bottom_margin;
-   Document_Nav_Animator_Data *animdata = malloc(sizeof(Document_Nav_Animator_Data));
-   Evas_Object *border = evas_object_name_find(evas_object_evas_get(icon), "border");
-   Evas_Object *page = evas_object_name_find(evas_object_evas_get(icon), "page");
+   Document_Nav_Animator_Data *animdata = malloc(sizeof (Document_Nav_Animator_Data));
+   Evas_Object *border = evas_object_name_find(evas_object_evas_get(icon), 
+                                               "border");
+   Evas_Object *page = evas_object_name_find(evas_object_evas_get(icon), 
+                                             "page");
    Evas_Object *tmp_border;
    Evas_Object *tmp_page;
    double scale;
@@ -359,7 +370,7 @@ void page_next_clicked(void *_data, Evas_Object *icon, const char *emission,
    if (doc_page_get(page) + 1 >= doc_page_count_get(doc_document_get(page)))
       return;
 
-   edje_object_file_get(controls, (const char **)&theme_file, NULL);
+   edje_object_file_get(controls, (const char **) & theme_file, NULL);
    evas_object_geometry_get(controls, NULL, NULL, &ww, &wh);
 
    // Load next page
@@ -382,7 +393,7 @@ void page_next_clicked(void *_data, Evas_Object *icon, const char *emission,
 
    // Resize tmp_border
    doc_size_get(tmp_page, &nw, &nh);
-   evas_object_resize(tmp_border, (double)nw * scale, (double)nh * scale);
+   evas_object_resize(tmp_border, (double) nw * scale, (double) nh * scale);
 
    // Position tmp_border
    bottom_margin = atoi(edje_file_data_get(theme_file, "bottom_margin"));
@@ -415,16 +426,17 @@ void page_next_clicked(void *_data, Evas_Object *icon, const char *emission,
    free(pageno_text);
 }
 
-void page_prev_clicked(void *data, Evas_Object *icon, const char *emission,
-                       const char *source)
+void
+page_prev_clicked(void *data, Evas_Object *icon, const char *emission,
+                  const char *source)
 {
    Evas_Object *controls = evas_object_name_find(evas_object_evas_get(icon),
-                           "controls");
+                                                 "controls");
    int ww, wh; // window size
    int nw, nh; // page native size
    int top_margin;
    int bottom_margin;
-   Document_Nav_Animator_Data *animdata = malloc(sizeof(Document_Nav_Animator_Data));
+   Document_Nav_Animator_Data *animdata = malloc(sizeof (Document_Nav_Animator_Data));
    Evas_Object *border = evas_object_name_find(evas_object_evas_get(icon), "border");
    Evas_Object *page = evas_object_name_find(evas_object_evas_get(icon), "page");
    Evas_Object *tmp_border;
@@ -438,7 +450,7 @@ void page_prev_clicked(void *data, Evas_Object *icon, const char *emission,
    if (doc_page_get(page) == 0)
       return;
 
-   edje_object_file_get(controls, (const char **)&theme_file, NULL);
+   edje_object_file_get(controls, (const char **) & theme_file, NULL);
    evas_object_geometry_get(controls, NULL, NULL, &ww, &wh);
 
    // Load next page
@@ -462,13 +474,13 @@ void page_prev_clicked(void *data, Evas_Object *icon, const char *emission,
 
    // Resize tmp_border
    doc_size_get(tmp_page, &nw, &nh);
-   evas_object_resize(tmp_border, (double)nw * scale, (double)nh * scale);
+   evas_object_resize(tmp_border, (double) nw * scale, (double) nh * scale);
 
    // Position tmp_border
    bottom_margin = atoi(edje_file_data_get(theme_file, "bottom_margin"));
    top_margin = atoi(edje_file_data_get(theme_file, "top_margin"));
    evas_object_move(tmp_border, (ww / 2 - (nw * scale / 2)),
-                    0 - bottom_margin - (double)nh * scale);
+                    0 - bottom_margin - (double) nh * scale);
 
    doc_render(tmp_page);
 
@@ -511,10 +523,10 @@ add_toolbar1_text_entry(Evas_Object *controls, Evas_Object *container)
    Evas_Object *edje = edje_object_add(evas_object_evas_get(controls));
    Evas_Object *entry = esmart_text_entry_new(evas_object_evas_get(controls));
    Evas_Object *page = evas_object_name_find(evas_object_evas_get(controls),
-                       "page");
+                                             "page");
    const Doc_Document *doc = doc_document_get(page);
 
-   edje_object_file_get(controls, (const char **)&themefile, NULL);
+   edje_object_file_get(controls, (const char **) & themefile, NULL);
    edje_object_file_set(edje, themefile, "text_entry");
 
    evas_object_name_set(entry, "page_no_display");
@@ -551,26 +563,30 @@ add_toolbar2_zoom_drawer(Evas_Object *con_parent, Evas_Object *controls)
    char *icon_size = NULL;
    char *data = NULL;
    int w, h;
-   enum {ICON_TYPE_GROUP, ICON_TYPE_IMAGE} type;
+
+   enum
+   {
+      ICON_TYPE_GROUP, ICON_TYPE_IMAGE
+   } type;
    char *icons[] = {"zoom-in", "zoom-out", "zoom-original", "zoom-best-fit",
-                    "fit-image-in-window-horizontal",
-                    "fit-image-in-window-vertical"};
+      "fit-image-in-window-horizontal",
+      "fit-image-in-window-vertical"};
 
    // TODO: toolbar.c: Localize tooltips
    char *tooltips[] = {"Increase zoom", "Decrease zoom", "Native size",
-                       "Fit to window", "Fit width", "Fit height"};
+      "Fit to window", "Fit width", "Fit height"};
 
-   edje_object_file_get(controls, (const char **)&theme_file, NULL);
+   edje_object_file_get(controls, (const char **) & theme_file, NULL);
    evas = evas_object_evas_get(controls);
-   
+
    /* Setting up drawer icon */
    icon_object = edje_object_add(evas);
    edje_object_file_set(icon_object, theme_file, "eyesight/toolbar2_drawer");
    esmart_container_element_append(con_parent, icon_object);
    evas_object_show(icon_object);
-   
+
    /* Finding magnifier icon */
-   
+
    icon_theme = edje_file_data_get(theme_file, "icon_theme");
    icon_size = edje_file_data_get(theme_file, "icon_size");
    if (!icon_theme)
@@ -608,43 +624,41 @@ add_toolbar2_zoom_drawer(Evas_Object *con_parent, Evas_Object *controls)
 
    edje_object_part_swallow(icon_object, "icon", icon_image);
    edje_object_part_text_set(icon_object, "tooltip", "Zoom options");
-   
+
    // Move and resize icon
    edje_object_size_min_get(icon_object, &w, &h);
    evas_object_resize(icon_object, w, h);
-   
+
    evas_object_show(icon_object);
    evas_object_show(icon_image);
-   
+
    // Setting up drawer container
    con = esmart_container_new(evas);
-   
+
    data = edje_file_data_get(theme_file, "t2_direction");
    if (!strcmp(data, "horizontal") || !data)
       esmart_container_direction_set(con, CONTAINER_DIRECTION_VERTICAL);
    else
       esmart_container_direction_set(con, CONTAINER_DIRECTION_HORIZONTAL);
    free(data);
-   
+
    data = edje_file_data_get(theme_file, "t2_drawer_spacing");
-   esmart_container_spacing_set(con, data? atoi(data) : 0);
-   
+   esmart_container_spacing_set(con, data ? atoi(data) : 0);
+
    esmart_container_clip_elements_set(con, 0);
-   evas_object_repeat_events_set(con, 1);
-   evas_object_repeat_events_set(icon_object, 1);
-   
+
    edje_object_part_swallow(icon_object, "drawer_sw", con);
-   
+
    // Signal tunnel drawer->controls
-   edje_object_signal_callback_add(icon_object, "*", "*", 
-                                   tunnel_drawer_to_controls, controls);
-   
+   edje_object_signal_callback_add(icon_object, "*", "*",
+                                   tunnel_t2_drawer_to_controls, controls);
+
    free(data);
-   
+
    // Populating drawer
-   
+
    int i;
-   for (i = 0; i < sizeof(icons)/sizeof(char *); i++)
+   for (i = 0; i < sizeof (icons) / sizeof (char *); i++)
    {
       icon_object = edje_object_add(evas);
       if (!edje_object_file_set(icon_object, theme_file,
@@ -652,7 +666,7 @@ add_toolbar2_zoom_drawer(Evas_Object *con_parent, Evas_Object *controls)
       {
          fprintf(stderr, "Arrgh! No toolbar2_drawer_icon in the theme!\n");
       }
-      
+
       // Try to load image from edje file
       type = ICON_TYPE_GROUP;
       icon_image = edje_object_add(evas);
@@ -663,7 +677,7 @@ add_toolbar2_zoom_drawer(Evas_Object *con_parent, Evas_Object *controls)
          type = ICON_TYPE_IMAGE;
          icon_image = evas_object_image_add(evas);
       }
-   
+
       // If failed, try to load from icon set
       if (type == ICON_TYPE_IMAGE)
       {
@@ -678,37 +692,26 @@ add_toolbar2_zoom_drawer(Evas_Object *con_parent, Evas_Object *controls)
       {
          fprintf(stderr, "Failed to load icon %s\n", icons[i]);
       }
-      
+
       edje_object_part_swallow(icon_object, "icon", icon_image);
       edje_object_part_text_set(icon_object, "tooltip", tooltips[i]);
-      
+
       edje_object_size_min_get(icon_object, &w, &h);
       evas_object_resize(icon_object, w, h);
-      
+
       esmart_container_element_append(con, icon_object);
-      
-      evas_object_pass_events_set(icon_image, 1);
-      
-      // TEMP CODE to test mouse events WHY DOESN'T THIS WORK????
-      void cb(void *data, Evas_Object *edje, const char *emission,
-              const char *source)
-      {
-         printf("HÖ\n");  
-      }
-      edje_object_signal_callback_add(icon_object, "clicked", "drawer_icon", cb, 
-                                      NULL);
-      // TEMP CODE END
-      
+
       // Creating signal tunnel: drawer_icon[x]->controls
       edje_object_signal_callback_add(icon_object, "*", "*",
-                                      tunnel_drawer_icon_to_controls, controls);
+                                      tunnel_t2_drawer_icon_to_controls,
+                                      controls);
 
       evas_object_show(icon_object);
       evas_object_show(icon_image);
    }
-   
+
    evas_object_show(con);
-   
+
    //free(theme_file);
    //free(icon_size);
    //free(icon_theme);
@@ -716,16 +719,33 @@ add_toolbar2_zoom_drawer(Evas_Object *con_parent, Evas_Object *controls)
 }
 
 void
-tunnel_drawer_to_controls(void *data, Evas_Object *o, const char *emission, 
-                          const char *source)
+tunnel_t2_drawer_to_controls(void *data, Evas_Object *o, const char *emission,
+                             const char *source)
 {
-   edje_object_signal_emit((Evas_Object *)data, emission, source);
+   char *source_ = calloc(sizeof (char),
+                          (strlen(source) + strlen("@eyesight/toolbar2_drawer")
+                          + 1));
+
+   snprintf(source_, strlen(source) + strlen("@eyesight/toolbar2_drawer") + 1,
+            "%s@%s", source, "eyesight/toolbar2_drawer");
+
+   printf("Forwarding %s/%s to controls\n", emission, source_);
+   edje_object_signal_emit((Evas_Object *) data, emission, source_);
+   free(source_);
 }
 
 void
-tunnel_drawer_icon_to_controls(void *data, Evas_Object *o, const char *emission,
-                               const char *source)
+tunnel_t2_drawer_icon_to_controls(void *data, Evas_Object *o,
+                                  const char *emission, const char *source)
 {
-    printf("Forwarding %s/%s to controls\n", emission, source);
-    edje_object_signal_emit((Evas_Object *)data, emission, source);
+   char *source_ = calloc(sizeof (char),
+                          (strlen(source) +
+                          strlen("@eyesight/toolbar2_drawer_icon") + 1));
+
+   snprintf(source_, strlen(source) + strlen("@eyesight/toolbar2_drawer_icon")
+            + 1, "%s@%s", source, "eyesight/toolbar2_drawer_icon");
+
+   printf("Forwarding %s/%s to controls\n", emission, source_);
+   edje_object_signal_emit((Evas_Object *) data, emission, source_);
+   free(source_);
 }
