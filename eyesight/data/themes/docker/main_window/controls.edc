@@ -24,7 +24,6 @@ group
    parts
    {
    #include "controls/error_dialog.edc"
-   #include "controls/error_dialog_programs.edc"
    #include "controls/top_bar.edc"
    #include "controls/docker.edc"
    #include "controls/toolbar1_sw.edc"
@@ -37,6 +36,7 @@ group
 
    programs
    {
+   #include "controls/error_dialog_programs.edc"
    #include "controls/nav_programs.edc"
    #include "controls/toolbar1_programs.edc"
    #include "controls/top_bar_programs.edc"
