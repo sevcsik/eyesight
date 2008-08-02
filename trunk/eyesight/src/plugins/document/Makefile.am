@@ -10,16 +10,16 @@ plugindir = $(prefix)/lib/eyesight/plugins
 
 plugin_LTLIBRARIES = pdf.la dvi.la
 
-pdf_la_SOURCES = document.c animations.c toolbar.c
+pdf_la_SOURCES = document.c animations.c toolbar.c view.c
 pdf_la_CFLAGS = -Wall -DPDF -Werror -g
 pdf_la_LDFLAGS = -module -avoid-version -no-undefined
 pdf_la_LIBTOOLFLAGS = --tag=disable-static
 pdf_la_LIBADD = @EYESIGHT_LIBS@ @EPDF_LIBS@ @intl_libs@ @dlopen_libs@
 
-dvi_la_SOURCES = document.c animations.c toolbar.c
+dvi_la_SOURCES = document.c animations.c toolbar.c view.c
 dvi_la_CFLAGS = -Wall -DDVI -Werror -g
 dvi_la_LDFLAGS = -module -avoid-version -no-undefined
 dvi_la_LIBTOOLFLAGS = --tag=disable-static
 dvi_la_LIBADD = @EYESIGHT_LIBS@ @EDVI_LIBS@ @intl_libs@ @dlopen_libs@
 
-EXTRA_DIST = animations.h document.h toolbar.h defines.h
+EXTRA_DIST = animations.h document.h toolbar.h defines.h view.h

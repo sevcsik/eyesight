@@ -2,9 +2,9 @@
 
 #include "toolbar.h"
 #include "document.h"
-#include "stdlib.h"
 #include "animations.h"
 #include "plugin.h"
+#include "view.h"
 #include <Evas.h>
 #include <Ecore.h>
 #include <Edje.h>
@@ -15,6 +15,7 @@
 #include <Ecore_Evas.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 typedef void (*Edje_Signal_Callback) (void *data, Evas_Object *o,
         const char *emission, const char *source);
@@ -32,6 +33,15 @@ Edje_Signal_Callback toolbar1_callbacks[] = {
 
 Edje_Signal_Callback toolbar2_callbacks[] = {
    fullscreen_clicked
+};
+
+Edje_Signal_Callback toolbar2_zoom_drawer_callbacks[] = {
+   zoom_in_clicked_cb,
+   zoom_out_clicked_cb, 
+   zoom_original_clicked_cb, 
+   zoom_fit_clicked_cb,
+   zoom_hfit_clicked_cb,
+   zoom_vfit_clicked_cb
 };
 
 typedef struct _Document_Toolbar1_Button_Resize_Cb_Data
@@ -705,6 +715,9 @@ add_toolbar2_zoom_drawer(Evas_Object *con_parent, Evas_Object *controls)
       edje_object_signal_callback_add(icon_object, "*", "*",
                                       tunnel_t2_drawer_icon_to_controls,
                                       controls);
+      
+      edje_object_signal_callback_add(icon_object, "clicked", "drawer_icon",
+                                      toolbar2_zoom_drawer_callbacks[i], NULL);
 
       evas_object_show(icon_object);
       evas_object_show(icon_image);
@@ -729,7 +742,7 @@ tunnel_t2_drawer_to_controls(void *data, Evas_Object *o, const char *emission,
    snprintf(source_, strlen(source) + strlen("@eyesight/toolbar2_drawer") + 1,
             "%s@%s", source, "eyesight/toolbar2_drawer");
 
-   printf("Forwarding %s/%s to controls\n", emission, source_);
+   //printf("Forwarding %s/%s to controls\n", emission, source_);
    edje_object_signal_emit((Evas_Object *) data, emission, source_);
    free(source_);
 }
@@ -745,7 +758,7 @@ tunnel_t2_drawer_icon_to_controls(void *data, Evas_Object *o,
    snprintf(source_, strlen(source) + strlen("@eyesight/toolbar2_drawer_icon")
             + 1, "%s@%s", source, "eyesight/toolbar2_drawer_icon");
 
-   printf("Forwarding %s/%s to controls\n", emission, source_);
+   //printf("Forwarding %s/%s to controls\n", emission, source_);
    edje_object_signal_emit((Evas_Object *) data, emission, source_);
    free(source_);
 }
