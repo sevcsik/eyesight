@@ -281,6 +281,14 @@ struct _Ecore_Win32_Event_Window_Delete_Request
    double              time;
 };
 
+#define ECORE_WIN32_DND_EVENT_DRAG_ENTER     1
+#define ECORE_WIN32_DND_EVENT_DRAG_OVER      2
+#define ECORE_WIN32_DND_EVENT_DRAG_LEAVE     3
+#define ECORE_WIN32_DND_EVENT_DROP           4
+
+
+typedef int (*Ecore_Win32_Dnd_DropTarget_Callback)(void *window, int event, int pt_x, int pt_y, void *data, int size);
+
 EAPI extern int ECORE_WIN32_EVENT_KEY_DOWN;
 EAPI extern int ECORE_WIN32_EVENT_KEY_UP;
 EAPI extern int ECORE_WIN32_EVENT_MOUSE_BUTTON_DOWN;
@@ -438,5 +446,14 @@ EAPI Ecore_Win32_Cursor *ecore_win32_cursor_shape_get(Ecore_Win32_Cursor_Shape s
 
 EAPI int                 ecore_win32_cursor_size_get(void);
 
+
+
+/* Drag and drop */
+EAPI int ecore_win32_dnd_initialize();
+EAPI int ecore_win32_dnd_begin(const char *data, int size);
+EAPI int ecore_win32_dnd_register_drop_target(Ecore_Win32_Window *window, 
+   Ecore_Win32_Dnd_DropTarget_Callback callback);
+EAPI void ecore_win32_dnd_unregister_drop_target(Ecore_Win32_Window *window);
+EAPI void ecore_win32_dnd_uninitialize();
 
 #endif /* __ECORE_WIN32_H__ */

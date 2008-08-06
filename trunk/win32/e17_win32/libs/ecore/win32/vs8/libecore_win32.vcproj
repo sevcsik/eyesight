@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="libecore_win32"
 	ProjectGUID="{3266A791-E050-48C1-A114-798B98CAB12C}"
 	RootNamespace="libecore_win32"
@@ -218,6 +218,22 @@
 			</File>
 			<File
 				RelativePath="..\..\src\lib\ecore_win32\ecore_win32_cursor.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\lib\ecore_win32\ecore_win32_dnd.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\lib\ecore_win32\ecore_win32_dnd_data_object.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\lib\ecore_win32\ecore_win32_dnd_drop_source.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\lib\ecore_win32\ecore_win32_dnd_drop_target.cpp"
 				>
 			</File>
 			<File
