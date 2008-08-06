@@ -225,6 +225,18 @@
 			<File
 				RelativePath=".\ecore_win32_test.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ecore_win32_test2_dnd.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\ee_object.cpp"
