@@ -192,7 +192,7 @@ add_toolbar1_icon(Document_Toolbar1_Icon icon, Evas_Object *container1)
    if (!icon_theme)
       icon_theme = "oxygen";
    if (!icon_size)
-      icon_size = "128x128";
+      icon_size = "128";
 
    // Try to load image from edje file
    type = ICON_TYPE_GROUP;
@@ -209,17 +209,14 @@ add_toolbar1_icon(Document_Toolbar1_Icon icon, Evas_Object *container1)
    // If failed, try to load from icon set
    if (type == ICON_TYPE_IMAGE)
    {
-      icon_path = efreet_icon_path_find(icon_theme, icon_name, icon_size);
+      icon_path = efreet_icon_path_find(icon_theme, icon_name, atoi(icon_size));
       if (!icon_path)
-      {
-         icon_path = efreet_icon_path_find(icon_theme, "dialog-error", icon_size);
-      }
+         icon_path = efreet_icon_path_find(icon_theme, "dialog-error", 
+                                           atoi(icon_size));
       evas_object_image_file_set(icon_image, icon_path, NULL);
    }
    if (evas_object_image_load_error_get(icon_image) != EVAS_LOAD_ERROR_NONE)
-   {
       fprintf(stderr, "Failed to load icon %s\n", icon_name);
-   }
 
    edje_object_part_swallow(icon_object, "eyesight/toolbar1_icon/icon",
                             icon_image);
@@ -297,7 +294,7 @@ add_toolbar2_icon(Document_Toolbar2_Icon icon, Evas_Object *container2)
    if (!icon_theme)
       icon_theme = "oxygen";
    if (!icon_size)
-      icon_size = "128x128";
+      icon_size = "128";
 
    // Try to load image from edje file
    type = ICON_TYPE_GROUP;
@@ -314,11 +311,10 @@ add_toolbar2_icon(Document_Toolbar2_Icon icon, Evas_Object *container2)
    // If failed, try to load from icon set
    if (type == ICON_TYPE_IMAGE)
    {
-      icon_path = efreet_icon_path_find(icon_theme, icon_name, icon_size);
+      icon_path = efreet_icon_path_find(icon_theme, icon_name, atoi(icon_size));
       if (!icon_path)
-      {
-         icon_path = efreet_icon_path_find(icon_theme, "dialog-error", icon_size);
-      }
+         icon_path = efreet_icon_path_find(icon_theme, "dialog-error",
+                                           atoi(icon_size));
       evas_object_image_file_set(icon_image, icon_path, NULL);
    }
    if (evas_object_image_load_error_get(icon_image) != EVAS_LOAD_ERROR_NONE)
@@ -602,7 +598,7 @@ add_toolbar2_zoom_drawer(Evas_Object *con_parent, Evas_Object *controls)
    if (!icon_theme)
       icon_theme = "oxygen";
    if (!icon_size)
-      icon_size = "128x128";
+      icon_size = "128";
 
    // Try to load image from edje file
    type = ICON_TYPE_GROUP;
@@ -619,12 +615,10 @@ add_toolbar2_zoom_drawer(Evas_Object *con_parent, Evas_Object *controls)
    // If failed, try to load from icon set
    if (type == ICON_TYPE_IMAGE)
    {
-      icon_path = efreet_icon_path_find(icon_theme, "zoom", icon_size);
+      icon_path = efreet_icon_path_find(icon_theme, "zoom", atoi(icon_size));
       if (!icon_path)
-      {
-         icon_path = efreet_icon_path_find(icon_theme, "dialog-error", icon_size);
-      }
-      evas_object_image_file_set(icon_image, icon_path, NULL);
+         icon_path = efreet_icon_path_find(icon_theme, "dialog-error", 
+                                           atoi(icon_size));
    }
    if (evas_object_image_load_error_get(icon_image) != EVAS_LOAD_ERROR_NONE)
    {
@@ -691,11 +685,10 @@ add_toolbar2_zoom_drawer(Evas_Object *con_parent, Evas_Object *controls)
       // If failed, try to load from icon set
       if (type == ICON_TYPE_IMAGE)
       {
-         icon_path = efreet_icon_path_find(icon_theme, icons[i], icon_size);
+         icon_path = efreet_icon_path_find(icon_theme, icons[i], atoi(icon_size));
          if (!icon_path)
-         {
-            icon_path = efreet_icon_path_find(icon_theme, "dialog-error", icon_size);
-         }
+            icon_path = efreet_icon_path_find(icon_theme, "dialog-error", 
+                                              atoi(icon_size));
          evas_object_image_file_set(icon_image, icon_path, NULL);
       }
       if (evas_object_image_load_error_get(icon_image) != EVAS_LOAD_ERROR_NONE)

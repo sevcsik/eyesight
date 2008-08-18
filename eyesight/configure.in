@@ -45,6 +45,12 @@ PKG_CHECK_MODULES([EDVI],
         esmart_text_entry
         ])
 
+PKG_CHECK_MODULES([EPS],
+        [eps
+        esmart_container
+        esmart_text_entry
+        ])
+
 AC_OUTPUT([
 Makefile
 src/Makefile
