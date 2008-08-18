@@ -1,0 +1,5 @@
+line 5:
+
++#ifdef HAVE_EVIL
++#include <Evil.h>
++#endif

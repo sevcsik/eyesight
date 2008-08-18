@@ -52,7 +52,7 @@ set EmbryoOut=%cd%\..\..\embryo\win32\%PROJECT_TYPE%\out
 
 set INCLUDE=%EvilCommon%;%cd%\common;%EetInclude%;%EvilInclude%;%EvilInclude%\dlfcn;%EvilInclude%\mman;%INCLUDE%
 set INCLUDE=%EcoreInclude%\..\ecore_file;%EcoreInclude%\..\ecore_job;%EmbryoInclude%;%EcoreInclude%;%EvasInclude%;%INCLUDE%
-set INCLUDE=%EcoreInclude%\..\ecore_evas;%INCLUDE%
+set INCLUDE=%EcoreInclude%\..\ecore_evas;%INCLUDE%;%cd%\common
 set LIB=%EmbryoOut%;%EcoreOut%;%EvasOut%;%EetOut%;%EvilOut%;%LIB%
 
 
