@@ -8,7 +8,7 @@ data
    item: "date" "Not yet released :)";
 
    item: "icon_theme" "oxygen";
-   item: "icon_size" "128x128";
+   item: "icon_size" "128";
    item: "top_margin" "15";
    item: "bottom_margin" "15";
    item: "left_margin" "15";

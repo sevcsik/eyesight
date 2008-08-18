@@ -1,6 +1,8 @@
 #ifndef DEFINES_H_
 #define DEFINES_H_
 
+#define NULL 0
+
 #if defined PDF
 /* Defines for PDF plugin */
 #include <Epdf.h>
@@ -57,6 +59,38 @@ typedef Epdf_Page             Doc_Page;
 // Types
 typedef Edvi_Document         Doc_Document;
 typedef Edvi_Page             Doc_Page;
+
+#elif defined PS
+/* Defines for PDF plugin */
+#include <Eps.h>
+#include <esmart_ps.h>
+
+// Functions
+#define doc_add(X)               esmart_ps_add(X)
+#define doc_init(X)              esmart_ps_init(X)
+#define doc_file_set(X, Y)       esmart_ps_file_set(X, Y)
+#define doc_file_get(X)          esmart_ps_file_get(X)
+#define doc_page_set(X, Y)       esmart_ps_page_set(X, Y)
+#define doc_page_get(X)          esmart_ps_page_get(X)
+#define doc_size_get(X, Y, Z)    esmart_ps_size_get(X, Y, Z)
+#define doc_document_get(X)      esmart_ps_ps_document_get(X)
+#define doc_page_obj_get(X)      esmart_ps_ps_page_get(X)
+#define doc_page_count_get(X)    eps_document_page_count_get(X)
+#define doc_render(X)            esmart_ps_render(X)
+
+#define doc_scale_set(X, Y)      esmart_ps_scale_set(X, Y, Y)
+
+static double inline
+doc_scale_get(Evas_Object *o)
+{
+   double scale;
+   esmart_ps_scale_get(o, &scale, NULL);
+   return scale;
+}
+
+// Types
+typedef Eps_Document         Doc_Document;
+typedef Eps_Page             Doc_Page;
 
 #endif /* PDF & DVI*/
 #endif /* DEFINES_H_ */

@@ -49,6 +49,11 @@ identify(char **name, char **version, char **email)
    *version = "0.1";
    *email = "sevcsik@gmail.com";
 
+#   elif defined PS
+   *name = "PostScript viewer using eps";
+   *version = "0.1";
+   *email = "sevcsik@gmail.com";
+
 #   endif
 }
 
@@ -115,12 +120,17 @@ open_file(void **_plugin_data, char *filename, Evas_Object *main_window,
    printf("Trying to open %s with pdf plugin... ", filename);
 #   endif
 
+   #ifndef PS // FIXME: EPS workaround, need to be removed!
    if (!doc_file_set(page, filename)) // Check that file open was successful
    {
       printf("failed.\n");
       evas_object_del(page);
       return 0; // If not, jump to the next plugin
    }
+   #else   
+   doc_file_set(page, filename); // TEMP CODE!!!
+   #endif
+   
    printf("ok\n");
 
    evas_object_name_set(page, "page");
@@ -276,9 +286,9 @@ page_resize_cb(void *_data, Evas *evas, Evas_Object *controls, void *event_info)
          scale = 1.0;
          break;
       case VIEW_FIT:
-         scale = (((double) eh - v_margins) / (double) nh <        \
-                 ((double) ew - h_margins) / (double) nw) ?        \
-                 (((double) eh - v_margins) / (double) nh) :       \
+         scale = (((double) eh - v_margins) / (double) nh <          \
+                 ((double) ew - h_margins) / (double) nw) ?          \
+                 (((double) eh - v_margins) / (double) nh) :         \
                  (((double) ew - h_margins) / (double) nw);
          break;
       case VIEW_HFIT:
@@ -288,7 +298,7 @@ page_resize_cb(void *_data, Evas *evas, Evas_Object *controls, void *event_info)
          scale = ((double) eh - v_margins) / (double) nh;
          break;
       case VIEW_CUSTOM:
-         scale = *(double *)ecore_evas_data_get(ecore_evas_ecore_evas_get(evas), "scale");
+         scale = *(double *) ecore_evas_data_get(ecore_evas_ecore_evas_get(evas), "scale");
          break;
       default: // Just to shut up compiler
          scale = 0.0;
@@ -298,9 +308,9 @@ page_resize_cb(void *_data, Evas *evas, Evas_Object *controls, void *event_info)
    else
    {
       printf("Using default view mode\n");
-      scale = (((double) eh - v_margins) / (double) nh <        \
-              ((double) ew - h_margins) / (double) nw) ?        \
-              (((double) eh - v_margins) / (double) nh) :       \
+      scale = (((double) eh - v_margins) / (double) nh <          \
+              ((double) ew - h_margins) / (double) nw) ?          \
+              (((double) eh - v_margins) / (double) nh) :         \
               (((double) ew - h_margins) / (double) nw);
    }
 

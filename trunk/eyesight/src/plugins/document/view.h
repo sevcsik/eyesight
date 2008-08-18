@@ -1,10 +1,3 @@
-/* 
- * File:   view.h
- * Author: sevcsik
- *
- * Created on July 31, 2008, 8:48 PM
- */
-
 #ifndef _VIEW_H
 #define	_VIEW_H
 
