@@ -1,7 +1,7 @@
 #ifndef DEFINES_H_
 #define DEFINES_H_
 
-#define NULL 0
+#include <stdlib.h>
 
 #if defined PDF
 /* Defines for PDF plugin */
