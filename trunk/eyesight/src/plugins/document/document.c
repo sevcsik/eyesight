@@ -120,17 +120,17 @@ open_file(void **_plugin_data, char *filename, Evas_Object *main_window,
    printf("Trying to open %s with pdf plugin... ", filename);
 #   endif
 
-   #ifndef PS // FIXME: EPS workaround, need to be removed!
+#   ifndef PS // FIXME: EPS workaround, need to be removed!
    if (!doc_file_set(page, filename)) // Check that file open was successful
    {
       printf("failed.\n");
       evas_object_del(page);
       return 0; // If not, jump to the next plugin
    }
-   #else   
-   doc_file_set(page, filename); // TEMP CODE!!!
-   #endif
-   
+#   else   
+   return 0; // TEMP CODE!!! (disables eps plugin)
+#   endif
+
    printf("ok\n");
 
    evas_object_name_set(page, "page");
@@ -141,6 +141,11 @@ open_file(void **_plugin_data, char *filename, Evas_Object *main_window,
    edje_object_file_set(border, themefile, "eyesight/border_opaque");
    edje_object_part_swallow(border, "eyesight/border_opaque/content", page);
    evas_object_name_set(border, "border");
+
+   // Set up callbacks for dragging
+
+   evas_object_event_callback_add(page, EVAS_CALLBACK_MOUSE_MOVE, page_mmove_cb,
+                                  NULL);
 
    // Resize
    evas_object_geometry_get(main_window, NULL, NULL, &ew, &eh);
@@ -286,9 +291,9 @@ page_resize_cb(void *_data, Evas *evas, Evas_Object *controls, void *event_info)
          scale = 1.0;
          break;
       case VIEW_FIT:
-         scale = (((double) eh - v_margins) / (double) nh <          \
-                 ((double) ew - h_margins) / (double) nw) ?          \
-                 (((double) eh - v_margins) / (double) nh) :         \
+         scale = (((double) eh - v_margins) / (double) nh <            \
+                 ((double) ew - h_margins) / (double) nw) ?            \
+                 (((double) eh - v_margins) / (double) nh) :           \
                  (((double) ew - h_margins) / (double) nw);
          break;
       case VIEW_HFIT:
@@ -308,9 +313,9 @@ page_resize_cb(void *_data, Evas *evas, Evas_Object *controls, void *event_info)
    else
    {
       printf("Using default view mode\n");
-      scale = (((double) eh - v_margins) / (double) nh <          \
-              ((double) ew - h_margins) / (double) nw) ?          \
-              (((double) eh - v_margins) / (double) nh) :         \
+      scale = (((double) eh - v_margins) / (double) nh <            \
+              ((double) ew - h_margins) / (double) nw) ?            \
+              (((double) eh - v_margins) / (double) nh) :           \
               (((double) ew - h_margins) / (double) nw);
    }
 
@@ -333,4 +338,14 @@ page_resize_cb_render_timer(void *data)
 {
    doc_render((Evas_Object *) data);
    return 0;
+}
+
+void
+page_mmove_cb(void *data, Evas *e, Evas_Object *page, void *event_)
+{
+   Evas_Event_Mouse_Move *event = event_;
+   if (event->buttons == 1)
+   {
+      printf("I like the way you mooove!\n");
+   }
 }
