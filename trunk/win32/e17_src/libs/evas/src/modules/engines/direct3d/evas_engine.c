@@ -399,6 +399,118 @@ eng_font_free(void *data, void *font)
 }
 
 
+
+//////////////////////////////////////////////////////////////////////////////
+// Gradients
+//
+
+static void 
+eng_gradient2_color_np_stop_insert(void *data, void *gradient, int r, int g, int b, int a, float pos) 
+{ 
+} 
+
+static void 
+eng_gradient2_clear(void *data, void *gradient) 
+{ 
+} 
+
+static void 
+eng_gradient2_fill_transform_set(void *data, void *gradient, void *transform) 
+{ 
+} 
+
+static void 
+eng_gradient2_fill_spread_set(void *data, void *gradient, int spread) 
+{ 
+} 
+
+static void * 
+eng_gradient2_linear_new(void *data) 
+{ 
+   return NULL; 
+} 
+
+static void 
+eng_gradient2_linear_free(void *data, void *linear_gradient) 
+{ 
+} 
+
+static void 
+eng_gradient2_linear_fill_set(void *data, void *linear_gradient, int x0, int y0, int x1, int y1) 
+{ 
+} 
+
+static int 
+eng_gradient2_linear_is_opaque(void *data, void *context, void *linear_gradient, int x, int y, int w, int h) 
+{ 
+   return 1; 
+} 
+
+static int 
+eng_gradient2_linear_is_visible(void *data, void *context, void *linear_gradient, int x, int y, int w, int h) 
+{ 
+   return 1; 
+} 
+
+static void 
+eng_gradient2_linear_render_pre(void *data, void *context, void *linear_gradient) 
+{ 
+} 
+
+static void 
+eng_gradient2_linear_render_post(void *data, void *linear_gradient) 
+{ 
+} 
+
+static void 
+eng_gradient2_linear_draw(void *data, void *context, void *surface, void *linear_gradient, int x, int y, int w, int h) 
+{ 
+} 
+
+static void * 
+eng_gradient2_radial_new(void *data) 
+{ 
+   return NULL; 
+} 
+
+static void 
+eng_gradient2_radial_free(void *data, void *radial_gradient) 
+{ 
+} 
+
+static void 
+eng_gradient2_radial_fill_set(void *data, void *radial_gradient, float cx, float cy, float rx, float ry) 
+{ 
+} 
+
+static int 
+eng_gradient2_radial_is_opaque(void *data, void *context, void *radial_gradient, int x, int y, int w, int h) 
+{ 
+   return 1; 
+} 
+
+static int 
+eng_gradient2_radial_is_visible(void *data, void *context, void *radial_gradient, int x, int y, int w, int h) 
+{ 
+   return 1; 
+} 
+
+static void 
+eng_gradient2_radial_render_pre(void *data, void *context, void *radial_gradient) 
+{ 
+} 
+
+static void 
+eng_gradient2_radial_render_post(void *data, void *radial_gradient) 
+{ 
+} 
+
+static void 
+eng_gradient2_radial_draw(void *data, void *context, void *surface, void *radial_gradient, int x, int y, int w, int h) 
+{ 
+} 
+
+
 /* module advertising code */
 EAPI int
 module_open(Evas_Module *em)
@@ -442,6 +554,28 @@ module_open(Evas_Module *em)
    ORD(image_border_get);
    ORD(font_draw);
    ORD(font_free);
+/*
+   ORD(gradient2_color_np_stop_insert); 
+   ORD(gradient2_clear); 
+   ORD(gradient2_fill_transform_set); 
+   ORD(gradient2_fill_spread_set); 
+   ORD(gradient2_linear_new); 
+   ORD(gradient2_linear_free); 
+   ORD(gradient2_linear_fill_set); 
+   ORD(gradient2_linear_is_opaque); 
+   ORD(gradient2_linear_is_visible); 
+   ORD(gradient2_linear_render_pre); 
+   ORD(gradient2_linear_render_post); 
+   ORD(gradient2_linear_draw); 
+   ORD(gradient2_radial_new); 
+   ORD(gradient2_radial_free); 
+   ORD(gradient2_radial_fill_set); 
+   ORD(gradient2_radial_is_opaque); 
+   ORD(gradient2_radial_is_visible); 
+   ORD(gradient2_radial_render_pre); 
+   ORD(gradient2_radial_render_post); 
+   ORD(gradient2_radial_draw); 
+*/
    /* now advertise out own api */
    em->functions = (void *)(&func);
    return 1;
