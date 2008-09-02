@@ -21,6 +21,6 @@ void shutdown(void **plugin_data, Evas *evas);
 void page_resize_cb(void *_data, Evas *evas, Evas_Object *controls, void *event_info);
 int page_resize_cb_render_timer(void *data);
 void mousewheel_cb(void *_data, Evas *evas, Evas_Object *controls, void *event_info);
-void page_mmove_cb(void *data, Evas *e, Evas_Object *page, void *event_);
+void page_mmove_cb(void *data, Evas *e, Evas_Object *border, void *event_);
 
 #endif /*DOCUMENT_H_*/

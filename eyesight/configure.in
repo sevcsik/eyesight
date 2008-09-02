@@ -37,19 +37,22 @@ PKG_CHECK_MODULES([EPDF],
         [epdf 
         esmart_container
         esmart_text_entry
-        ])
-        
+        ], [HAVE_EPDF=true], [HAVE_EPDF=false])
+AM_CONDITIONAL(HAVE_EPDF, $HAVE_EPDF)
+
 PKG_CHECK_MODULES([EDVI],
         [edvi
         esmart_container
         esmart_text_entry
-        ])
+        ], [HAVE_EDVI=true], [HAVE_EDVI=false])
+AM_CONDITIONAL(HAVE_EDVI, $HAVE_EDVI)
 
 PKG_CHECK_MODULES([EPS],
         [eps
         esmart_container
         esmart_text_entry
-        ])
+        ], [HAVE_EPS=true], [HAVE_EPS=false])
+AM_CONDITIONAL(HAVE_EPS, $HAVE_EPS)
 
 AC_OUTPUT([
 Makefile
@@ -78,3 +81,13 @@ echo "  Installation.........: make install"
 echo
 echo "    prefix.............: $prefix"
 echo
+echo "Plugins:"
+echo
+echo "    PDF plugin.........: $HAVE_EPDF"
+echo
+echo "    DVI plugin.........: $HAVE_EDVI"
+echo
+echo "    PostScript plugin..: $HAVE_EPS"
+echo
+
+
