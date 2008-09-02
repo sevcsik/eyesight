@@ -144,7 +144,7 @@ open_file(void **_plugin_data, char *filename, Evas_Object *main_window,
 
    // Set up callbacks for dragging
 
-   evas_object_event_callback_add(page, EVAS_CALLBACK_MOUSE_MOVE, page_mmove_cb,
+   evas_object_event_callback_add(border, EVAS_CALLBACK_MOUSE_MOVE, page_mmove_cb,
                                   NULL);
 
    // Resize
@@ -291,9 +291,9 @@ page_resize_cb(void *_data, Evas *evas, Evas_Object *controls, void *event_info)
          scale = 1.0;
          break;
       case VIEW_FIT:
-         scale = (((double) eh - v_margins) / (double) nh <            \
-                 ((double) ew - h_margins) / (double) nw) ?            \
-                 (((double) eh - v_margins) / (double) nh) :           \
+         scale = (((double) eh - v_margins) / (double) nh <              \
+                 ((double) ew - h_margins) / (double) nw) ?              \
+                 (((double) eh - v_margins) / (double) nh) :             \
                  (((double) ew - h_margins) / (double) nw);
          break;
       case VIEW_HFIT:
@@ -303,7 +303,8 @@ page_resize_cb(void *_data, Evas *evas, Evas_Object *controls, void *event_info)
          scale = ((double) eh - v_margins) / (double) nh;
          break;
       case VIEW_CUSTOM:
-         scale = *(double *) ecore_evas_data_get(ecore_evas_ecore_evas_get(evas), "scale");
+         scale = *(double *) ecore_evas_data_get(ecore_evas_ecore_evas_get(evas),
+                                                 "scale");
          break;
       default: // Just to shut up compiler
          scale = 0.0;
@@ -313,9 +314,9 @@ page_resize_cb(void *_data, Evas *evas, Evas_Object *controls, void *event_info)
    else
    {
       printf("Using default view mode\n");
-      scale = (((double) eh - v_margins) / (double) nh <            \
-              ((double) ew - h_margins) / (double) nw) ?            \
-              (((double) eh - v_margins) / (double) nh) :           \
+      scale = (((double) eh - v_margins) / (double) nh <              \
+              ((double) ew - h_margins) / (double) nw) ?              \
+              (((double) eh - v_margins) / (double) nh) :             \
               (((double) ew - h_margins) / (double) nw);
    }
 
@@ -341,11 +342,17 @@ page_resize_cb_render_timer(void *data)
 }
 
 void
-page_mmove_cb(void *data, Evas *e, Evas_Object *page, void *event_)
+page_mmove_cb(void *data, Evas *e, Evas_Object *border, void *event_)
 {
    Evas_Event_Mouse_Move *event = event_;
+   int cx, cy, bx, by;
+   cx = cy = bx = by = 0;
    if (event->buttons == 1)
    {
-      printf("I like the way you mooove!\n");
+      evas_pointer_canvas_xy_get(e, &cx, &cy);
+      evas_object_geometry_get(border, &bx, &by, NULL, NULL);
+
+      evas_object_move(border, cx - (bx - cx), cy - (by - cy)); 
+      // TODO: fix flickering!
    }
 }
