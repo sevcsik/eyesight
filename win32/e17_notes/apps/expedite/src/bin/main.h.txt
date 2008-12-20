@@ -4,18 +4,3 @@ line 11
 
 timeval predefinition
 
-line 61
-
-+ #ifdef __cplusplus
-+ extern "C"
-+ {
-+ #endif
-
-line 64
-
-+ #ifdef __cplusplus
-+ }
-+ #endif
-
-Externals cannot be linked in C++ modules.
-
